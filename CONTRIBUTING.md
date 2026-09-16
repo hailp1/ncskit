@@ -210,9 +210,11 @@ npm run lint         # ESLint
 ### Numerical validation
 
 ```bash
+# If you haven't installed Playwright browsers yet:
+npx playwright install
+
+# Runs Playwright tests comparing NCSKit (WebR) output against native R values
 npm run verify-math
-# Runs Playwright tests comparing NCSKit (WebR) output against expected values
-# derived from native R. All differences must be < 0.00001.
 ```
 
 Tests are in `tests/e2e/webr-auto-test.spec.ts`.
