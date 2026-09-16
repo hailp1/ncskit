@@ -141,7 +141,7 @@ export function ResultsDisplay({
                         {/* ASIG Group - Only Explanations */}
                         <div className="space-y-8 pt-10 mt-10 border-t-2 border-dashed border-slate-200">
                             <div className="text-center mb-8">
-                                <h3 className="text-xl font-black text-blue-900 uppercase tracking-tight">Diễn Giải Tự Động (ASIG AI)</h3>
+                                <h3 className="text-xl font-black text-blue-900 uppercase tracking-tight">Diễn Giải Tự Động (ASIG)</h3>
                                 <p className="text-slate-500 text-sm mt-2">Dưới đây là phần diễn giải học thuật cho từng thang đo.</p>
                             </div>
                             {relResults.map((res, idx) => {

@@ -187,7 +187,7 @@ Optional environment variables (copy `.env.example` to `.env.local`):
 |:---------|:--------|:---------|
 | `NEXT_PUBLIC_SUPABASE_URL` | User auth and profiles | No — app runs without it |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase client | No |
-| `GEMINI_API_KEY` | Server-side AI interpretation (optional feature) | No |
+| `GEMINI_API_KEY` | Server-side LLM processing (legacy/optional) | No |
 
 ---
 

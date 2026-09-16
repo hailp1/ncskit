@@ -137,7 +137,7 @@ ncsStat sử dụng quy trình 4 bước đơn giản và trực quan:
 
 **Các thành phần kết quả:**
 - **Bảng thống kê**: Các chỉ số chi tiết
-- **AI Evaluation**: Đánh giá tự động (nếu có)
+- **ASIG Evaluation**: Đánh giá tự động dựa trên tham chiếu học thuật (nếu có)
 - **Biểu đồ**: Visualization (tùy phương pháp)
 
 **Xuất kết quả:**

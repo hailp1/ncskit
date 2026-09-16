@@ -295,7 +295,7 @@ Each ASIG interpreter now returns five structured fields on `InterpretationResul
 
 This enriched output is rendered by the `UnifiedASIGInterpretation` component — a
 single panel that replaces the former separate "Template Interpretation" and
-"AI Interpretation" widgets — providing researchers with an at-a-glance quality
+"ASIG Interpretation" widgets — providing researchers with an at-a-glance quality
 signal, a directly citable sentence, and concrete guidance on next steps.
 
 ### Limitations and Scope
