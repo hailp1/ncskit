@@ -25,8 +25,7 @@ publication-ready, APA 7th Edition narrative interpretations across 22 analysis
 types. Unlike LLM-based tools, ASIG output is fully reproducible — identical
 numeric input always produces identical prose.
 
-**Live deployment:** [https://open.ncskit.org](https://open.ncskit.org)
-**Demo (no login required):** [https://open.ncskit.org/demo](https://open.ncskit.org/demo)
+**Live deployment:** [https://ncskit.org](https://ncskit.org)
 
 ---
 
@@ -101,17 +100,13 @@ NCSKit is designed for zero-configuration peer review.
 ### 1. Quick Start (no database required)
 
 ```bash
-git clone https://github.com/hailp1/demo_Publish_NCSKIT.git
-cd demo_Publish_NCSKIT
+git clone https://github.com/hailp1/ncskit.git
+cd ncskit
 npm install        # ~3–5 min first time (downloads WebR WASM binaries)
 npm run dev
 ```
 
-Open **http://localhost:3000/demo** — full analysis engine, no login required.
-
-> The `/demo` route loads `AnalyzeModule` with `isDemo={true}`, bypassing all
-> authentication. Supabase credentials are optional; the app operates entirely
-> without them in demo mode.
+Open **http://localhost:3000** — full analysis engine.
 
 ### 2. Verify numerical accuracy
 
@@ -168,11 +163,11 @@ ASIG_LOGIC.md        # All 22 interpretation thresholds with citations
 ### Local development
 
 ```bash
-git clone https://github.com/hailp1/demo_Publish_NCSKIT.git
-cd demo_Publish_NCSKIT
+git clone https://github.com/hailp1/ncskit.git
+cd ncskit
 npm install
 npm run dev
-# → http://localhost:3000/demo
+# → http://localhost:3000
 ```
 
 `npm install` runs a `postinstall` script (`scripts/copy-webr.js`) that copies
@@ -246,7 +241,7 @@ If you use NCSKit in your research, please cite:
   journal = {Journal of Open Source Software},
   year    = {2026},
   note    = {Under review},
-  url     = {https://github.com/hailp1/demo_Publish_NCSKIT}
+  url     = {https://github.com/hailp1/ncskit}
 }
 ```
 

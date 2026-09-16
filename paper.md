@@ -13,10 +13,12 @@ authors:
   - name: Le Phuc Hai
     orcid: 0009-0004-1215-5023
     corresponding: true
-    affiliation: 1
+    affiliation: "1, 2"
 affiliations:
-  - name: NCSKit Academy, Vietnam
+  - name: Ton Duc Thang University, Vietnam
     index: 1
+  - name: ncskit.org
+    index: 2
 date: 12 September 2026
 bibliography: paper.bib
 ---
@@ -395,7 +397,7 @@ A reproducible benchmark script is provided in
 
 # Research Impact Statement
 
-`NCSKit` is actively deployed at [https://open.ncskit.org](https://open.ncskit.org) and
+`NCSKit` is actively deployed at [https://ncskit.org](https://ncskit.org) and
 has been used in graduate research methods courses and doctoral thesis
 supervision at Vietnamese universities since early 2026. Concrete evidence of
 impact:
@@ -413,7 +415,7 @@ impact:
   all reported numerical results.
 - **Replication package:** The complete source code, R scripts, WASM package
   builds, and ASIG decision-tree logic are publicly available under the MIT
-  licence at [https://github.com/hailp1/demo_Publish_NCSKIT](https://github.com/hailp1/demo_Publish_NCSKIT),
+  licence at [https://github.com/hailp1/ncskit](https://github.com/hailp1/ncskit),
   allowing any researcher to audit, reproduce, or extend every component of
   the system.
 

@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Descriptive Statistics",
+    "status": "Pass",
+    "asig": "Descriptive statistics were computed for 4 variables (N = 500). All variables demonstrated skewness values within ±2 and excess kurtosis within ±7 (West et al., 1995; George & Mallery, 2010), indicating approximate univariate normality and suitability for parametric analyses."
+  },
+  {
+    "name": "Correlation Analysis",
+    "status": "Pass",
+    "asig": "A Pearson product-moment correlation indicated a statistically significant moderate positive association between \"SN1\" and \"SN2\" (r(498) = .46, N = 500, p < .001). This finding suggests that higher values of \"SN1\" are systematically associated with higher values of \"SN2.\" Note that a statistically significant correlation does not establish causality."
+  },
+  {
+    "name": "Cronbach Alpha",
+    "status": "Pass",
+    "asig": "Reliability analysis of the \"Subjective Norms (SN)\" scale (4 items) yielded Cronbach's Alpha (α) = .69. Although this value falls below the conventional threshold of .70 (Nunnally & Bernstein, 1994), it remains within the acceptable range (.60–.70) for exploratory research (Hair et al., 2019). Scale refinement is recommended before confirmatory use. Examine item-total statistics to identify underperforming items."
+  },
+  {
+    "name": "Independent T-Test",
+    "status": "Pass",
+    "asig": "An independent-samples t-test (equal variances assumed) was conducted to compare \"SN1\" between the Male group (M = 3.45, SD = 0.52) and the Female group (M = 3.47, SD = 0.57). The difference in means (ΔM = 0.02) was not statistically significant at α = .05: t(498) = -0.40, p = .692. Interpret the 95% confidence interval for the mean difference to gauge the range of plausible effects."
+  },
+  {
+    "name": "Paired T-Test",
+    "status": "Pass",
+    "asig": "A paired-samples t-test was conducted to evaluate change in \"Construct Score\" across two related measurement occasions. The mean difference between pre-test (M = 3.46, SD = 0.54) and post-test (M = 3.47, SD = 0.63) (ΔM = 0.01) did not reach statistical significance at α = .05: t(499) = -0.39, p = .698. A 95% CI for the mean difference should be reported to convey the precision of the estimate."
+  },
+  {
+    "name": "One-Way ANOVA",
+    "status": "Pass",
+    "asig": "A one-way ANOVA was conducted to examine whether \"SN1\" differed across levels of \"Education.\" The omnibus F-test was not statistically significant (α = .05): F(3, 496) = 2.41, p = .066. The null hypothesis of equal population group means was retained. Inspect the 95% CIs on group means to evaluate the practical magnitude of any observed differences."
+  },
+  {
+    "name": "Mann-Whitney U",
+    "status": "Pass",
+    "asig": "A Mann-Whitney U test was conducted as a non-parametric alternative to the independent-samples t-test, to compare the rank distribution of \"SN1\" between the Male (Mdn = 3.00) and Female (Mdn = 3.00) groups. The test did not reach statistical significance (α = .05): U = 30587, p = .664."
+  },
+  {
+    "name": "Kruskal-Wallis",
+    "status": "Pass",
+    "asig": "A Kruskal-Wallis H test was conducted as a non-parametric omnibus test to compare the rank distributions of \"SN1\" across levels of \"Education.\" The test did not reach statistical significance (α = .05): H(3) = 7.44, p = .059, indicating no significant difference in rank distributions across groups."
+  },
+  {
+    "name": "Wilcoxon Signed Rank",
+    "status": "Pass",
+    "asig": "A Wilcoxon Signed-Rank Test was conducted as a non-parametric alternative to the paired-samples t-test, to assess change in \"Construct Score\" between two related measurement occasions. The test did not reach statistical significance (α = .05): W = 17202, p = .707, with a median difference of 0.00 (pseudo-median of differences)."
+  },
+  {
+    "name": "Chi-Square Test",
+    "status": "Pass",
+    "asig": "A Pearson chi-square test of independence was conducted to examine the association between \"undefined\" and \"undefined.\" The test was not statistically significant (α = .05): χ²(117) = 99.50, p = .877. The data are consistent with the assumption of statistical independence between the two categorical variables (Cramér's V = .26, indicating a weak association)."
+  },
+  {
+    "name": "Linear Regression",
+    "status": "Pass",
+    "asig": "Multiple linear regression was conducted to predict \"BEH1\" from 2 predictors (α = .05). The overall model was not statistically significant: F(2, N−3) = 0.00, p = 1.000, adjusted R² = .00. The predictors did not explain a significant proportion of variance in \"BEH1.\""
+  },
+  {
+    "name": "Exploratory Factor Analysis",
+    "status": "Pass",
+    "asig": "Prior to conducting Exploratory Factor Analysis (EFA), the suitability of the correlation matrix was evaluated. The Kaiser-Meyer-Olkin (KMO) measure of sampling adequacy yielded KMO = .72 (middling; Kaiser, 1974). Bartlett's Test of Sphericity was statistically significant (p < .001), confirming that the correlation matrix is sufficiently non-identity for factor analysis. EFA was conducted using Kaiser criterion (eigenvalue > 1; Kaiser, 1974; note: this criterion tends to over-extract), retaining 3 factors with no rotation applied."
+  },
+  {
+    "name": "Confirmatory Factor Analysis",
+    "status": "Pass",
+    "asig": "Confirmatory Factor Analysis (CFA) was conducted to evaluate the pre-specified measurement model. The overall pattern of model fit indices indicated excellent fit: CFI = .99, TLI = .98, RMSEA = .02, SRMR = .03 (Hu & Bentler, 1999; Kline, 2016). All reported fit indices satisfy recommended thresholds, supporting the adequacy of the measurement model."
+  },
+  {
+    "name": "PLS-SEM",
+    "status": "Pass",
+    "asig": "PLS-SEM measurement model assessment identified violations in the following areas: convergent validity (AVE < .50). These issues must be resolved — by revising items, reconsidering the measurement model, or addressing construct conceptualisation — before the structural model results can be meaningfully interpreted (Hair et al., 2017, 2021). Proceeding with hypothesis testing under measurement model violations risks biased path coefficient estimates and inflated Type I error."
+  },
+  {
+    "name": "Mediation Analysis",
+    "status": "Pass",
+    "asig": "Mediation analysis did not support a significant indirect effect of \"ATT1\" on \"BEH1\" through \"INT1.\" The Sobel test was not significant (Z = 0.00, p = 1.000). The total effect of \"ATT1\" on \"BEH1\" (B = .00, p = 1.000) should be interpreted in the absence of demonstrated mediation."
+  }
+]

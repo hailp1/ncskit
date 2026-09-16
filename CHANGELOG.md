@@ -16,7 +16,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   a 500 to the user.
 - **Domain redirect**: Updated `REDIRECT_HOSTS` list in middleware to redirect
   `ncskit.org`, `www.ncskit.org`, `stat.ncskit.org`, `ncsstat.ncskit.org`
-  all to the canonical domain `open.ncskit.org`.
+  all to the canonical domain `ncskit.org`.
 - **ASIG analysisType aliases**: All result components now correctly map to
   their ASIG interpreters (`wilcoxon` → `wilcoxon_signed`, `chisquare` →
   `chi_square`, `regression` → `linear_regression`, `logistic` →

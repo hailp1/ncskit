@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Descriptive Statistics",
+    "status": "success",
+    "summary": "VARIABLE N MIN MAX MEAN SD SKEWNESS KURTOSIS SN1 500 2.000 5.000 3.460 0.541 0.121 -0.977 SN2 500 2.000 5.000 3.488 0.564 0.014 -0.695"
+  },
+  {
+    "name": "Frequencies",
+    "status": "success",
+    "summary": "CATEGORY FREQUENCY PERCENT CUMULATIVE_PERCENT Female 260 52.0% 52.0% Male 240 48.0% 100.0% TOTAL 500 100.0% -"
+  }
+]

@@ -3,7 +3,7 @@
 ## Phần mềm phân tích thống kê dành cho Nghiên cứu sinh Việt Nam
 
 **Phiên bản:** 2.4  
-**Website:** https://stat.ncskit.org  
+**Website:** https://ncskit.org  
 **Công nghệ:** WebR (R trong trình duyệt), psych package
 
 ---
@@ -62,7 +62,7 @@
 
 ### 2.2 Đăng nhập
 
-1. Truy cập **https://stat.ncskit.org**
+1. Truy cập **https://ncskit.org**
 2. Click **"Đăng nhập"**
 3. Chọn một trong các phương thức:
    - **Google** (khuyến nghị)
@@ -386,14 +386,14 @@ ncsStat sử dụng quy trình 4 bước đơn giản và trực quan:
 
 ```
 ncsStat (2026). ncsStat: Statistical Analysis Tool for Vietnamese Researchers. 
-Version 2.4. https://stat.ncskit.org
+Version 2.4. https://ncskit.org
 ```
 
 ---
 
 ## LIÊN HỆ HỖ TRỢ
 
-- **Website:** https://stat.ncskit.org
+- **Website:** https://ncskit.org
 - **Feedback:** Sử dụng nút "Gửi phản hồi" trong menu
 
 ---

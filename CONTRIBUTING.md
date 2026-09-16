@@ -26,8 +26,8 @@ JOSS open development practices and the [Contributor Covenant](CODE_OF_CONDUCT.m
 ## Getting Started
 
 ```bash
-git clone https://github.com/hailp1/demo_Publish_NCSKIT.git
-cd demo_Publish_NCSKIT
+git clone https://github.com/hailp1/ncskit.git
+cd ncskit
 npm install
 npm run dev
 # → http://localhost:3000/demo
@@ -71,7 +71,7 @@ lib/
 
 | Type | Where to start |
 |:-----|:--------------|
-| Bug report | [Open an issue](https://github.com/hailp1/demo_Publish_NCSKIT/issues) with reproduction steps and a sample dataset if applicable |
+| Bug report | [Open an issue](https://github.com/hailp1/ncskit/issues) with reproduction steps and a sample dataset if applicable |
 | Feature request | Open an issue describing the analysis method or feature needed |
 | New analysis method | See [Adding a New Analysis Method](#adding-a-new-analysis-method) |
 | New ASIG threshold / interpretation | See [Extending the ASIG Engine](#extending-the-asig-engine) |
