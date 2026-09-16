@@ -19,3 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+ACADEMIC CITATION EXPECTATION
+
+While the software itself is licensed under the standard MIT License, academic and research ethics dictate that you must cite the original authors if you use this code, system architecture, or ASIG interpretation logic in any publication, research, or derivative software.
+
+Please cite the original paper:
+Le, Phuc Hai. (2026). NCSKit: A Serverless, WebAssembly-Powered Statistical Analysis Platform with Automated APA Interpretation. Journal of Open Source Software. DOI: [To be assigned by JOSS]

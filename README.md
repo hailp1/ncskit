@@ -253,6 +253,12 @@ A machine-readable citation is available in [`CITATION.cff`](./CITATION.cff).
 
 MIT © 2026 Le Phuc Hai. See [`LICENSE`](./LICENSE).
 
+**Academic Citation Expectation:** 
+While this software is released under an open-source MIT License to guarantee unrestricted access, **academic and research ethics require that you cite the original paper** if you use this code, system architecture, or ASIG interpretation engine in your work (regardless of the form). 
+
+Please cite:
+> Le, Phuc Hai. (2026). NCSKit: A Serverless, WebAssembly-Powered Statistical Analysis Platform with Automated APA Interpretation. *Journal of Open Source Software*. **DOI: [To be assigned by JOSS]**
+
 ---
 
 ## Acknowledgements
