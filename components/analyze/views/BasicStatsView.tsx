@@ -31,6 +31,80 @@ interface BasicStatsViewProps {
     locale: Locale;
 }
 
+const ViewHeader = ({ title, subtitle, icon: Icon }: { title: string, subtitle: string, icon: any }) => (
+    <div className="flex flex-col items-center text-center mb-8">
+        <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-4 border border-blue-100 shadow-sm">
+            <Icon className="w-8 h-8 text-blue-600" />
+        </div>
+        <h2 className="text-2xl font-black text-blue-900 tracking-tight uppercase">{title}</h2>
+        <p className="text-sm text-slate-500 mt-2 font-medium max-w-md">{subtitle}</p>
+    </div>
+);
+
+const AssumptionWarning = ({ isParametric }: { isParametric: boolean }) => {
+    if (!isParametric) return null;
+    return (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3 mb-6">
+            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+            <div className="text-sm text-amber-900">
+                <p className="font-bold mb-1">Cảnh báo Tiền đề (Assumption Check)</p>
+                <p className="opacity-90 text-[13px] leading-relaxed">
+                    Các kiểm định tham số yêu cầu dữ liệu có <b>Phân phối chuẩn (Normality)</b> và <b>Đồng nhất phương sai (Homogeneity of Variance)</b>. Nếu dữ liệu vi phạm, hãy cân nhắc sử dụng phiên bản Phi tham số (Non-parametric) như Mann-Whitney hoặc Kruskal-Wallis.
+                </p>
+            </div>
+        </div>
+    );
+};
+
+// Shared Checkbox Group
+const CheckboxGroup = ({ items, name }: { items: string[], name: string }) => {
+    const [selected, setSelected] = useState<string[]>([]);
+    return (
+    <div className="space-y-4">
+        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+            <span>Select Variables ({selected.length} selected)</span>
+            <div className="flex gap-4">
+                <button type="button" onClick={() => setSelected(items)} className="text-blue-600 hover:text-blue-800 transition-colors">Select All</button>
+                <button type="button" onClick={() => setSelected([])} className="text-slate-400 hover:text-slate-600 transition-colors">Clear</button>
+            </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto p-4 bg-slate-50/50 rounded-xl border border-blue-50 border-dashed">
+            {items.map(item => (
+                <label key={item} className="flex items-center gap-3 p-3 bg-white border border-blue-50 rounded-xl hover:border-blue-300 hover:shadow-sm transition-all group cursor-pointer">
+                    <input 
+                        type="checkbox" 
+                        name={name} 
+                        value={item} 
+                        checked={selected.includes(item)}
+                        onChange={(e) => {
+                            if (e.target.checked) setSelected(prev => [...prev, item]);
+                            else setSelected(prev => prev.filter(i => i !== item));
+                        }}
+                        className="w-5 h-5 rounded border-blue-100 text-blue-900 focus:ring-blue-900 cursor-pointer" 
+                    />
+                    <span className="text-sm font-bold text-blue-900 uppercase tracking-tighter truncate group-hover:text-blue-700">{item}</span>
+                </label>
+            ))}
+        </div>
+    </div>
+    );
+};
+
+// Shared Select Component
+const SelectField = ({ id, label, options }: { id: string, label: string, options: string[] }) => (
+    <div className="space-y-2">
+        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block ml-1">{label}</label>
+        <select
+            id={id}
+            className="w-full px-4 py-3 bg-white border border-blue-100 rounded-xl text-blue-900 font-bold text-sm focus:ring-2 focus:ring-blue-900 focus:border-transparent transition-all outline-none shadow-sm cursor-pointer hover:border-blue-300"
+            defaultValue=""
+        >
+            <option value="" className="text-slate-400 font-normal">-- Select variable --</option>
+            {options.map(opt => <option key={opt} value={opt} className="font-bold">{opt}</option>)}
+        </select>
+    </div>
+);
+
 export function BasicStatsView({
     step,
     data = [],
@@ -112,70 +186,12 @@ export function BasicStatsView({
         }
     };
 
-    const ViewHeader = ({ title, subtitle, icon: Icon }: { title: string, subtitle: string, icon: any }) => (
-        <div className="flex flex-col items-center text-center mb-8">
-            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-4 border border-blue-100 shadow-sm">
-                <Icon className="w-8 h-8 text-blue-600" />
-            </div>
-            <h2 className="text-2xl font-black text-blue-900 tracking-tight uppercase">{title}</h2>
-            <p className="text-sm text-slate-500 mt-2 font-medium max-w-md">{subtitle}</p>
-        </div>
-    );
 
-    const AssumptionWarning = ({ isParametric }: { isParametric: boolean }) => {
-        if (!isParametric) return null;
-        return (
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3 mb-6">
-                <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
-                <div className="text-sm text-amber-900">
-                    <p className="font-bold mb-1">Cảnh báo Tiền đề (Assumption Check)</p>
-                    <p className="opacity-90 text-[13px] leading-relaxed">
-                        Các kiểm định tham số yêu cầu dữ liệu có <b>Phân phối chuẩn (Normality)</b> và <b>Đồng nhất phương sai (Homogeneity of Variance)</b>. Nếu dữ liệu vi phạm, hãy cân nhắc sử dụng phiên bản Phi tham số (Non-parametric) như Mann-Whitney hoặc Kruskal-Wallis.
-                    </p>
-                </div>
-            </div>
-        );
-    };
-
-    // Shared Checkbox Group
-    const CheckboxGroup = ({ items, name, selectedCount, onToggleAll, onClearAll }: { items: string[], name: string, selectedCount?: number, onToggleAll: () => void, onClearAll: () => void }) => (
-        <div className="space-y-4">
-            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
-                <span>Select Variables ({selectedCount || 0} selected)</span>
-                <div className="flex gap-4">
-                    <button onClick={onToggleAll} className="text-blue-600 hover:text-blue-800 transition-colors">Select All</button>
-                    <button onClick={onClearAll} className="text-slate-400 hover:text-slate-600 transition-colors">Clear</button>
-                </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto p-4 bg-slate-50/50 rounded-xl border border-blue-50 border-dashed">
-                {items.map(item => (
-                    <label key={item} className="flex items-center gap-3 p-3 bg-white border border-blue-50 rounded-xl hover:border-blue-300 hover:shadow-sm transition-all group cursor-pointer">
-                        <input type="checkbox" name={name} value={item} className="w-5 h-5 rounded border-blue-100 text-blue-900 focus:ring-blue-900 cursor-pointer" />
-                        <span className="text-sm font-bold text-blue-900 uppercase tracking-tighter truncate group-hover:text-blue-700">{item}</span>
-                    </label>
-                ))}
-            </div>
-        </div>
-    );
-
-    // Shared Select Component
-    const SelectField = ({ id, label, options }: { id: string, label: string, options: string[] }) => (
-        <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block ml-1">{label}</label>
-            <select
-                id={id}
-                className="w-full px-4 py-3 bg-white border border-blue-100 rounded-xl text-blue-900 font-bold text-sm focus:ring-2 focus:ring-blue-900 focus:border-transparent transition-all outline-none shadow-sm cursor-pointer hover:border-blue-300"
-                defaultValue=""
-            >
-                <option value="" className="text-slate-400 font-normal">-- Select variable --</option>
-                {options.map(opt => <option key={opt} value={opt} className="font-bold">{opt}</option>)}
-            </select>
-        </div>
-    );
 
     // Primary Action Button
     const ActionButton = ({ onClick, disabled, icon: Icon, children, variant = 'blue' }: any) => (
-        <button
+        <button type="button"
+            data-testid="run-analysis"
             onClick={onClick}
             disabled={disabled}
             className={`w-full py-4 px-6 rounded-xl font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 transition-all transform active:scale-95 shadow-lg shadow-blue-100/50 
@@ -198,18 +214,15 @@ export function BasicStatsView({
                 <ViewHeader title={title} subtitle={subtitle} icon={BarChart2} />
                 
                 <div className="bg-white rounded-2xl border border-blue-100 shadow-xl p-8 space-y-8">
-                    <CheckboxGroup 
-                        items={columns} 
-                        name="desc-col" 
-                        onToggleAll={() => document.querySelectorAll('input[name="desc-col"]').forEach((el: any) => el.checked = true)}
-                        onClearAll={() => document.querySelectorAll('input[name="desc-col"]').forEach((el: any) => el.checked = false)}
-                    />
+                    <CheckboxGroup items={columns} name="desc-col" />
 
                     <ActionButton 
                         icon={Play}
                         disabled={isAnalyzing}
                         onClick={() => {
+                            console.log('DEBUG: Run Descriptive Statistics button clicked!');
                             const selectedCols = Array.from(document.querySelectorAll('input[name="desc-col"]:checked')).map(cb => (cb as HTMLInputElement).value);
+                            console.log('DEBUG: selectedCols:', selectedCols);
                             if (selectedCols.length === 0) return showToast('Vui lòng chọn ít nhất 1 biến', 'error');
                             handleAnalysisWrapper(
                                 'descriptive', 'descriptive',
@@ -222,7 +235,7 @@ export function BasicStatsView({
                     </ActionButton>
                 </div>
                 
-                <button 
+                <button type="button" 
                     onClick={() => setStep('analyze')} 
                     className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
                 >
@@ -293,7 +306,7 @@ export function BasicStatsView({
                     </ActionButton>
                 </div>
                 
-                <button 
+                <button type="button" 
                     onClick={() => setStep('analyze')} 
                     className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
                 >
@@ -314,12 +327,7 @@ export function BasicStatsView({
                 
                 <div className="bg-white rounded-2xl border border-blue-100 shadow-xl p-8 space-y-6">
                     <AssumptionWarning isParametric={!isNonParam} />
-                    <CheckboxGroup 
-                        items={columns} 
-                        name="anova-col" 
-                        onToggleAll={() => document.querySelectorAll('input[name="anova-col"]').forEach((el: any) => el.checked = true)}
-                        onClearAll={() => document.querySelectorAll('input[name="anova-col"]').forEach((el: any) => el.checked = false)}
-                    />
+                    <CheckboxGroup items={columns} name="anova-col" />
 
                     <ActionButton 
                         icon={Play}
@@ -347,7 +355,7 @@ export function BasicStatsView({
                     </ActionButton>
                 </div>
                 
-                <button 
+                <button type="button" 
                     onClick={() => setStep('analyze')} 
                     className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
                 >
@@ -392,7 +400,7 @@ export function BasicStatsView({
                     </ActionButton>
                 </div>
                 
-                <button 
+                <button type="button" 
                     onClick={() => setStep('analyze')} 
                     className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
                 >
@@ -436,7 +444,7 @@ export function BasicStatsView({
                     </ActionButton>
                 </div>
                 
-                <button 
+                <button type="button" 
                     onClick={() => setStep('analyze')} 
                     className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
                 >
@@ -455,12 +463,7 @@ export function BasicStatsView({
                 <ViewHeader title={title} subtitle={subtitle} icon={Users} />
                 
                 <div className="bg-white rounded-2xl border border-blue-100 shadow-xl p-8 space-y-8">
-                    <CheckboxGroup 
-                        items={allColumns} 
-                        name="freq-col" 
-                        onToggleAll={() => document.querySelectorAll('input[name="freq-col"]').forEach((el: any) => el.checked = true)}
-                        onClearAll={() => document.querySelectorAll('input[name="freq-col"]').forEach((el: any) => el.checked = false)}
-                    />
+                    <CheckboxGroup items={allColumns} name="freq-col" />
 
                     <ActionButton 
                         icon={Play}
@@ -498,7 +501,7 @@ export function BasicStatsView({
                     </ActionButton>
                 </div>
                 
-                <button 
+                <button type="button" 
                     onClick={() => setStep('analyze')} 
                     className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
                 >

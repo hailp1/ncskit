@@ -150,19 +150,25 @@ export function TemplateInterpretation({
                 case 'anova_2way':
                     {
                         const cols = results.columns || []; // Often stored in results directly for some types
+                        const table = results.table || [];
+                        const f1Row = table.length > 0 ? table[0] : {};
+                        const f2Row = table.length > 1 ? table[1] : {};
+                        const intRow = table.length > 2 ? table[2] : {};
+                        const resRow = table.find((r: any) => r.source?.toLowerCase().includes('residual') || r.source?.toLowerCase().includes('sai so')) || {};
+                        
                         result = interpretTwoWayANOVA({
-                            factor1: variableNames.factor1 || (results.columns ? results.columns[1] : 'Yếu tố 1'),
-                            factor2: variableNames.factor2 || (results.columns ? results.columns[2] : 'Yếu tố 2'),
-                            targetVar: variableNames.targetVar || (results.columns ? results.columns[0] : 'Biến phụ thuộc'),
-                            mainEffect1F: results.factor1F || 0,
-                            mainEffect1P: results.factor1P ?? 1,
-                            mainEffect2F: results.factor2F || 0,
-                            mainEffect2P: results.factor2P ?? 1,
-                            interactionF: results.interactionF || 0,
-                            interactionP: results.interactionP ?? 1,
-                            df1: results.factor1Df || 0,
-                            df2: results.factor2Df || 0,
-                            dfError: results.residualDf || 0
+                            factor1: variableNames.factor1 || (cols.length > 1 ? cols[1] : 'Yếu tố 1'),
+                            factor2: variableNames.factor2 || (cols.length > 2 ? cols[2] : 'Yếu tố 2'),
+                            targetVar: variableNames.targetVar || (cols.length > 0 ? cols[0] : 'Biến phụ thuộc'),
+                            mainEffect1F: f1Row.f || results.factor1F || 0,
+                            mainEffect1P: f1Row.p ?? results.factor1P ?? 1,
+                            mainEffect2F: f2Row.f || results.factor2F || 0,
+                            mainEffect2P: f2Row.p ?? results.factor2P ?? 1,
+                            interactionF: intRow.f || results.interactionF || 0,
+                            interactionP: intRow.p ?? results.interactionP ?? 1,
+                            df1: f1Row.df || results.factor1Df || 0,
+                            df2: f2Row.df || results.factor2Df || 0,
+                            dfError: resRow.df || results.residualDf || 0
                         });
                     }
                     break;
@@ -299,10 +305,11 @@ export function TemplateInterpretation({
                     result = interpretClusterAnalysis({
                         method: results.method || 'K-Means',
                         nClusters: results.nClusters || results.k || 0,
-                        totalSS: results.totalSS || 0,
-                        withinSS: results.totWithinSS || 0,
-                        betweenSS: results.betweensSS || 0,
-                        silhouetteScore: results.silhouetteScore
+                        totalSS: results.totalSS ?? results.totss ?? 0,
+                        withinSS: results.totWithinSS ?? results.tot_withinss ?? 0,
+                        betweenSS: results.betweenSS ?? results.betweensSS ?? results.betweenss ?? 0,
+                        silhouetteScore: results.silhouetteScore ?? results.silhoutteScore ?? results.sil_score,
+                        clusterSizes: results.clusterSizes || results.size
                     });
                     break;
                 

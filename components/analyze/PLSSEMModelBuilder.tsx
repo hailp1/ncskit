@@ -249,7 +249,7 @@ export const PLSSEMModelBuilder: React.FC<PLSSEMModelBuilderProps> = ({
 
             {/* Navigation Buttons */}
             <div className="flex justify-between">
-                <button
+                <button type="button"
                     onClick={onCancel}
                     className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
@@ -258,7 +258,7 @@ export const PLSSEMModelBuilder: React.FC<PLSSEMModelBuilderProps> = ({
 
                 <div className="flex gap-3">
                     {currentStepIndex > 0 && (
-                        <button
+                        <button type="button"
                             onClick={handleBack}
                             className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2"
                         >
@@ -268,7 +268,7 @@ export const PLSSEMModelBuilder: React.FC<PLSSEMModelBuilderProps> = ({
                     )}
 
                     {currentStep !== 'review' ? (
-                        <button
+                        <button type="button"
                             onClick={handleNext}
                             disabled={!canGoNext()}
                             className={`
@@ -283,7 +283,7 @@ export const PLSSEMModelBuilder: React.FC<PLSSEMModelBuilderProps> = ({
                             <ArrowRight className="w-4 h-4" />
                         </button>
                     ) : (
-                        <button
+                        <button type="button"
                             onClick={handleComplete}
                             className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
                         >

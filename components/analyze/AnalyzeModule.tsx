@@ -50,6 +50,7 @@ export function AnalyzeModule({ isDemo = false }: AnalyzeModuleProps) {
     const [previousAnalysis, setPreviousAnalysis] = useState<any | null>(null);
 
     const showToast = (message: string, type: 'success' | 'error' | 'info') => {
+        if (type === 'error') console.error(`TOAST ERROR: ${message}`);
         setToast({ message, type });
         setTimeout(() => setToast(null), 5000);
     };
@@ -121,10 +122,10 @@ export function AnalyzeModule({ isDemo = false }: AnalyzeModuleProps) {
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <button onClick={discardSaved} className="px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 rounded-md transition-colors">
+                            <button type="button" onClick={discardSaved} className="px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 rounded-md transition-colors">
                                 {t(locale as any, 'analyze.common.discard') || 'Bỏ qua'}
                             </button>
-                            <button
+                            <button type="button"
                                 onClick={() => handleRestore(setData, setFilename, setStep, setResults, setAnalysisType)}
                                 className="px-4 py-1.5 text-xs font-bold bg-amber-600 text-white hover:bg-amber-700 rounded-md shadow-sm transition-colors"
                             >
@@ -188,6 +189,7 @@ export function AnalyzeModule({ isDemo = false }: AnalyzeModuleProps) {
                                 <div key={s} className="flex items-center">
                                     <button
                                         type="button"
+                                        data-testid={`step-${s}`}
                                         onClick={() => {
                                             if (isClickable) {
                                                 if (s === 'analyze' && step.endsWith('-select')) {
@@ -235,6 +237,12 @@ export function AnalyzeModule({ isDemo = false }: AnalyzeModuleProps) {
                             handleDataLoaded={(data: any[], filename: string) => {
                                 setData(data);
                                 setFilename(filename);
+                                // CRITICAL: Reset stale profile & results from previous file
+                                // Without this, getNumericColumns() returns column names from
+                                // a previously loaded file, causing column-name mismatches
+                                setProfile(null);
+                                setResults(null);
+                                setMultipleResults([]);
                                 setStep('profile');
                                 showToast(locale === 'vi' ? 'Đã tải dữ liệu thành công' : 'Data loaded successfully', 'success');
                             }}

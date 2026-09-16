@@ -21,6 +21,24 @@ export async function runCronbachAlpha(
     // Lazy load required packages
     await loadPackagesForMethod('cronbach');
 
+    // ── DIAGNOSTIC: Detect all-null input data before it reaches R ──
+    if (data && data.length > 0) {
+        const totalCells = data.length * (data[0]?.length || 0);
+        const nullCells = data.flat().filter(v => v === null || v === undefined).length;
+        console.log(`[DEBUG-CRONBACH] Input: ${data.length} rows × ${data[0]?.length} cols. Nulls: ${nullCells}/${totalCells} (${(nullCells/totalCells*100).toFixed(1)}%)`);
+        console.log(`[DEBUG-CRONBACH] Row 0:`, JSON.stringify(data[0]));
+        console.log(`[DEBUG-CRONBACH] Row 1:`, JSON.stringify(data[1]));
+        
+        if (nullCells === totalCells) {
+            console.error('[DEBUG-CRONBACH] ⚠️ ALL DATA IS NULL! The column extraction failed.');
+            throw new Error(
+                `Toàn bộ dữ liệu đầu vào là null (${nullCells}/${totalCells} ô). ` +
+                `Nguyên nhân thường gặp: tên cột trong dữ liệu không khớp với nhóm biến đã chọn. ` +
+                `Vui lòng tải lại trang (Ctrl+Shift+R) và thử lại.`
+            );
+        }
+    }
+
     // Validate and clean input data
     const validation = validateAndCleanData(data, {
         minRows: 10,
@@ -41,23 +59,21 @@ export async function runCronbachAlpha(
     valid_max <- {{likertMax}};
     
     data <- raw_data
-    data[data > valid_max] <- valid_max
-    data[data < valid_min] <- valid_min
     data <- as.data.frame(data)
     
     # MANUAL CRONBACH'S ALPHA CALCULATION (NO PSYCH PACKAGE -> NO LAPACK CRASHES)
     calc_alpha <- function(df) {
         k <- ncol(df)
-        if (k < 2) return(NA)
+        if (k < 2) stop("Can it nhat 2 bien de tinh Cronbach Alpha.")
         
         # Use pairwise deletion for covariance to handle NAs
         cov_mat <- suppressWarnings(cov(df, use = "pairwise.complete.obs"))
-        if (any(is.na(cov_mat))) return(NA)
+        if (any(is.na(cov_mat))) stop("Khong the tinh ma tran hiep phuong sai. Du lieu co the chua toan gia tri NA (chuoi hoac rong).")
         
         var_items <- diag(cov_mat)
         var_total <- sum(cov_mat)
         
-        if (var_total <= 0) return(NA)
+        if (var_total <= 0) stop(paste("Phuong sai tong bang 0 hoac am. Kiem tra xem du lieu co bi hang so (khong doi) hoac loi dinh dang khong."))
         (k / (k - 1)) * (1 - sum(var_items) / var_total)
     }
 
@@ -79,7 +95,7 @@ export async function runCronbachAlpha(
         df_drop <- data[, -i, drop = FALSE]
         
         # Alpha if deleted
-        alpha_drop[i] <- calc_alpha(df_drop)
+        alpha_drop[i] <- tryCatch(calc_alpha(df_drop), error = function(e) 0)
         
         # Corrected item-total correlation
         item_i <- data[, i]

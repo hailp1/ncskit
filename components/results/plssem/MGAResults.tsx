@@ -1,6 +1,8 @@
 'use client';
 
+import React from 'react';
 import { Users, TrendingUp, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { t, getStoredLocale, type Locale } from '@/lib/i18n';
 
 interface MGAResultsProps {
     results: {
@@ -11,20 +13,28 @@ interface MGAResultsProps {
 }
 
 export default function MGAResults({ results }: MGAResultsProps) {
+    const [locale, setLocale] = React.useState<Locale>('vi');
+
+    React.useEffect(() => {
+        setLocale(getStoredLocale());
+    }, []);
     if (!results) {
         return (
             <div className="bg-red-50 border border-red-200 rounded-lg p-6">
                 <div className="flex items-center gap-3">
                     <AlertCircle className="w-6 h-6 text-red-600" />
-                    <p className="text-red-800 font-medium">Không có kết quả MGA</p>
+                    <p className="text-red-800 font-medium">{t(locale, 'asig.plssem.mga.no_results')}</p>
                 </div>
             </div>
         );
     }
 
-    const { group_means, p_value, significant_difference } = results;
-    const groups = Object.keys(group_means);
-    const means = Object.values(group_means);
+    const { group_means, p_value } = results;
+    // Calculate significance dynamically instead of relying on backend flag
+    const significant_difference = p_value < 0.05;
+    
+    const groups = Object.keys(group_means || {});
+    const means = Object.values(group_means || {});
 
     // Find highest and lowest
     const maxMean = Math.max(...means);
@@ -39,10 +49,10 @@ export default function MGAResults({ results }: MGAResultsProps) {
             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg p-6">
                 <div className="flex items-center gap-3 mb-2">
                     <Users className="w-8 h-8" />
-                    <h2 className="text-2xl font-bold">Kết quả MGA</h2>
+                    <h2 className="text-2xl font-bold">{t(locale, 'asig.plssem.mga.title')}</h2>
                 </div>
                 <p className="text-indigo-100">
-                    Multi-Group Analysis - So sánh giữa các nhóm
+                    {t(locale, 'asig.plssem.mga.subtitle')}
                 </p>
             </div>
 
@@ -59,28 +69,28 @@ export default function MGAResults({ results }: MGAResultsProps) {
                     )}
                     <h3 className="text-lg font-bold">
                         {significant_difference
-                            ? 'Có sự khác biệt có ý nghĩa thống kê'
-                            : 'Không có sự khác biệt có ý nghĩa thống kê'}
+                            ? t(locale, 'asig.plssem.mga.sig_yes')
+                            : t(locale, 'asig.plssem.mga.sig_no')}
                     </h3>
                 </div>
                 <p className="text-sm mb-2">
-                    <strong>P-value:</strong>{' '}
+                    <strong>{t(locale, 'asig.plssem.mga.p_value')}</strong>{' '}
                     <span className={`font-bold ${p_value < 0.05 ? 'text-green-700' : 'text-yellow-700'}`}>
                         {p_value?.toFixed(4)}
                     </span>
-                    {' '}({p_value < 0.05 ? 'p < 0.05' : 'p ≥ 0.05'})
+                    {' '}({p_value < 0.05 ? t(locale, 'asig.plssem.mga.p_lt_05') : t(locale, 'asig.plssem.mga.p_ge_05')})
                 </p>
                 <p className="text-sm">
                     {significant_difference
-                        ? '✅ Các nhóm có sự khác biệt đáng kể về giá trị trung bình'
-                        : '⚠️ Các nhóm không có sự khác biệt đáng kể về giá trị trung bình'}
+                        ? t(locale, 'asig.plssem.mga.sig_desc_yes')
+                        : t(locale, 'asig.plssem.mga.sig_desc_no')}
                 </p>
             </div>
 
             {/* Group Comparison Table */}
             <div className="bg-white rounded-lg border border-slate-200 p-6">
                 <h3 className="text-xl font-bold text-slate-900 mb-4">
-                    So sánh giữa các nhóm
+                    {t(locale, 'asig.plssem.mga.table.title')}
                 </h3>
 
                 <div className="overflow-x-auto">
@@ -88,13 +98,13 @@ export default function MGAResults({ results }: MGAResultsProps) {
                         <thead>
                             <tr className="bg-slate-50">
                                 <th className="px-4 py-3 text-left text-sm font-bold text-slate-700">
-                                    Nhóm
+                                    {t(locale, 'asig.plssem.mga.table.group')}
                                 </th>
                                 <th className="px-4 py-3 text-right text-sm font-bold text-slate-700">
-                                    Giá trị trung bình
+                                    {t(locale, 'asig.plssem.mga.table.mean')}
                                 </th>
                                 <th className="px-4 py-3 text-center text-sm font-bold text-slate-700">
-                                    Xếp hạng
+                                    {t(locale, 'asig.plssem.mga.table.rank')}
                                 </th>
                             </tr>
                         </thead>
@@ -107,7 +117,7 @@ export default function MGAResults({ results }: MGAResultsProps) {
                                 return (
                                     <tr key={idx} className="border-t border-slate-100 hover:bg-slate-50">
                                         <td className="px-4 py-3 text-sm font-medium text-slate-900">
-                                            Nhóm {group}
+                                            {t(locale, 'asig.plssem.mga.table.group_name', { name: group })}
                                         </td>
                                         <td className="px-4 py-3 text-sm text-right">
                                             <span className={`font-bold ${isHighest ? 'text-green-700' :
@@ -120,12 +130,12 @@ export default function MGAResults({ results }: MGAResultsProps) {
                                         <td className="px-4 py-3 text-center">
                                             {isHighest && (
                                                 <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold">
-                                                    Cao nhất
+                                                    {t(locale, 'asig.plssem.mga.table.highest')}
                                                 </span>
                                             )}
                                             {isLowest && (
                                                 <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-bold">
-                                                    Thấp nhất
+                                                    {t(locale, 'asig.plssem.mga.table.lowest')}
                                                 </span>
                                             )}
                                         </td>
@@ -140,26 +150,26 @@ export default function MGAResults({ results }: MGAResultsProps) {
             {/* Difference Summary */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                 <h3 className="text-lg font-bold text-blue-900 mb-3">
-                    📊 Tóm tắt sự khác biệt
+                    📊 {t(locale, 'asig.plssem.mga.summary.title')}
                 </h3>
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
                     <div>
-                        <p className="text-blue-700 mb-1">Nhóm cao nhất:</p>
-                        <p className="font-bold text-blue-900">Nhóm {maxGroup}</p>
+                        <p className="text-blue-700 mb-1">{t(locale, 'asig.plssem.mga.summary.highest_group')}</p>
+                        <p className="font-bold text-blue-900">{t(locale, 'asig.plssem.mga.summary.group_name', { name: maxGroup })}</p>
                         <p className="text-xs text-blue-600">{typeof maxMean === 'number' ? maxMean.toFixed(4) : '-'}</p>
                     </div>
                     <div>
-                        <p className="text-blue-700 mb-1">Nhóm thấp nhất:</p>
-                        <p className="font-bold text-blue-900">Nhóm {minGroup}</p>
+                        <p className="text-blue-700 mb-1">{t(locale, 'asig.plssem.mga.summary.lowest_group')}</p>
+                        <p className="font-bold text-blue-900">{t(locale, 'asig.plssem.mga.summary.group_name', { name: minGroup })}</p>
                         <p className="text-xs text-blue-600">{typeof minMean === 'number' ? minMean.toFixed(4) : '-'}</p>
                     </div>
                     <div>
-                        <p className="text-blue-700 mb-1">Chênh lệch:</p>
+                        <p className="text-blue-700 mb-1">{t(locale, 'asig.plssem.mga.summary.abs_diff')}</p>
                         <p className="font-bold text-blue-900">{typeof difference === 'number' ? difference.toFixed(4) : '-'}</p>
                         <p className="text-xs text-blue-600">
                             {(minMean != null && minMean !== 0 && typeof difference === 'number')
-                                ? `${((difference / minMean) * 100).toFixed(1)}% difference`
-                                : 'N/A'}
+                                ? t(locale, 'asig.plssem.mga.summary.diff_pct', { pct: ((difference / Math.abs(minMean)) * 100).toFixed(1) })
+                                : t(locale, 'asig.plssem.mga.summary.na')}
                         </p>
                     </div>
                 </div>
@@ -168,17 +178,17 @@ export default function MGAResults({ results }: MGAResultsProps) {
             {/* Interpretation */}
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
                 <h3 className="text-lg font-bold text-purple-900 mb-3">
-                    📖 Hướng dẫn giải thích
+                    📖 {t(locale, 'asig.plssem.mga.guide.title')}
                 </h3>
-                <div className="space-y-2 text-sm text-purple-800">
+                <div className="space-y-3 text-sm text-purple-900">
                     <p>
-                        <strong>P-value {'<'} 0.05:</strong> Có sự khác biệt có ý nghĩa thống kê giữa các nhóm
+                        <strong>{t(locale, 'asig.plssem.mga.guide.mga')}</strong> {t(locale, 'asig.plssem.mga.guide.mga_desc')}
                     </p>
                     <p>
-                        <strong>P-value ≥ 0.05:</strong> Không có sự khác biệt có ý nghĩa thống kê
+                        <strong>{t(locale, 'asig.plssem.mga.guide.sig')}</strong> {t(locale, 'asig.plssem.mga.guide.sig_desc')}
                     </p>
                     <p>
-                        <strong>Chênh lệch lớn:</strong> Cho thấy các nhóm có đặc điểm khác nhau rõ rệt
+                        <strong>{t(locale, 'asig.plssem.mga.guide.nonsig')}</strong> {t(locale, 'asig.plssem.mga.guide.nonsig_desc')}
                     </p>
                 </div>
             </div>
@@ -186,35 +196,35 @@ export default function MGAResults({ results }: MGAResultsProps) {
             {/* Recommendations */}
             <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
                 <h3 className="text-lg font-bold text-indigo-900 mb-3">
-                    💡 Khuyến nghị
+                    💡 {t(locale, 'asig.plssem.mga.recommendation.title')}
                 </h3>
-                <ul className="space-y-2 text-sm text-indigo-800">
+                <ul className="space-y-3 text-sm text-indigo-900">
                     {significant_difference ? (
                         <>
                             <li className="flex items-start gap-2">
-                                <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                                <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0 text-indigo-600" />
                                 <span>
-                                    Các nhóm có sự khác biệt đáng kể - cần chiến lược riêng cho mỗi nhóm
+                                    <strong>{t(locale, 'asig.plssem.mga.recommendation.implications')}</strong> {t(locale, 'asig.plssem.mga.recommendation.implications_desc')}
                                 </span>
                             </li>
                             <li className="flex items-start gap-2">
-                                <TrendingUp className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                                <TrendingUp className="w-4 h-4 mt-0.5 flex-shrink-0 text-indigo-600" />
                                 <span>
-                                    Nhóm {maxGroup} có hiệu suất cao nhất - nghiên cứu các yếu tố thành công
+                                    <strong>{t(locale, 'asig.plssem.mga.recommendation.advantage', { group: maxGroup })}</strong> {t(locale, 'asig.plssem.mga.recommendation.advantage_desc', { group: maxGroup })}
                                 </span>
                             </li>
                             <li className="flex items-start gap-2">
-                                <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                                <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-indigo-600" />
                                 <span>
-                                    Nhóm {minGroup} cần cải thiện - áp dụng best practices từ nhóm tốt nhất
+                                    <strong>{t(locale, 'asig.plssem.mga.recommendation.limitation', { group: minGroup })}</strong> {t(locale, 'asig.plssem.mga.recommendation.limitation_desc', { group: minGroup })}
                                 </span>
                             </li>
                         </>
                     ) : (
                         <li className="flex items-start gap-2">
-                            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-indigo-600" />
                             <span>
-                                Các nhóm tương đồng - có thể áp dụng chiến lược chung cho tất cả nhóm
+                                <strong>{t(locale, 'asig.plssem.mga.recommendation.pooled')}</strong> {t(locale, 'asig.plssem.mga.recommendation.pooled_desc')}
                             </span>
                         </li>
                     )}

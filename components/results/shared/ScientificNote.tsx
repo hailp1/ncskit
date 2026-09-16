@@ -40,7 +40,7 @@ export function ScientificNote({
             {/* Header row */}
             <div className="flex items-start gap-3 p-5">
                 <div className="p-2 bg-slate-200 rounded-lg shrink-0 mt-0.5">
-                    <BookOpen className="w-4 h-4 text-slate-700" />
+                    <BookOpen className="w-4 h-4 text-slate-700 " />
                 </div>
                 <div className="flex-1 min-w-0">
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
@@ -77,14 +77,14 @@ export function ScientificNote({
                 <>
                     <button
                         onClick={() => setExpanded(v => !v)}
-                        className="w-full flex items-center justify-between px-5 py-2.5 bg-slate-100 hover:bg-slate-200 transition-colors text-[10px] font-black uppercase tracking-widest text-slate-500"
+                        className="w-full flex items-center justify-between px-5 py-2.5 bg-slate-100 hover:bg-slate-200 transition-colors text-[10px] font-black uppercase tracking-widest text-slate-500 "
                     >
                         <span>Assumptions &amp; Reporting Details</span>
                         {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                     </button>
 
                     {expanded && (
-                        <div className="px-5 py-4 space-y-4 border-t border-slate-200 bg-white">
+                        <div className="px-5 py-4 space-y-4 border-t border-slate-200 bg-white ">
                             {/* Assumptions */}
                             {assumptions && assumptions.length > 0 && (
                                 <div>
@@ -110,8 +110,8 @@ export function ScientificNote({
                                     </p>
                                     <ul className="space-y-1.5">
                                         {pitfalls.map((p, i) => (
-                                            <li key={i} className="text-xs text-amber-800 flex items-start gap-2 font-medium bg-amber-50 px-3 py-2 rounded-lg">
-                                                <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5 text-amber-500" />
+                                            <li key={i} className="text-xs text-amber-800 flex items-start gap-2 font-medium bg-amber-50 px-3 py-2 rounded-lg border border-amber-100 ">
+                                                <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5 text-amber-500 " />
                                                 {p}
                                             </li>
                                         ))}
@@ -124,7 +124,7 @@ export function ScientificNote({
             )}
 
             {/* References footer */}
-            <div className="px-5 py-3 bg-slate-100 border-t border-slate-200">
+            <div className="px-5 py-3 bg-slate-100 border-t border-slate-200 ">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex items-center gap-1.5">
                     <Info className="w-3 h-3" /> References ({citation})
                 </p>

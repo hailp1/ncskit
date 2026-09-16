@@ -23,6 +23,8 @@ export async function runCorrelation(
 ): Promise<{
     correlationMatrix: number[][];
     pValues: number[][];
+    ciLowerMatrix?: number[][];
+    ciUpperMatrix?: number[][];
     method: string;
     N: number[];
     rCode: string;
@@ -39,22 +41,32 @@ export async function runCorrelation(
     # Compute correlation matrix
     r_mat <- cor(df, use = "pairwise.complete.obs", method = method_name)
     
-    # Compute p-values matrix manually
+    # Compute p-values and CI matrices manually
     p_mat <- matrix(0, nrow = ncol(df), ncol = ncol(df))
+    ci_low_mat <- matrix(NA, nrow = ncol(df), ncol = ncol(df))
+    ci_up_mat <- matrix(NA, nrow = ncol(df), ncol = ncol(df))
     for (i in 1:(ncol(df)-1)) {
         for (j in (i+1):ncol(df)) {
             test_result <- tryCatch(
                 cor.test(df[[i]], df[[j]], method = method_name),
-                error = function(e) list(p.value = NA)
+                error = function(e) list(p.value = NA, conf.int = c(NA, NA))
             )
             p_mat[i, j] <- test_result$p.value
             p_mat[j, i] <- test_result$p.value
+            if(!is.null(test_result$conf.int)) {
+                ci_low_mat[i, j] <- test_result$conf.int[1]
+                ci_low_mat[j, i] <- test_result$conf.int[1]
+                ci_up_mat[i, j] <- test_result$conf.int[2]
+                ci_up_mat[j, i] <- test_result$conf.int[2]
+            }
         }
     }
     
     list(
         correlation = as.vector(r_mat),
         p_values = as.vector(p_mat),
+        ci_lower = as.vector(ci_low_mat),
+        ci_upper = as.vector(ci_up_mat),
         n_cols = ncol(df),
         n_obs = nrow(df),
         method = method_name
@@ -71,6 +83,8 @@ export async function runCorrelation(
     return {
         correlationMatrix: parseMatrix(getValue('correlation'), numCols),
         pValues: parseMatrix(getValue('p_values'), numCols),
+        ciLowerMatrix: parseMatrix(getValue('ci_lower'), numCols),
+        ciUpperMatrix: parseMatrix(getValue('ci_upper'), numCols),
         method: method,
         N: getValue('n_obs'),
         rCode: rCode
@@ -87,7 +101,9 @@ export async function runTTestIndependent(group1: number[], group2: number[]): P
     df: number;
     pValue: number;
     mean1: number;
+    sd1: number;
     mean2: number;
+    sd2: number;
     meanDiff: number;
     ci95Lower: number;
     ci95Upper: number;
@@ -132,6 +148,7 @@ export async function runTTestIndependent(group1: number[], group2: number[]): P
     list(
         t = tt$statistic, df = tt$parameter, p_value = tt$p.value,
         mean1 = m1, mean2 = m2, mean_diff = m1 - m2,
+        sd1 = s1, sd2 = s2,
         ci_lower = tt$conf.int[1], ci_upper = tt$conf.int[2],
         effect_size = d, levene_p = lev_p, levene_f = lev_f,
         shapiro_p1 = shapiro_p1, shapiro_p2 = shapiro_p2
@@ -150,7 +167,9 @@ export async function runTTestIndependent(group1: number[], group2: number[]): P
         df: getValue('df')?.[0] ?? 0,
         pValue: getValue('p_value')?.[0] ?? 1,
         mean1: getValue('mean1')?.[0] ?? 0,
+        sd1: getValue('sd1')?.[0] ?? 0,
         mean2: getValue('mean2')?.[0] ?? 0,
+        sd2: getValue('sd2')?.[0] ?? 0,
         meanDiff: getValue('mean_diff')?.[0] ?? 0,
         ci95Lower: getValue('ci_lower')?.[0] ?? 0,
         ci95Upper: getValue('ci_upper')?.[0] ?? 0,
@@ -173,7 +192,9 @@ export async function runTTestPaired(before: number[], after: number[]): Promise
     df: number;
     pValue: number;
     meanBefore: number;
+    sdBefore: number;
     meanAfter: number;
+    sdAfter: number;
     meanDiff: number;
     ci95Lower: number;
     ci95Upper: number;
@@ -196,7 +217,9 @@ export async function runTTestPaired(before: number[], after: number[]): Promise
     d <- if(!is.na(sd_diff) && sd_diff > 0) m_diff / sd_diff else 0;
     list(
         t = tt$statistic, df = tt$parameter, pValue = tt$p.value,
-        meanBefore = mean(b), meanAfter = mean(a), meanDiff = m_diff,
+        meanBefore = mean(b), sdBefore = sd(b),
+        meanAfter = mean(a), sdAfter = sd(a),
+        meanDiff = m_diff,
         ci_lower = tt$conf.int[1], ci_upper = tt$conf.int[2],
         effect_size = d, norm_p = sh_p
     );
@@ -213,7 +236,9 @@ export async function runTTestPaired(before: number[], after: number[]): Promise
         df: getValue('df')?.[0] ?? 0,
         pValue: getValue('pValue')?.[0] ?? 1,
         meanBefore: getValue('meanBefore')?.[0] ?? 0,
+        sdBefore: getValue('sdBefore')?.[0] ?? 0,
         meanAfter: getValue('meanAfter')?.[0] ?? 0,
+        sdAfter: getValue('sdAfter')?.[0] ?? 0,
         meanDiff: getValue('meanDiff')?.[0] ?? 0,
         ci95Lower: getValue('ci_lower')?.[0] ?? 0,
         ci95Upper: getValue('ci_upper')?.[0] ?? 0,

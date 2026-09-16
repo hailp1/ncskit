@@ -114,7 +114,7 @@ export const MediationView: React.FC<MediationViewProps> = ({
     );
 
     const ActionButton = ({ onClick, disabled, children }: any) => (
-        <button
+        <button type="button"
             onClick={onClick}
             disabled={disabled}
             className="w-full py-4 bg-blue-900 hover:bg-blue-950 text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 rounded-xl transition-all shadow-lg shadow-blue-100 disabled:opacity-50"
@@ -182,7 +182,7 @@ export const MediationView: React.FC<MediationViewProps> = ({
                     </ActionButton>
                 </div>
 
-                <button onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
+                <button type="button" onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
                     <ChevronLeft className="w-3 h-3" /> Quay lại
                 </button>
             </div>
@@ -250,7 +250,7 @@ export const MediationView: React.FC<MediationViewProps> = ({
                     </ActionButton>
                 </div>
 
-                <button onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
+                <button type="button" onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
                     <ChevronLeft className="w-3 h-3" /> Quay lại
                 </button>
             </div>

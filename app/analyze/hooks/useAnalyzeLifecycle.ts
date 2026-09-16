@@ -85,6 +85,17 @@ export function useAnalyzeLifecycle({
             setStep('upload');
             return;
         }
+        if (data.length > 0 && profile) {
+            // Validate profile matches current data: if column names mismatch, force re-profile
+            const dataColumns = Object.keys(data[0] || {});
+            const profileColumns = Object.keys(profile.columnStats || {});
+            const mismatch = profileColumns.length > 0 && dataColumns.length > 0 &&
+                !profileColumns.every(pc => dataColumns.includes(pc));
+            if (mismatch) {
+                console.warn('[Profile] Stale profile detected: profile columns do not match data. Re-profiling...');
+                setProfile(null); // Will trigger re-profile below
+            }
+        }
         if (step === 'profile' && !profile && data.length > 0) {
             const prof = profileData(data);
             if (prof) setProfile(prof);
@@ -163,6 +174,7 @@ export function useAnalyzeLifecycle({
             initWebR()
                 .then(() => {
                     console.log('[DEBUG-LIFECYCLE] initWebR() resolved successfully');
+                    (window as any).webrLoaded = true;
                     setToast(t(locale as any, 'analyze.common.engine_ready'), 'success');
                 })
                 .catch((err) => {

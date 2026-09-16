@@ -1,0 +1,417 @@
+{
+  "plssem": {
+    "bootstrap": {
+      "no_results": "No Bootstrap results",
+      "title": "Bootstrapping Results",
+      "subtitle": "Statistical significance testing with {{iterations}} resamples",
+      "status": "Status",
+      "status_complete": "Bootstrap completed with {{iterations}} iterations",
+      "ci_title": "95% Confidence Interval (CI)",
+      "table": {
+        "variable": "Variable",
+        "ci_lower": "CI Lower (2.5%)",
+        "ci_upper": "CI Upper (97.5%)",
+        "ci_width": "CI Width",
+        "variable_num": "Variable {{num}}"
+      },
+      "guide": {
+        "title": "Academic Interpretation Guide (Hair et al., 2021)",
+        "ci": "Bootstrap Confidence Interval (95% CI):",
+        "ci_desc": "The optimal non-parametric method in PLS-SEM to evaluate parameter stability without relying on distributional assumptions.",
+        "sig": "Statistical Significance:",
+        "sig_desc": "A parameter is statistically significant at α = 0.05 if its 95% CI does not contain zero. This is the gold standard used alongside p-values.",
+        "power": "Bootstrap Power:",
+        "power_desc": "With {{iterations}} iterations, the algorithm ensures highly precise standard error estimation, limiting Type I errors."
+      },
+      "recommendation": {
+        "title": "Reporting Recommendations (APA 7)",
+        "report": "Reporting Results:",
+        "report_desc": "Report the original sample estimate along with the 95% CI (e.g., β = 0.35, 95% CI [0.12, 0.51]) in hypothesis testing tables.",
+        "width": "CI Width Analysis:",
+        "width_desc": "The CI width (Upper - Lower) reflects estimation precision. A very wide CI indicates low precision (due to small sample size or high data variance) and should be noted as a limitation.",
+        "hypothesis": "Hypothesis Conclusion:",
+        "hypothesis_desc": "For path coefficients where the CI contains zero, the corresponding hypothesis must be rejected (not supported)."
+      }
+    },
+    "mga": {
+      "no_results": "No MGA results",
+      "title": "MGA Results",
+      "subtitle": "Multi-Group Analysis - Comparing between groups",
+      "sig_yes": "Statistically Significant Difference",
+      "sig_no": "No Statistically Significant Difference",
+      "p_value": "P-value:",
+      "p_lt_05": "p < 0.05",
+      "p_ge_05": "p ≥ 0.05",
+      "sig_desc_yes": "✅ Groups have a significant difference in mean values",
+      "sig_desc_no": "⚠️ Groups do not have a significant difference in mean values",
+      "table": {
+        "title": "Group Comparison",
+        "group": "Group",
+        "mean": "Mean Value",
+        "rank": "Rank",
+        "group_name": "Group {{name}}",
+        "highest": "Highest",
+        "lowest": "Lowest"
+      },
+      "summary": {
+        "title": "Difference Summary",
+        "highest_group": "Highest Group:",
+        "lowest_group": "Lowest Group:",
+        "group_name": "Group {{name}}",
+        "abs_diff": "Absolute Difference:",
+        "diff_pct": "{{pct}}% difference",
+        "na": "N/A"
+      },
+      "guide": {
+        "title": "Academic Interpretation Guide (MGA)",
+        "mga": "Multi-Group Analysis (MGA):",
+        "mga_desc": "Tests whether parameter estimates (e.g., means, path coefficients) differ significantly between two or more groups, thereby uncovering unobserved heterogeneity.",
+        "sig": "P-value < 0.05:",
+        "sig_desc": "Rejects the null hypothesis (H0) of homogeneity. A statistically significant difference exists between the groups.",
+        "nonsig": "P-value ≥ 0.05:",
+        "nonsig_desc": "Fails to reject H0. The assumption that the data stems from the same population remains plausible."
+      },
+      "recommendation": {
+        "title": "Reporting Recommendations (APA 7)",
+        "implications": "Research Implications:",
+        "implications_desc": "Given the significant difference, pooled analysis is inappropriate. Strategies or conclusions should be tailored to each specific group.",
+        "advantage": "Advantage of Group {{group}}:",
+        "advantage_desc": "Group {{group}} exhibits the highest levels. Underlying factors for this advantage should be explored in the discussion.",
+        "limitation": "Limitation of Group {{group}}:",
+        "limitation_desc": "Group {{group}} has the lowest levels. Consider proposing targeted policy interventions for this cohort.",
+        "pooled": "Pooled Analysis:",
+        "pooled_desc": "Since no systematic difference was found, data can be pooled to increase sample size (N) and statistical power for the overall structural model."
+      }
+    },
+    "ipma": {
+      "no_results": "No IPMA results",
+      "title": "IPMA Results",
+      "subtitle": "Importance-Performance Matrix Analysis",
+      "table": {
+        "title": "Importance-Performance Matrix",
+        "variable": "Variable",
+        "importance": "Importance",
+        "performance": "Performance",
+        "classification": "Strategic Classification"
+      },
+      "categories": {
+        "priority": {
+          "label": "Priority for Improvement",
+          "desc": "High importance, low performance"
+        },
+        "maintain": {
+          "label": "Keep up the Good Work",
+          "desc": "High importance, high performance"
+        },
+        "excess": {
+          "label": "Possible Overkill",
+          "desc": "Low importance, high performance"
+        },
+        "low": {
+          "label": "Low Priority",
+          "desc": "Low importance, low performance"
+        }
+      },
+      "breakdown": {
+        "variables": "variables"
+      },
+      "guide": {
+        "title": "Academic Interpretation Guide (IPMA)",
+        "q1": "Quadrant 1 (Priority):",
+        "q1_desc": "Constructs with above-average importance but below-average performance. These represent major bottlenecks requiring immediate strategic intervention.",
+        "q2": "Quadrant 2 (Maintain):",
+        "q2_desc": "High importance and high performance. The organization should maintain current resources allocated to these constructs.",
+        "q3": "Quadrant 3 (Overkill):",
+        "q3_desc": "High performance but low overall contribution to the target construct. Consider reallocating resources away from these areas.",
+        "q4": "Quadrant 4 (Low Priority):",
+        "q4_desc": "Low importance and low performance. Do not prioritize additional investment here."
+      },
+      "recommendation": {
+        "title": "Managerial Implications (APA 7)",
+        "urgent": "Urgent Priority:",
+        "urgent_desc1": "Managerial action should focus strictly on",
+        "urgent_desc2": "to achieve the most effective improvement of the target construct at the lowest opportunity cost.",
+        "defensive": "Defensive Strategy:",
+        "defensive_desc1": "Ensure no performance degradation for",
+        "defensive_desc2": "as these represent core competitive advantages.",
+        "report": "Report the IPMA scatter plot alongside this index table to enrich the Discussion section."
+      }
+    },
+    "blindfolding": {
+      "no_results": "No Blindfolding results",
+      "title": "Blindfolding Results",
+      "subtitle": "Out-of-sample Predictive Relevance (Q²)",
+      "status": "Status:",
+      "procedure": {
+        "title": "Procedure Details",
+        "omission_distance": "Omission Distance",
+        "omission_distance_desc": "Data partition interval (D) for Cross-Validation.",
+        "omitted_points": "Omitted Data Points",
+        "omitted_points_desc": "Total data points masked for predictive validation."
+      },
+      "guide": {
+        "title": "Q² Interpretation Guide (Predictive Relevance)",
+        "q2_positive": "Q² > 0 (Geisser, 1974; Stone, 1974)",
+        "q2_positive_desc": "The model has out-of-sample predictive relevance. Model predictions outperform the naive mean.",
+        "q2_zero": "Q² ≈ 0",
+        "q2_zero_desc": "Negligible predictive power, roughly equivalent to predicting the mean.",
+        "q2_negative": "Q² < 0",
+        "q2_negative_desc": "The model lacks predictive relevance entirely. Structural predictions are worse than the naive mean."
+      },
+      "methodology": {
+        "title": "Blindfolding Methodology",
+        "intro": "Blindfolding is a resampling technique based on Cross-Validation:",
+        "algorithm": "Algorithm:",
+        "algorithm_desc": "Systematically deletes data points at distance D = {{distance}}.",
+        "estimation": "Estimation:",
+        "estimation_desc": "The PLS model is re-estimated using the remaining data.",
+        "prediction": "Prediction:",
+        "prediction_desc": "The estimated parameters are used to predict the masked data points.",
+        "evaluation": "Evaluation:",
+        "evaluation_desc": "The Q² (Stone-Geisser) metric is calculated based on prediction errors."
+      },
+      "recommendation": {
+        "title": "Reporting Recommendations (APA 7)",
+        "report_q2": "Reporting Q²:",
+        "report_q2_desc": "The Q² value must be reported for each reflective endogenous latent construct.",
+        "effect_size": "Effect size (q²):",
+        "effect_size_desc": "High-impact journals often require the q² effect size to evaluate the relative predictive contribution of individual exogenous constructs.",
+        "applicability": "Applicability Warning:",
+        "applicability_desc": "Do NOT apply or interpret Q² for exogenous constructs or formative endogenous constructs."
+      }
+    },
+    "htmt": {
+      "summary": {
+        "issues": "Discriminant Validity Issues Detected",
+        "good": "Good Discriminant Validity",
+        "threshold": "HTMT Threshold:",
+        "strict": "Strict",
+        "lenient": "Lenient"
+      },
+      "matrix_title": "HTMT Matrix (Heterotrait-Monotrait Ratio)",
+      "table": {
+        "factor": "Factor"
+      },
+      "guide": {
+        "title": "Interpretation Guide",
+        "below": "Good discriminant validity (factors are distinct)",
+        "above": "Problematic",
+        "above_desc": "factors may be too similar",
+        "red_cells": "Red cells",
+        "red_cells_desc": "indicate potential discriminant validity issues. Consider revising your measurement model."
+      },
+      "actions": {
+        "title": "Recommended Actions",
+        "review": "Review factor definitions:",
+        "review_desc": "Check if items are loading on the correct factors",
+        "remove": "Remove problematic items:",
+        "remove_desc": "Consider removing items that cause high HTMT values",
+        "merge": "Theoretical justification:",
+        "merge_desc": "Ensure factors are conceptually distinct",
+        "alternative": "Alternative criteria:",
+        "alternative_desc": "Consider using Fornell-Larcker criterion as additional evidence"
+      },
+      "methodology": {
+        "title": "Methodology: HTMT Criterion",
+        "method": "Method",
+        "method_desc": "HTMT (Heterotrait-Monotrait Ratio) assesses discriminant validity by comparing the average correlations between items measuring different constructs to the average correlations between items measuring the same construct.",
+        "threshold": "Threshold",
+        "strict_desc": "Strict criterion (0.85) recommended for conceptually similar constructs",
+        "lenient_desc": "Lenient criterion (0.90) acceptable for conceptually distinct constructs"
+      }
+    }
+  },
+  "regression": {
+    "ui": {
+      "equation": "Regression Equation",
+      "model_summary": "Model Summary",
+      "model": "Model",
+      "r": "R",
+      "r_square": "R Square",
+      "adj_r_square": "Adjusted R²",
+      "std_error": "Std. Error",
+      "anova_table": "ANOVA Table",
+      "source": "Source",
+      "sum_of_squares": "Sum of Squares",
+      "df": "df",
+      "mean_square": "Mean Square",
+      "f": "F",
+      "sig": "Sig.",
+      "regression": "Regression",
+      "coefficients": "Coefficients",
+      "unstandardized": "Unstandardized Coefficients",
+      "standardized": "Standardized Beta",
+      "t": "t",
+      "vif": "VIF",
+      "constant": "(Constant)"
+    },
+    "logistic_ui": {
+      "title": "Logistic Regression Analysis",
+      "model_fit": "Model Fit",
+      "pseudo_r2": "Pseudo R²",
+      "accuracy": "Accuracy",
+      "auc": "AUC",
+      "classification": "Classification Table",
+      "observed": "Observed",
+      "predicted": "Predicted",
+      "percentage_correct": "Percentage Correct",
+      "coefficients": "Model Coefficients",
+      "estimate": "Estimate (B)",
+      "odds_ratio": "Odds Ratio",
+      "ci_95": "95% CI",
+      "lower": "Lower",
+      "upper": "Upper",
+      "p_value": "P-Value",
+      "wald": "Wald",
+      "step": "Step",
+      "block": "Block"
+    },
+    "mediation_ui": {
+      "title": "Mediation Analysis",
+      "path_a": "Path a (X → M)",
+      "path_b": "Path b (M → Y)",
+      "path_c": "Total Effect c (X → Y)",
+      "path_c_prime": "Direct Effect c' (X → Y | M)",
+      "indirect_effect": "Indirect Effect (a × b)",
+      "sobel_test": "Sobel Test",
+      "z_value": "Z-Value",
+      "bootstrap_ci": "Bootstrap CI (95%)",
+      "estimate": "Estimate",
+      "std_error": "Std. Error",
+      "p_value": "P-Value",
+      "lower_ci": "Lower CI",
+      "upper_ci": "Upper CI",
+      "conclusion": "Conclusion"
+    },
+    "moderation_ui": {
+      "title": "Moderation Analysis",
+      "interaction": "Interaction Effect (X × W)",
+      "r2_change": "R² Change (ΔR²)",
+      "simple_slopes": "Simple Slopes Analysis",
+      "level": "Moderator Level",
+      "slope": "Slope",
+      "p_value": "P-Value",
+      "coefficients": "Model Coefficients",
+      "term": "Term",
+      "estimate": "Estimate",
+      "std_error": "Std. Error",
+      "t_value": "t-value"
+    }
+  },
+  "factor": {
+    "efa_ui": {
+      "title": "Exploratory Factor Analysis (EFA)",
+      "kmo_bartlett": "KMO and Bartlett's Test",
+      "kmo_measure": "Kaiser-Meyer-Olkin Measure",
+      "bartlett_test": "Bartlett's Test of Sphericity",
+      "approx_chi_square": "Approx. Chi-Square",
+      "df": "df",
+      "sig": "Sig.",
+      "total_variance": "Total Variance Explained",
+      "factor": "Factor",
+      "eigenvalue": "Eigenvalue",
+      "variance_pct": "% of Variance",
+      "cumulative_pct": "Cumulative %",
+      "pattern_matrix": "Pattern Matrix",
+      "communality": "Communality",
+      "variable": "Variable"
+    },
+    "cfa_ui": {
+      "title": "Confirmatory Factor Analysis (CFA)",
+      "model_fit": "Model Fit Indices",
+      "index": "Index",
+      "value": "Value",
+      "threshold": "Threshold",
+      "status": "Status",
+      "factor_loadings": "Factor Loadings",
+      "latent_var": "Latent Variable",
+      "observed_var": "Observed Variable",
+      "estimate": "Estimate",
+      "std_estimate": "Std. Estimate",
+      "se": "S.E.",
+      "z_value": "Z-Value",
+      "p_value": "P-Value",
+      "covariances": "Covariances / Correlations",
+      "var1": "Variable 1",
+      "var2": "Variable 2",
+      "correlation": "Correlation"
+    }
+  },
+  "basic": {
+    "descriptive_ui": {
+      "title": "Descriptive Statistics",
+      "variable": "Variable",
+      "n": "N",
+      "missing": "Missing",
+      "mean": "Mean",
+      "sd": "Std. Deviation",
+      "median": "Median",
+      "min": "Minimum",
+      "max": "Maximum",
+      "skewness": "Skewness",
+      "kurtosis": "Kurtosis"
+    },
+    "correlation_ui": {
+      "title": "Pearson Correlation Analysis",
+      "variable": "Variable",
+      "correlation": "Correlation (r)"
+    },
+    "ttest_ui": {
+      "title": "Independent Samples T-Test",
+      "group_stats": "Group Statistics",
+      "group": "Group",
+      "levene_test": "Levene's Test for Equality of Variances",
+      "levene_f": "F",
+      "levene_sig": "Sig.",
+      "ttest_results": "t-test for Equality of Means",
+      "t_value": "t",
+      "df": "df",
+      "p_value": "Sig. (2-tailed)",
+      "mean_diff": "Mean Diff"
+    },
+    "paired_ttest_ui": {
+      "title": "Paired Samples T-Test",
+      "pair": "Pair",
+      "mean_diff": "Mean Difference",
+      "t_value": "t",
+      "df": "df",
+      "p_value": "Sig. (2-tailed)"
+    },
+    "anova_ui": {
+      "title": "One-Way ANOVA",
+      "descriptives": "Descriptives",
+      "group": "Group",
+      "n": "N",
+      "mean": "Mean",
+      "sd": "Std. Deviation",
+      "anova_table": "ANOVA Table",
+      "source": "Source",
+      "sum_squares": "Sum of Squares",
+      "df": "df",
+      "mean_square": "Mean Square",
+      "f_value": "F",
+      "p_value": "Sig.",
+      "between_groups": "Between Groups",
+      "within_groups": "Within Groups",
+      "total": "Total"
+    },
+    "twoway_anova_ui": {
+      "title": "Two-Way ANOVA",
+      "effects": "Main Effects & Interaction",
+      "factor": "Factor",
+      "sum_squares": "Sum of Squares",
+      "df": "df",
+      "mean_square": "Mean Square",
+      "f_value": "F",
+      "p_value": "Sig."
+    },
+    "frequency_ui": {
+      "variable": "Variable",
+      "category": "Category",
+      "frequency": "Frequency",
+      "percent": "Percent",
+      "cumulative_percent": "Cumulative %",
+      "total": "Total"
+    }
+  }
+}

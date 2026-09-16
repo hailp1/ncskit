@@ -32,18 +32,18 @@ export const PairedTTestResults = React.memo(function PairedTTestResults({ resul
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider flex items-center gap-2">
                         <Link className="w-4 h-4 text-blue-600" />
-                        Paired Samples t-Test
+                        {t(locale, 'basic.paired_ttest_ui.title')}
                     </h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-slate-700">
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
-                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Comparison Pair</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Mean</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">t</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">df</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">p (2-tailed)</th>
+                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">{t(locale, 'basic.paired_ttest_ui.pair')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.paired_ttest_ui.mean_diff')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'basic.paired_ttest_ui.t_value')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'basic.paired_ttest_ui.df')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.paired_ttest_ui.p_value')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-50">

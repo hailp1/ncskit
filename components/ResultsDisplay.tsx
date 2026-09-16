@@ -4,6 +4,7 @@ import React, { useMemo, lazy, Suspense, useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import SEMPathDiagram from './SEMPathDiagram';
 import { Maximize2, Minimize2 } from 'lucide-react';
+import { ResultsErrorBoundary } from './results/ResultsErrorBoundary';
 
 // Shared components (eager load - small and frequently used)
 import { RSyntaxViewer } from './results/shared/RSyntaxViewer';
@@ -43,6 +44,7 @@ const HTMTResults         = lazy(() => import('./results/plssem/HTMTResults').th
 const VIFResults          = lazy(() => import('./results/plssem/VIFResults').then(m => ({ default: m.VIFResults })));
 const OutlierResults      = lazy(() => import('./results/plssem/OutlierResults').then(m => ({ default: m.OutlierResults })));
 const OmegaResults        = lazy(() => import('./results/plssem/OmegaResults').then(m => ({ default: m.OmegaResults })));
+const CMBResults          = lazy(() => import('./results/plssem/CMBResults'));
 
 
 interface ResultsDisplayProps {
@@ -91,34 +93,79 @@ export function ResultsDisplay({
     const display = useMemo(() => {
         console.log("DEBUG: ResultsDisplay useMemo triggered.", { multipleResults, results, analysisType });
         
-        const hasMultiDisplay = multipleResults && multipleResults.length > 0 && 
-            (analysisType === 'cronbach-batch' || analysisType === 'omega-batch') &&
-            multipleResults.some(res => res.type === 'cronbach' || res.type === 'omega');
+        const isReliability = analysisType === 'cronbach' || analysisType === 'omega' || 
+                              analysisType === 'cronbach-batch' || analysisType === 'omega-batch';
 
-        if (hasMultiDisplay) {
-            console.log("DEBUG: hasMultiDisplay is true! Rendering multiple CronbachResults.");
-            return (
-                <div className="space-y-8">
-                    <MultiReliabilitySummary multipleResults={multipleResults!} />
-                    {multipleResults!.map((res, idx) => {
-                        if (res.type === 'cronbach' || res.type === 'omega') {
-                            return (
-                                <div key={idx} className="relative">
-                                    <div className="absolute -left-4 top-0 bottom-0 w-1 bg-blue-100 rounded-full" />
-                                    <CronbachResults 
-                                        results={res.data || res} 
-                                        columns={res.columns} 
-                                        scaleName={res.scaleName} 
-                                        analysisType={res.type} 
-                                        onProceedToEFA={onProceedToEFA} 
-                                    />
-                                </div>
-                            );
-                        }
-                        return null;
-                    })}
-                </div>
-            );
+        if (isReliability && (results || (multipleResults && multipleResults.length > 0))) {
+            console.log("DEBUG: Rendering Reliability Results with separated Table and ASIG sections.");
+            
+            // Normalize single and batch results into an array
+            let relResults: any[] = [];
+            if (analysisType === 'cronbach-batch' || analysisType === 'omega-batch') {
+                relResults = multipleResults || [];
+            } else {
+                relResults = [{ 
+                    type: analysisType, 
+                    data: results.data || results, 
+                    columns: results.columns || columns, 
+                    scaleName: scaleName || 'Thang đo' 
+                }];
+            }
+
+            if (relResults.length > 0) {
+                return (
+                    <div className="space-y-8">
+                        <MultiReliabilitySummary multipleResults={relResults} />
+                        
+                        {/* Tables Group - Only Tables */}
+                        <div className="space-y-8">
+                            {relResults.map((res, idx) => {
+                                if (res.type === 'cronbach' || res.type === 'omega') {
+                                    return (
+                                        <div key={`table-${idx}`} className="relative">
+                                            <div className="absolute -left-4 top-0 bottom-0 w-1 bg-blue-100 rounded-full" />
+                                            <CronbachResults 
+                                                results={res.data || res} 
+                                                columns={res.columns} 
+                                                scaleName={res.scaleName} 
+                                                analysisType={res.type} 
+                                                hideASIG={true}
+                                            />
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })}
+                        </div>
+
+                        {/* ASIG Group - Only Explanations */}
+                        <div className="space-y-8 pt-10 mt-10 border-t-2 border-dashed border-slate-200">
+                            <div className="text-center mb-8">
+                                <h3 className="text-xl font-black text-blue-900 uppercase tracking-tight">Diễn Giải Tự Động (ASIG AI)</h3>
+                                <p className="text-slate-500 text-sm mt-2">Dưới đây là phần diễn giải học thuật cho từng thang đo.</p>
+                            </div>
+                            {relResults.map((res, idx) => {
+                                if (res.type === 'cronbach' || res.type === 'omega') {
+                                    return (
+                                        <div key={`asig-${idx}`} className="relative">
+                                            <div className="absolute -left-4 top-0 bottom-0 w-1 bg-blue-500 rounded-full" />
+                                            <CronbachResults 
+                                                results={res.data || res} 
+                                                columns={res.columns} 
+                                                scaleName={res.scaleName} 
+                                                analysisType={res.type} 
+                                                onProceedToEFA={onProceedToEFA}
+                                                hideTables={true}
+                                            />
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })}
+                        </div>
+                    </div>
+                );
+            }
         }
 
         console.log("DEBUG: hasMultiDisplay is false.", { results });
@@ -193,6 +240,8 @@ export function ResultsDisplay({
                 return <HTMTResults results={analysisData} />;
             case 'vif':
                 return <VIFResults results={analysisData} columns={analysisColumns} />;
+            case 'cmb':
+                return <CMBResults results={analysisData} columns={analysisColumns} />;
             case 'outlier':
                 return <OutlierResults results={analysisData} columns={analysisColumns} />;
             case 'omega-detail':
@@ -245,9 +294,11 @@ export function ResultsDisplay({
                     </button>
                 </div>
             )}
-            <Suspense fallback={<LoadingSkeleton />}>
-                {display}
-            </Suspense>
+            <ResultsErrorBoundary>
+                <Suspense fallback={<LoadingSkeleton />}>
+                    {display}
+                </Suspense>
+            </ResultsErrorBoundary>
 
             {/* R Syntax Viewer - Researcher Only */}
             {results?.rCode && (

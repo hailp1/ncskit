@@ -30,7 +30,7 @@ export const AUTO_PILOT_PRESETS: AutoPilotPreset[] = [
         color: 'text-indigo-600',
         bgColor: 'bg-indigo-50',
         badge: 'Phổ biến nhất',
-        available: true,
+        available: false,
     },
     {
         id: 'cb-sem',
@@ -43,7 +43,7 @@ export const AUTO_PILOT_PRESETS: AutoPilotPreset[] = [
         requiresGroups: true,
         color: 'text-emerald-600',
         bgColor: 'bg-emerald-50',
-        available: true,
+        available: false,
     },
     {
         id: 'regression',
@@ -56,7 +56,7 @@ export const AUTO_PILOT_PRESETS: AutoPilotPreset[] = [
         requiresGroups: true,
         color: 'text-blue-600',
         bgColor: 'bg-blue-50',
-        available: true,
+        available: false,
     },
     {
         id: 'compare',
@@ -69,7 +69,7 @@ export const AUTO_PILOT_PRESETS: AutoPilotPreset[] = [
         requiresGroups: false,
         color: 'text-amber-600',
         bgColor: 'bg-amber-50',
-        available: true,
+        available: false,
     },
     {
         id: 'scale',
@@ -82,7 +82,7 @@ export const AUTO_PILOT_PRESETS: AutoPilotPreset[] = [
         requiresGroups: true,
         color: 'text-purple-600',
         bgColor: 'bg-purple-50',
-        available: true,
+        available: false,
     },
     {
         id: 'logistic',
@@ -95,7 +95,7 @@ export const AUTO_PILOT_PRESETS: AutoPilotPreset[] = [
         requiresGroups: true,
         color: 'text-rose-600',
         bgColor: 'bg-rose-50',
-        available: true,
+        available: false,
     },
     {
         id: 'custom',

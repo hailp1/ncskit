@@ -1,4 +1,7 @@
+import asigVi from '../../locales/vi/asig.json';
+
 export const vi = {
+    asig: asigVi,
         // Header
         nav: {
             analyze: 'Thống kê & Phân tích',

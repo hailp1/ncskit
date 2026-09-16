@@ -54,7 +54,7 @@ export const RegressionResults = React.memo(function RegressionResults({ results
                 </div>
                 <h4 className="font-black text-xs uppercase tracking-[0.3em] mb-4 opacity-80 flex items-center gap-2">
                     <Info className="w-3 h-3" />
-                    Regression Equation
+                    {t(locale, 'regression.ui.equation')}
                 </h4>
                 <div className="text-xl md:text-2xl font-mono font-black break-all leading-relaxed">
                     {equation}
@@ -64,17 +64,17 @@ export const RegressionResults = React.memo(function RegressionResults({ results
             {/* Model Summary Table */}
             <div className="bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50">
-                    <h3 className="text-sm font-bold text-blue-900 uppercase">Model Summary</h3>
+                    <h3 className="text-sm font-bold text-blue-900 uppercase">{t(locale, 'regression.ui.model_summary')}</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-slate-700">
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
-                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Model</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">R</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">R Square</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center bg-blue-100/30">Adjusted R²</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">Std. Error</th>
+                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">{t(locale, 'regression.ui.model')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'regression.ui.r')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'regression.ui.r_square')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center bg-blue-100/30">{t(locale, 'regression.ui.adj_r_square')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'regression.ui.std_error')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-50">
@@ -93,23 +93,23 @@ export const RegressionResults = React.memo(function RegressionResults({ results
             {/* ANOVA Table */}
             <div className="bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50">
-                    <h3 className="text-sm font-bold text-blue-900 uppercase">ANOVA Table</h3>
+                    <h3 className="text-sm font-bold text-blue-900 uppercase">{t(locale, 'regression.ui.anova_table')}</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-slate-700">
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
-                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Source</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Sum of Squares</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">df</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Mean Square</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right text-blue-600">F</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Sig.</th>
+                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">{t(locale, 'regression.ui.source')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'regression.ui.sum_of_squares')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'regression.ui.df')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'regression.ui.mean_square')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right text-blue-600">{t(locale, 'regression.ui.f')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'regression.ui.sig')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-50">
                             <tr className="hover:bg-blue-50/30 transition-colors font-bold text-blue-800 text-sm">
-                                <td className="py-5 px-6">Regression</td>
+                                <td className="py-5 px-6">{t(locale, 'regression.ui.regression')}</td>
                                 <td className="py-5 px-4 text-right font-mono">—</td>
                                 <td className="py-5 px-4 text-center font-black">{modelFit.df}</td>
                                 <td className="py-5 px-4 text-right font-mono">—</td>
@@ -126,18 +126,18 @@ export const RegressionResults = React.memo(function RegressionResults({ results
             {/* Coefficients Table */}
             <div className="bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50">
-                    <h3 className="text-sm font-bold text-blue-900 uppercase">Coefficients</h3>
+                    <h3 className="text-sm font-bold text-blue-900 uppercase">{t(locale, 'regression.ui.coefficients')}</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-slate-700">
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
-                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase border-r border-blue-50">Model</th>
-                                <th className="py-4 px-4 text-[10px] font-black uppercase text-center bg-slate-50/50" colSpan={2}>Unstandardized Coefficients</th>
-                                <th className="py-4 px-4 text-[10px] font-black uppercase text-center bg-blue-100/20 border-l border-r border-blue-50">Standardized Beta</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">t</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">Sig.</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-400 uppercase text-center border-l border-blue-50">VIF</th>
+                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase border-r border-blue-50">{t(locale, 'regression.ui.model')}</th>
+                                <th className="py-4 px-4 text-[10px] font-black uppercase text-center bg-slate-50/50" colSpan={2}>{t(locale, 'regression.ui.unstandardized')}</th>
+                                <th className="py-4 px-4 text-[10px] font-black uppercase text-center bg-blue-100/20 border-l border-r border-blue-50">{t(locale, 'regression.ui.standardized')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'regression.ui.t')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'regression.ui.sig')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-400 uppercase text-center border-l border-blue-50">{t(locale, 'regression.ui.vif')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-50">
@@ -148,7 +148,7 @@ export const RegressionResults = React.memo(function RegressionResults({ results
                                 return (
                                     <tr key={idx} className="hover:bg-blue-50/30 transition-colors">
                                         <td className="py-5 px-6 font-bold text-blue-800 border-r border-blue-50 italic">
-                                            {isIntercept ? '(Constant)' : coef.term.replace(/`/g, '')}
+                                            {isIntercept ? t(locale, 'regression.ui.constant') : coef.term.replace(/`/g, '')}
                                         </td>
                                          <td className="py-5 px-4 text-sm text-center font-mono text-slate-800">{fmt(coef.estimate)}</td>
                                         <td className="py-5 px-4 text-sm text-center font-mono text-slate-700 border-r border-blue-50">{fmt(coef.stdError)}</td>
@@ -175,7 +175,7 @@ export const RegressionResults = React.memo(function RegressionResults({ results
                 analysisType="regression"
                 results={displayResults}
                 variableNames={{
-                    dependent: columns[0] || 'Biến phụ thuộc'
+                    dependent: columns[0] || (isVi ? 'Biến phụ thuộc' : 'Dependent variable')
                 }}
             />
 

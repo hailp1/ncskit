@@ -125,8 +125,8 @@ export function AnalyzeStepRenderer(props: AnalyzeStepRendererProps) {
         );
     }
 
-    if (['regression-select', 'logistic-select'].includes(step)) {
-        return <RegressionView {...(props as any)} />;
+    if (['regression-select', 'logistic-select', 'mediation-select', 'moderation-select'].includes(step)) {
+        return <RegressionView {...(props as any)} columns={getNumericColumns()} />;
     }
 
     const plssemViews = ['bootstrap-select', 'htmt-select', 'vif-select', 'cmb-select', 'mga-select', 'ipma-select', 'blindfolding-select'];

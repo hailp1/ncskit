@@ -65,7 +65,7 @@ export const EFAResults = React.memo(function EFAResults({ results, columns, onP
                     <div className="absolute top-0 right-0 p-4 opacity-5">
                         <TrendingUp className="w-20 h-20 text-blue-900" />
                     </div>
-                     <h4 className="text-[10px] font-black uppercase text-slate-600 tracking-widest mb-4">Sampling Adequacy (KMO)</h4>
+                     <h4 className="text-[10px] font-black uppercase text-slate-600 tracking-widest mb-4">{t(locale, 'factor.efa_ui.kmo_measure')}</h4>
                     <div className={`text-5xl font-black ${kmoAcceptable ? 'text-blue-900 underline decoration-blue-100 underline-offset-8' : 'text-red-600 ring-2 ring-red-100 rounded-xl px-2'}`}>
                         {kmo.toFixed(3)}
                     </div>
@@ -77,7 +77,7 @@ export const EFAResults = React.memo(function EFAResults({ results, columns, onP
                     <div className="absolute top-0 right-0 p-4 opacity-5">
                         <CheckCircle2 className="w-20 h-20 text-blue-900" />
                     </div>
-                     <h4 className="text-[10px] font-black uppercase text-slate-600 tracking-widest mb-4">Bartlett&apos;s Test Sig.</h4>
+                     <h4 className="text-[10px] font-black uppercase text-slate-600 tracking-widest mb-4">{t(locale, 'factor.efa_ui.bartlett_test')}</h4>
                     <div className={`text-5xl font-black ${bartlettSignificant ? 'text-blue-900 underline decoration-blue-100 underline-offset-8' : 'text-slate-600 font-bold'}`}>
                         {bartlettP < 0.001 ? '< .001' : bartlettP.toFixed(4)}
                     </div>
@@ -91,16 +91,16 @@ export const EFAResults = React.memo(function EFAResults({ results, columns, onP
             {efaData.eigenvalues && efaData.eigenvalues.length > 0 && (
                 <div className="bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50">
-                        <h3 className="text-sm font-bold text-blue-900 uppercase">Total Variance Explained (Tổng phương sai trích)</h3>
+                        <h3 className="text-sm font-bold text-blue-900 uppercase">{t(locale, 'factor.efa_ui.total_variance')}</h3>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse text-slate-700">
                              <thead className="bg-blue-50/50 border-y border-blue-100">
                                 <tr>
-                                    <th className="py-4 px-6 text-[10px] font-black text-blue-900 uppercase text-center">Factor</th>
-                                    <th className="py-4 px-4 text-[10px] font-black text-blue-900 uppercase text-right">Initial Eigenvalue</th>
-                                    <th className="py-4 px-4 text-[10px] font-black text-blue-900 uppercase text-right">% of Variance</th>
-                                    <th className="py-4 px-4 text-[10px] font-black text-blue-900 uppercase text-right bg-blue-100/30">Cumulative %</th>
+                                    <th className="py-4 px-6 text-[10px] font-black text-blue-900 uppercase text-center">{t(locale, 'factor.efa_ui.factor')}</th>
+                                    <th className="py-4 px-4 text-[10px] font-black text-blue-900 uppercase text-right">{t(locale, 'factor.efa_ui.eigenvalue')}</th>
+                                    <th className="py-4 px-4 text-[10px] font-black text-blue-900 uppercase text-right">{t(locale, 'factor.efa_ui.variance_pct')}</th>
+                                    <th className="py-4 px-4 text-[10px] font-black text-blue-900 uppercase text-right bg-blue-100/30">{t(locale, 'factor.efa_ui.cumulative_pct')}</th>
                                 </tr>
                             </thead>
                              <tbody className="divide-y divide-blue-50">
@@ -133,7 +133,7 @@ export const EFAResults = React.memo(function EFAResults({ results, columns, onP
                      <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider flex items-center gap-2">
                              <LayoutGrid className="w-4 h-4 text-blue-600" />
-                             {efaData.extractionMethod === 'pca' ? 'Component Matrix (Ma trận xoay PCA)' : 'Rotated Pattern Matrix (Ma trận xoay PAF)'}
+                             {t(locale, 'factor.efa_ui.pattern_matrix')}
                         </h3>
                          <div className="flex gap-2">
                             <span className="text-[9px] font-black bg-slate-200 text-slate-700 px-2 py-0.5 rounded uppercase tracking-tighter">Method: {efaData.extractionMethod?.toUpperCase() || 'MINRES'}</span>

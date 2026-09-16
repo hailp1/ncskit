@@ -86,7 +86,7 @@ export default function SaveProjectModal({
             <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
                 <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                     <h3 className="font-semibold text-slate-900">{t(locale, 'common.save_project' as any)}</h3>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+                    <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-600">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -122,14 +122,14 @@ export default function SaveProjectModal({
                 </div>
 
                 <div className="px-6 py-4 bg-slate-50 flex justify-end gap-3">
-                    <button
+                    <button type="button"
                         onClick={onClose}
                         disabled={loading}
                         className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
                     >
                         Hủy
                     </button>
-                    <button
+                    <button type="button"
                         onClick={handleSave}
                         disabled={loading}
                         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all disabled:opacity-50"

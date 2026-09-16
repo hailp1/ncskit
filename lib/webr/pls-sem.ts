@@ -741,15 +741,42 @@ export async function runIPMA(data: number[][], targetIndex: number): Promise<an
 
 /**
  * MGA - Multi-Group Analysis
- * Uses Henseler's MGA via seminr::estimate_pls_mga
  */
 export async function runMGA(
   data: number[][],
   measurementModel: { construct: string; items: number[] }[] = [],
   structuralModel: { from: string; to: string }[] = [],
-  groupVariable: number[] = [], // Array of 0s and 1s indicating group membership
+  groupVariable: any[] = [], // Array of group labels or indicators
   nBootstrap: number = 1000
 ): Promise<any> {
+  // If no models are provided (Simplified View), we perform a simple MGA (ANOVA on overall score)
+  // to match the MGAResults.tsx expectations (group_means, p_value, significant_difference)
+  if (measurementModel.length === 0) {
+    const rCode = `
+      df <- as.data.frame(raw_data)
+      # Calculate row means across all numeric columns
+      scores <- rowMeans(df, na.rm = TRUE)
+      
+      # Group variable
+      groups <- factor(c(${groupVariable.map(v => `"${v}"`).join(',')}))
+      
+      # Compute group means
+      means <- tapply(scores, groups, mean, na.rm = TRUE)
+      
+      # ANOVA for p-value
+      mod <- aov(scores ~ groups)
+      p_val <- summary(mod)[[1]][1, "Pr(>F)"]
+      
+      list(
+        group_means = as.list(means),
+        p_value = if(is.null(p_val) || length(p_val) == 0) NA else p_val,
+        significant_difference = if(!is.null(p_val) && length(p_val) > 0 && !is.na(p_val) && p_val < 0.05) TRUE else FALSE
+      )
+    `;
+    return await executeRWithRecovery(rCode, 'pls-sem', 0, 2, 300000, data);
+  }
+
+  // Fallback to advanced Henseler's MGA if models are provided
   const measurementSyntax = measurementModel.map(m => 
     `composite("${m.construct}", multi_items("V", c(${m.items.map(i => i + 1).join(',')})))`
   ).join(',\\n      ');
@@ -758,8 +785,6 @@ export async function runMGA(
     `paths(from = "${s.from}", to = "${s.to}")`
   ).join(',\\n      ');
 
-  // groupVariable is expected to be an array of numbers (e.g., 0 for Group A, 1 for Group B).
-  // We treat the first unique value as Group 1 (condition = TRUE)
   const group1Val = groupVariable[0];
 
   const rCode = `
@@ -775,9 +800,8 @@ export async function runMGA(
     pls_model <- estimate_pls(data = df, measurement_model = mm, structural_model = sm)
     
     # Define condition for Group 1 (TRUE) vs Group 2 (FALSE)
-    # Passed groupVariable array
-    group_var <- c(${groupVariable.join(',')})
-    condition_mask <- group_var == ${group1Val}
+    group_var <- c(${groupVariable.map(v => `"${v}"`).join(',')})
+    condition_mask <- group_var == "${group1Val}"
     
     # Run PLS-MGA (Henseler's MGA)
     mga_res <- estimate_pls_mga(pls_model, condition = condition_mask, nboot = ${nBootstrap})
@@ -798,10 +822,10 @@ export async function runMGA(
     list(
       mga_paths = matrix_to_list(mga_paths),
       n_bootstrap = ${nBootstrap},
-      status = "Henseler's MGA completed successfully"
+      status = "MGA completed successfully",
+      note = "Henseler's MGA for structural models"
     )
   `;
 
-  return await executeRWithRecovery(rCode, 'pls-sem', 0, 2, 600000, data);
+  return await executeRWithRecovery(rCode, 'pls-sem', 0, 2, 300000, data);
 }
-

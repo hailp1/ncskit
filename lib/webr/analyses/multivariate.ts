@@ -34,6 +34,13 @@ export async function runClusterAnalysis(
     df_scaled <- scale(df);
     set.seed(123);
     km <- kmeans(df_scaled, centers = {{k}}, nstart = 25);
+    
+    sil_score <- tryCatch({
+        dist_mat <- dist(df_scaled)
+        sil <- silhouette(km$cluster, dist_mat)
+        mean(sil[, 3])
+    }, error = function(e) NA);
+    
     list(
         cluster = km$cluster,
         centers = as.numeric(t(km$centers)),
@@ -42,7 +49,8 @@ export async function runClusterAnalysis(
         withinss = km$withinss,
         tot_withinss = km$tot.withinss,
         betweenss = km$betweenss,
-        totss = km$totss
+        totss = km$totss,
+        sil_score = as.numeric(sil_score)
     );
     `;
 
@@ -71,6 +79,7 @@ export async function runClusterAnalysis(
         totWithinSS: getValue('tot_withinss')?.[0] || 0,
         betweensSS: getValue('betweenss')?.[0] || 0,
         totalSS: getValue('totss')?.[0] || 0,
+        silhoutteScore: getValue('sil_score')?.[0] ?? 0,
         rCode
     };
 }

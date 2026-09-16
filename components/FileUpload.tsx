@@ -27,8 +27,8 @@ export function FileUpload({ onDataLoaded, locale, isDemo = false }: FileUploadP
         if (isDemo) {
             const rows = data.length;
             const cols = Object.keys(data[0] || {}).length;
-            if (rows > 300 || cols > 50) {
-                setError(`Bản Demo giới hạn tối đa 300 dòng và 50 cột. File của bạn có ${rows} dòng, ${cols} cột. Vui lòng đăng nhập để phân tích không giới hạn.`);
+            if (rows > 1500 || cols > 50) {
+                setError(`Bản Demo giới hạn tối đa 1500 dòng và 50 cột. File của bạn có ${rows} dòng, ${cols} cột. Vui lòng đăng nhập để phân tích không giới hạn.`);
                 return false;
             }
         } else {

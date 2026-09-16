@@ -80,7 +80,7 @@ export const TTestResults = React.memo(function TTestResults({ results, columns,
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider flex items-center gap-2">
                         <Activity className="w-4 h-4 text-blue-600" />
-                        Independent Samples Test
+                        {t(locale, 'basic.ttest_ui.ttest_results')}
                     </h3>
                 </div>
                 <div className="overflow-x-auto">
@@ -88,10 +88,10 @@ export const TTestResults = React.memo(function TTestResults({ results, columns,
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
                                 <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Test Assumption</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">t-Value</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">df</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">p-value</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Mean Diff.</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.ttest_ui.t_value')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'basic.ttest_ui.df')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.ttest_ui.p_value')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.ttest_ui.mean_diff')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-50">
@@ -116,14 +116,14 @@ export const TTestResults = React.memo(function TTestResults({ results, columns,
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50">
                     <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider flex items-center gap-2">
                         <BarChart className="w-4 h-4 text-blue-600" />
-                        Group Statistics
+                        {t(locale, 'basic.ttest_ui.group_stats')}
                     </h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-slate-700">
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
-                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Group</th>
+                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">{t(locale, 'basic.ttest_ui.group')}</th>
                                 <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Mean</th>
                                 <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Std. Deviation</th>
                             </tr>
@@ -155,7 +155,7 @@ export const TTestResults = React.memo(function TTestResults({ results, columns,
             <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                     <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-widest">
-                        Levene&apos;s Test for Equality of Variances
+                        {t(locale, 'basic.ttest_ui.levene_test')}
                     </h4>
                     <div className={`text-[10px] uppercase font-black px-3 py-1 rounded-lg border ${leveneSig ? 'bg-amber-50 border-amber-300 text-amber-700' : 'bg-emerald-50 border-emerald-300 text-emerald-700'}`}>
                         {leveneSig ? 'Variances NOT Assume EQUAL' : 'Variances Assume EQUAL (OK)'}

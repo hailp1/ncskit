@@ -152,11 +152,12 @@ export function AutoPilotView({
         setIsAnalyzing(true);
         setAnalysisType('auto-pilot');
         try {
-            // Chuẩn hóa dữ liệu: Chuyển chuỗi rỗng/NA thành null để R hiểu là missing data (NA)
+            // Chuẩn hóa dữ liệu: Xử lý chuỗi có dấu phẩy (comma decimals) và NA
             const numericData = data.map(row => columns.map(col => {
                 const val = row[col];
                 if (val === null || val === undefined || val === '' || val === 'NA') return null;
-                const num = Number(val);
+                const strVal = typeof val === 'string' ? val.replace(',', '.') : val;
+                const num = Number(strVal);
                 return isNaN(num) ? null : num;
             }));
             const fullReport: any = {
@@ -497,7 +498,7 @@ export function AutoPilotView({
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {isAnalyzing && <AutoPilotProgress progress={progress} statusText={statusText} />}
             
-            <button 
+            <button type="button" 
                 onClick={() => setSelectedPreset(null)}
                 className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 transition-colors font-bold text-sm"
             >
@@ -536,7 +537,7 @@ export function AutoPilotView({
             />
 
             <div className="bg-white rounded-3xl border border-blue-100 shadow-xl p-8 mt-8">
-                <button
+                <button type="button"
                     onClick={handleRunAutoPilot}
                     disabled={
                         isAnalyzing || 

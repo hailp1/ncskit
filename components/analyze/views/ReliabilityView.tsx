@@ -34,7 +34,7 @@ interface ReliabilityViewProps {
 }
 
 export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
-    step: initialStep,
+    step,
     data = [],
     columns = [],
     user,
@@ -50,11 +50,6 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
     setShowInsufficientCredits,
     locale
 }) => {
-    const [localStep, setLocalStep] = useState<'select' | 'cronbach-select' | 'cronbach-batch-select' | 'omega-select' | 'efa-select' | 'cfa-select' | 'cbsem-select' | 'plssem-select' | string>(
-        ['cronbach-select', 'omega-select', 'efa-select', 'cfa-select', 'cbsem-select', 'sem-select', 'pls-sem-select'].includes(initialStep) 
-            ? initialStep as any 
-            : 'select'
-    );
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const handleAnalysisError = useAnalysisError(showToast);
     const checkWebRReady = useWebRGuard(showToast);
@@ -70,7 +65,7 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
     );
 
     const ActionButton = ({ onClick, disabled, children }: any) => (
-        <button
+        <button type="button"
             onClick={onClick}
             disabled={disabled}
             className="w-full py-4 bg-blue-900 hover:bg-blue-950 text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 rounded-xl transition-all shadow-lg shadow-blue-100 disabled:opacity-50"
@@ -89,7 +84,7 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
         }
         if (!checkWebRReady()) return;
 
-        const isOmega = localStep === 'omega-select';
+        const isOmega = step === 'omega-select';
         const analysisMethod = isOmega ? 'omega' : 'cronbach';
 
         if (user) {
@@ -109,7 +104,7 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
         setMultipleResults([]);
 
         try {
-            const selectedData = data.map(row => selectedColumns.map(col => ((v) => (v === null || v === undefined || v === '' || v === 'NA' ? null : (isNaN(Number(v)) ? null : Number(v))))(row[col])));
+            const selectedData = data.map(row => selectedColumns.map(col => ((v) => (v === null || v === undefined || v === '' || v === 'NA' ? null : (isNaN(Number(typeof v === 'string' ? v.replace(',', '.') : v)) ? null : Number(typeof v === 'string' ? v.replace(',', '.') : v))))(row[col])));
 
             // Deduct BEFORE running — atomic via RPC (prevents race conditions)
             if (user) {
@@ -143,7 +138,7 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
     const runCronbachBatch = async (groups: { name: string; columns: string[] }[]) => {
         if (!checkWebRReady()) return;
         
-        const isOmega = localStep === 'omega-select';
+        const isOmega = step === 'omega-select';
         const batchMethod = isOmega ? 'omega-batch' : 'cronbach-batch';
 
         if (user) {
@@ -179,7 +174,47 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
 
             const allResults = [];
             for (const group of groups) {
-                const groupData = data.map(row => group.columns.map(col => ((v) => (v === null || v === undefined || v === '' || v === 'NA' ? null : (isNaN(Number(v)) ? null : Number(v))))(row[col])));
+                // Detect if data rows are objects (PapaParse header:true) or arrays
+                const sampleRow = data[0];
+                const isObjectRow = sampleRow && !Array.isArray(sampleRow) && typeof sampleRow === 'object';
+                
+                // DEBUG: Log to diagnose data structure mismatch
+                const dataKeys = isObjectRow ? Object.keys(sampleRow).slice(0, 8) : [];
+                console.log('[DEBUG-RELIABILITY] Group:', group.name, 'Columns:', group.columns);
+                console.log('[DEBUG-RELIABILITY] isObjectRow:', isObjectRow, 'dataKeys:', dataKeys);
+                if (isObjectRow) {
+                    console.log('[DEBUG-RELIABILITY] row[col] test:', group.columns.map(c => `${c}=${JSON.stringify(sampleRow[c])}`));
+                }
+
+                const groupData = data.map(row => group.columns.map(col => {
+                    // Try object key access first, then try trimmed key
+                    let v = isObjectRow ? row[col] : undefined;
+                    
+                    // Fallback: try trimmed/case-insensitive match if direct access fails
+                    if (v === undefined && isObjectRow) {
+                        const rowKeys = Object.keys(row);
+                        const matchKey = rowKeys.find(k => k.trim() === col.trim() || k.trim().toLowerCase() === col.trim().toLowerCase());
+                        if (matchKey) v = row[matchKey];
+                    }
+                    
+                    if (v === null || v === undefined || v === '' || v === 'NA') return null;
+                    const strVal = typeof v === 'string' ? v.replace(',', '.') : v;
+                    const num = Number(strVal);
+                    return isNaN(num) ? null : num;
+                }));
+                
+                // Early abort with diagnostic info if ALL data is null
+                const nonNullCount = groupData.flat().filter(v => v !== null).length;
+                if (nonNullCount === 0) {
+                    const diagKeys = isObjectRow ? Object.keys(sampleRow).join(', ') : `array[${(sampleRow as any)?.length}]`;
+                    const diagCols = group.columns.join(', ');
+                    const testVals = isObjectRow ? group.columns.map(c => `${c}→${JSON.stringify(sampleRow[c])}`).join('; ') : 'N/A';
+                    throw new Error(
+                        `Dữ liệu nhóm "${group.name}" trích xuất toàn null (0/${groupData.length * group.columns.length} ô hợp lệ). ` +
+                        `Data keys: [${diagKeys}]. Columns cần: [${diagCols}]. Test: [${testVals}]`
+                    );
+                }
+
                 const result = await runCronbachAlpha(groupData as number[][]);
                 allResults.push({ scaleName: group.name, columns: group.columns, data: result, type: isOmega ? 'omega' : 'cronbach' });
             }
@@ -224,7 +259,7 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
         setMultipleResults([]);
 
         try {
-            const selectedData = data.map(row => selectedColumns.map(col => ((v) => (v === null || v === undefined || v === '' || v === 'NA' ? null : (isNaN(Number(v)) ? null : Number(v))))(row[col])));
+            const selectedData = data.map(row => selectedColumns.map(col => ((v) => (v === null || v === undefined || v === '' || v === 'NA' ? null : (isNaN(Number(typeof v === 'string' ? v.replace(',', '.') : v)) ? null : Number(typeof v === 'string' ? v.replace(',', '.') : v))))(row[col])));
 
             // Deduct BEFORE running — atomic via RPC
             if (user) {
@@ -301,7 +336,7 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
 
     // --- Render ---
 
-    if (localStep === 'cronbach-select') {
+    if (step === 'cronbach-select') {
         return (
             <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <ViewHeader title="Cronbach's Alpha (α)" subtitle="Phân tích độ tin cậy nhất quán nội tại của thang đo. Hệ thống hỗ trợ tự động nhận diện và gom nhóm biến." icon={Shield} />
@@ -315,14 +350,14 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
                     />
                 </div>
 
-                <button onClick={() => setParentStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
+                <button type="button" onClick={() => setParentStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
                     <ChevronLeft className="w-3 h-3" /> Quay lại chọn phương pháp
                 </button>
             </div>
         );
     }
 
-    if (localStep === 'omega-select') {
+    if (step === 'omega-select') {
         return (
             <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <ViewHeader title="McDonald's Omega (ω)" subtitle="Đánh giá độ tin cậy hiện đại, chính xác hơn Cronbach Alpha khi các giả định về sự tuân thủ đơn chiều bị vi phạm." icon={Shield} />
@@ -353,7 +388,7 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
                              try {
                                  const allResults = [];
                                  for (const group of groups) {
-                                     const result = await runCronbachAlpha(data.map(row => group.columns.map(col => ((v) => (v === null || v === undefined || v === '' || v === 'NA' ? null : (isNaN(Number(v)) ? null : Number(v))))(row[col]))) as number[][]);
+                                     const result = await runCronbachAlpha(data.map(row => group.columns.map(col => ((v) => (v === null || v === undefined || v === '' || v === 'NA' ? null : (isNaN(Number(typeof v === 'string' ? v.replace(',', '.') : v)) ? null : Number(typeof v === 'string' ? v.replace(',', '.') : v))))(row[col]))) as number[][]);
                                      allResults.push({ scaleName: group.name, columns: group.columns, data: result, type: 'omega' });
                                  }
                                  setMultipleResults(allResults);
@@ -368,14 +403,14 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
                     />
                 </div>
 
-                <button onClick={() => setParentStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
+                <button type="button" onClick={() => setParentStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
                     <ChevronLeft className="w-3 h-3" /> Quay lại chọn phương pháp
                 </button>
             </div>
         );
     }
 
-    if (localStep === 'efa-select') {
+    if (step === 'efa-select') {
         return (
             <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <ViewHeader title="Exploratory Factor Analysis (EFA)" subtitle="Phân tích nhân tố khám phá nhằm rút gọn dữ liệu và xác định cấu trúc các nhân tố tiềm ẩn." icon={Grid3x3} />
@@ -387,8 +422,8 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
                             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block ml-1">Chọn biến quan sát (indicators)</label>
                             <div className="space-y-4">
                                 <div className="flex gap-4 text-[9px] font-black uppercase tracking-widest">
-                                    <button onClick={() => document.querySelectorAll('.efa-checkbox').forEach((cb: any) => cb.checked = true)} className="text-blue-600">Select All</button>
-                                    <button onClick={() => document.querySelectorAll('.efa-checkbox').forEach((cb: any) => cb.checked = false)} className="text-slate-400">Clear</button>
+                                    <button type="button" onClick={() => document.querySelectorAll('.efa-checkbox').forEach((cb: any) => cb.checked = true)} className="text-blue-600">Select All</button>
+                                    <button type="button" onClick={() => document.querySelectorAll('.efa-checkbox').forEach((cb: any) => cb.checked = false)} className="text-slate-400">Clear</button>
                                 </div>
                                 <div className="grid grid-cols-1 gap-2 max-h-80 overflow-y-auto p-4 bg-slate-50/50 rounded-xl border border-blue-50 border-dashed">
                                     {columns.map(col => (
@@ -445,14 +480,14 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
                     </ActionButton>
                 </div>
 
-                <button onClick={() => setParentStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
+                <button type="button" onClick={() => setParentStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
                     <ChevronLeft className="w-3 h-3" /> Quay lại
                 </button>
             </div>
         );
     }
 
-    if (localStep === 'cfa-select') {
+    if (step === 'cfa-select') {
         return (
             <CFASelection
                 columns={columns}
@@ -479,7 +514,7 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
         );
     }
 
-    if (localStep === 'cbsem-select') {
+    if (step === 'sem-select') {
         return (
             <SEMSelection
                 columns={columns}
@@ -507,7 +542,7 @@ export const ReliabilityView: React.FC<ReliabilityViewProps> = ({
         );
     }
 
-    if (localStep === 'plssem-select') {
+    if (step === 'pls-sem-select') {
         return (
             <PLSSEMSelection
                 columns={columns}

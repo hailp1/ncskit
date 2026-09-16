@@ -24,7 +24,14 @@ export const DescriptiveResults = React.memo(function DescriptiveResults({ resul
         setLocale(getStoredLocale());
     }, []);
 
-    if (!results || !results.mean) return null;
+    if (!results || !results.mean) {
+        return (
+            <div className="p-4 bg-red-50 text-red-900 border border-red-200 rounded-md whitespace-pre-wrap font-mono text-xs">
+                DEBUG ERROR DUMP:
+                {JSON.stringify(results, null, 2)}
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8 pb-10 animate-in fade-in duration-700">
@@ -69,21 +76,21 @@ export const DescriptiveResults = React.memo(function DescriptiveResults({ resul
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider flex items-center gap-2">
                         <BarChart3 className="w-4 h-4 text-blue-600" />
-                        Descriptive Statistics (Thống kê Mô tả)
+                        {t(locale, 'basic.descriptive_ui.title')}
                     </h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-slate-700">
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
-                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Variable (Biến)</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">N</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Min</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Max</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right bg-blue-100/30">Mean (TB)</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">SD (ĐLX)</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Skewness</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Kurtosis</th>
+                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">{t(locale, 'basic.descriptive_ui.variable')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'basic.descriptive_ui.n')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.descriptive_ui.min')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.descriptive_ui.max')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right bg-blue-100/30">{t(locale, 'basic.descriptive_ui.mean')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.descriptive_ui.sd')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.descriptive_ui.skewness')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.descriptive_ui.kurtosis')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-50">

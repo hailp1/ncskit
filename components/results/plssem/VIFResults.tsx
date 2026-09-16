@@ -4,6 +4,7 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { UnifiedASIGInterpretation } from '@/components/results/shared/UnifiedASIGInterpretation';
 import { CheckCircle, AlertTriangle, AlertCircle, TrendingUp } from 'lucide-react';
+import { getStoredLocale, type Locale } from '@/lib/i18n';
 
 interface VIFResultsProps {
     results: any;
@@ -18,9 +19,15 @@ export const VIFResults = React.memo(function VIFResults({
     results,
     columns
 }: VIFResultsProps) {
+    const [locale, setLocale] = React.useState<Locale>('vi');
+
+    React.useEffect(() => {
+        setLocale(getStoredLocale());
+    }, []);
+
     const vifValues = results.vif_values || [];
     const variableNames = results.variable_names || columns || [];
-    const hasIssues = results.has_issues || false;
+    const hasIssues = vifValues.some((v: number) => v >= 5 && v <= 10);
     const severeIssues = vifValues.some((v: number) => v > 10);
 
     // Categorize variables
@@ -30,11 +37,11 @@ export const VIFResults = React.memo(function VIFResults({
 
     const getVIFBadge = (vif: number) => {
         if (vif < 5) {
-            return { text: 'Good', color: 'bg-green-100 text-green-800 border-green-300', icon: CheckCircle };
+            return { text: locale === 'vi' ? 'Tốt' : 'Good', color: 'bg-green-100 text-green-800 border-green-300', icon: CheckCircle };
         } else if (vif < 10) {
-            return { text: 'Acceptable', color: 'bg-yellow-100 text-yellow-800 border-yellow-300', icon: AlertTriangle };
+            return { text: locale === 'vi' ? 'Chấp nhận được' : 'Acceptable', color: 'bg-yellow-100 text-yellow-800 border-yellow-300', icon: AlertTriangle };
         } else {
-            return { text: 'Problematic', color: 'bg-red-100 text-red-800 border-red-300', icon: AlertCircle };
+            return { text: locale === 'vi' ? 'Có vấn đề' : 'Problematic', color: 'bg-red-100 text-red-800 border-red-300', icon: AlertCircle };
         }
     };
 
@@ -48,22 +55,22 @@ export const VIFResults = React.memo(function VIFResults({
                             {severeIssues ? (
                                 <>
                                     <AlertCircle className="w-7 h-7 text-red-600" />
-                                    Severe Multicollinearity Detected
+                                    {locale === 'vi' ? 'Phát hiện Đa cộng tuyến nghiêm trọng' : 'Severe Multicollinearity Detected'}
                                 </>
                             ) : hasIssues ? (
                                 <>
                                     <AlertTriangle className="w-7 h-7 text-yellow-600" />
-                                    Moderate Multicollinearity
+                                    {locale === 'vi' ? 'Đa cộng tuyến trung bình' : 'Moderate Multicollinearity'}
                                 </>
                             ) : (
                                 <>
                                     <CheckCircle className="w-7 h-7 text-green-600" />
-                                    No Multicollinearity Issues
+                                    {locale === 'vi' ? 'Không có vấn đề Đa cộng tuyến' : 'No Multicollinearity Issues'}
                                 </>
                             )}
                         </h3>
                         <p className="text-sm text-gray-700">
-                            VIF Analysis for {vifValues.length} independent variables
+                            {locale === 'vi' ? `Phân tích VIF cho ${vifValues.length} biến độc lập` : `VIF Analysis for ${vifValues.length} independent variables`}
                         </p>
                     </div>
                 </div>
@@ -72,20 +79,20 @@ export const VIFResults = React.memo(function VIFResults({
             {/* Statistics Summary */}
             <Card>
                 <CardHeader>
-                    <CardTitle>VIF Summary</CardTitle>
+                    <CardTitle>{locale === 'vi' ? 'Tóm tắt VIF' : 'VIF Summary'}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-3 gap-4">
                         <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                            <div className="text-xs text-green-600 mb-1">Good (VIF &lt; 5)</div>
+                            <div className="text-xs text-green-600 mb-1">{locale === 'vi' ? 'Tốt (VIF < 5)' : 'Good (VIF < 5)'}</div>
                             <div className="text-2xl font-bold text-green-700">{goodVars}</div>
                         </div>
                         <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                            <div className="text-xs text-yellow-600 mb-1">Acceptable (5 ≤ VIF &lt; 10)</div>
+                            <div className="text-xs text-yellow-600 mb-1">{locale === 'vi' ? 'Chấp nhận được (5 ≤ VIF < 10)' : 'Acceptable (5 ≤ VIF < 10)'}</div>
                             <div className="text-2xl font-bold text-yellow-700">{acceptableVars}</div>
                         </div>
                         <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-                            <div className="text-xs text-red-600 mb-1">Problematic (VIF ≥ 10)</div>
+                            <div className="text-xs text-red-600 mb-1">{locale === 'vi' ? 'Có vấn đề (VIF ≥ 10)' : 'Problematic (VIF ≥ 10)'}</div>
                             <div className="text-2xl font-bold text-red-700">{problematicVars}</div>
                         </div>
                     </div>
@@ -95,17 +102,17 @@ export const VIFResults = React.memo(function VIFResults({
             {/* VIF Table */}
             <Card>
                 <CardHeader>
-                    <CardTitle>VIF Values by Variable</CardTitle>
+                    <CardTitle>{locale === 'vi' ? 'Giá trị VIF theo từng biến' : 'VIF Values by Variable'}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
                             <thead>
                                 <tr className="border-b border-gray-200 bg-gray-50">
-                                    <th className="py-3 px-4 font-semibold text-gray-700">Variable</th>
-                                    <th className="py-3 px-4 font-semibold text-center text-gray-700">VIF Value</th>
-                                    <th className="py-3 px-4 font-semibold text-center text-gray-700">Status</th>
-                                    <th className="py-3 px-4 font-semibold text-center text-gray-700">Tolerance (1/VIF)</th>
+                                    <th className="py-3 px-4 font-semibold text-gray-700">{locale === 'vi' ? 'Biến quan sát' : 'Variable'}</th>
+                                    <th className="py-3 px-4 font-semibold text-center text-gray-700">{locale === 'vi' ? 'Giá trị VIF' : 'VIF Value'}</th>
+                                    <th className="py-3 px-4 font-semibold text-center text-gray-700">{locale === 'vi' ? 'Trạng thái' : 'Status'}</th>
+                                    <th className="py-3 px-4 font-semibold text-center text-gray-700">{locale === 'vi' ? 'Độ dung sai (1/VIF)' : 'Tolerance (1/VIF)'}</th>
                                 </tr>
                             </thead>
                             <tbody>

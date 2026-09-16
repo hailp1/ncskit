@@ -75,34 +75,13 @@ function HeaderContent({ centerContent, rightActions, hideNav = false, user: pro
                                 AI Proposal
                             </a>
 
-                            <NavLink href="/academy" active={pathname?.startsWith('/academy')}>
+                            <div className="relative px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 cursor-default opacity-60">
                                 {isVi ? 'ncsAcademy' : 'ncsAcademy'}
-                            </NavLink>
+                            </div>
 
-                            <NavDropdown
-                                label={t(locale, 'nav.knowledge_guides')}
-                                active={pathname?.startsWith('/docs')}
-                                icon={BookOpen}
-                            >
-                                <NavDropdownItem
-                                    href="/docs/theory"
-                                    active={pathname === '/docs/theory'}
-                                    label={t(locale, 'nav.theory')}
-                                    icon={GraduationCap}
-                                />
-                                <NavDropdownItem
-                                    href="/docs/case-study"
-                                    active={pathname === '/docs/case-study'}
-                                    label={t(locale, 'nav.casestudy')}
-                                    icon={Microscope}
-                                />
-                                <NavDropdownItem
-                                    href="/docs/user-guide"
-                                    active={pathname === '/docs/user-guide'}
-                                    label={t(locale, 'nav.userguide')}
-                                    icon={FileText}
-                                />
-                            </NavDropdown>
+                            <div className="relative px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 cursor-default opacity-60 flex items-center gap-1.5">
+                                {t(locale, 'nav.knowledge_guides')}
+                            </div>
                         </nav>
                     )}
                 </div>
@@ -216,14 +195,10 @@ function HeaderContent({ centerContent, rightActions, hideNav = false, user: pro
                             <span className="flex items-center justify-center w-5 h-5 rounded bg-indigo-100 text-indigo-600 font-black text-[10px]">AI</span>
                             AI Proposal & Pitch Deck
                         </a>
-                        <Link 
-                            href="/knowledge" 
-                            className="flex items-center gap-3 p-3 rounded-xl text-slate-700 font-bold hover:bg-slate-50 active:bg-indigo-50 active:text-indigo-600"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            <Brain className="w-5 h-5 text-indigo-500" />
+                        <div className="flex items-center gap-3 p-3 rounded-xl text-slate-400 font-bold opacity-60">
+                            <Brain className="w-5 h-5" />
                             {t(locale, 'nav.knowledge_hub')}
-                        </Link>
+                        </div>
                     </div>
                     
                     <div className="flex items-center justify-between pt-4">

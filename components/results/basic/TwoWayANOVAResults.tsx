@@ -26,24 +26,24 @@ export const TwoWayANOVAResults = React.memo(function TwoWayANOVAResults({ resul
 
     return (
         <div className="space-y-8 pb-10 animate-in fade-in duration-500">
-             {/* White-Blue Academic Table */}
+            {/* White-Blue Academic Table */}
             <div className="bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider flex items-center gap-2">
                         <Database className="w-4 h-4 text-blue-600" />
-                        Two-Way ANOVA Table
+                        {t(locale, 'basic.twoway_anova_ui.title')}
                     </h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-slate-700">
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
-                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Source</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">df</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Type III SS</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">MS</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right text-blue-600">F</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">p</th>
+                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">{t(locale, 'basic.twoway_anova_ui.factor')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'basic.twoway_anova_ui.df')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.twoway_anova_ui.sum_squares')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.twoway_anova_ui.mean_square')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right text-blue-600">{t(locale, 'basic.twoway_anova_ui.f_value')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.twoway_anova_ui.p_value')}</th>
                                 <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Partial η²</th>
                             </tr>
                         </thead>

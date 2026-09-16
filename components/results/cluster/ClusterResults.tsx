@@ -14,8 +14,10 @@ interface ClusterResultsProps {
 export const ClusterResults = React.memo(function ClusterResults({ results, columns }: ClusterResultsProps) {
     if (!results) return null;
     const k = results.k || 3;
-    const clusterSizes = results.clusterSizes || [];
+    const clusterSizes = results.clusterSizes || results.size || [];
     const centers = results.centers || [];
+    const totalN = results.totalN || (clusterSizes.length > 0 ? clusterSizes.reduce((a: number, b: number) => a + b, 0) : (results.clusters?.length || null));
+    const betweenSS = results.betweenSS ?? results.betweensSS ?? null;
 
     return (
         <div className="space-y-8 pb-10 animate-in fade-in duration-700">
@@ -36,7 +38,7 @@ export const ClusterResults = React.memo(function ClusterResults({ results, colu
                     </div>
                     <div>
                         <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total N</p>
-                        <p className="text-2xl font-black text-emerald-900">{results.totalN || 'N/A'}</p>
+                        <p className="text-2xl font-black text-emerald-900">{totalN ?? 'N/A'}</p>
                     </div>
                 </div>
                 <div className="bg-white border border-blue-100 p-5 rounded-xl shadow-sm flex items-center gap-4">
@@ -45,7 +47,7 @@ export const ClusterResults = React.memo(function ClusterResults({ results, colu
                     </div>
                     <div>
                         <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Between SS</p>
-                        <p className="text-xl font-black text-indigo-900">{results.betweenSS?.toFixed(1) || 'N/A'}</p>
+                        <p className="text-xl font-black text-indigo-900">{betweenSS != null ? betweenSS.toFixed(1) : 'N/A'}</p>
                     </div>
                 </div>
                 <div className="bg-white border border-blue-100 p-5 rounded-xl shadow-sm flex items-center gap-4">

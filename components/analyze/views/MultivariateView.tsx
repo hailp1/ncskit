@@ -114,7 +114,7 @@ export const MultivariateView: React.FC<MultivariateViewProps> = ({
     );
 
     const ActionButton = ({ onClick, disabled, children }: any) => (
-        <button
+        <button type="button"
             onClick={onClick}
             disabled={disabled}
             className="w-full py-4 bg-blue-900 hover:bg-blue-950 text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 rounded-xl transition-all shadow-lg shadow-blue-100 disabled:opacity-50"
@@ -137,8 +137,8 @@ export const MultivariateView: React.FC<MultivariateViewProps> = ({
                         <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
                              <span>Chọn biến phân cụm ({clusterVars.variables.length} selected)</span>
                              <div className="flex gap-4">
-                                <button onClick={() => setClusterVars(prev => ({ ...prev, variables: columns }))} className="text-blue-600">Select All</button>
-                                <button onClick={() => setClusterVars(prev => ({ ...prev, variables: [] }))} className="text-slate-400">Clear</button>
+                                <button type="button" onClick={() => setClusterVars(prev => ({ ...prev, variables: columns }))} className="text-blue-600">Select All</button>
+                                <button type="button" onClick={() => setClusterVars(prev => ({ ...prev, variables: [] }))} className="text-slate-400">Clear</button>
                              </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto p-4 bg-slate-50/50 rounded-xl border border-blue-50 border-dashed">
@@ -191,7 +191,7 @@ export const MultivariateView: React.FC<MultivariateViewProps> = ({
                     </ActionButton>
                 </div>
 
-                <button onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
+                <button type="button" onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
                     <ChevronLeft className="w-3 h-3" /> Quay lại chọn phương pháp
                 </button>
             </div>
@@ -254,7 +254,7 @@ export const MultivariateView: React.FC<MultivariateViewProps> = ({
                     </ActionButton>
                 </div>
 
-                <button onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
+                <button type="button" onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
                     <ChevronLeft className="w-3 h-3" /> Quay lại
                 </button>
             </div>

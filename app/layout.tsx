@@ -48,8 +48,8 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="vi">
-      <body className={inter.className}>
+    <html lang="vi" suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning>
         <StructuredData data={orgSchema} />
         <ClientProviders>
           {children}

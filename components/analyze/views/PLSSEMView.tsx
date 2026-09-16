@@ -28,6 +28,7 @@ type PLSSEMMethod =
     | 'outlier'
     | 'htmt'
     | 'vif'
+    | 'cmb'
     | 'bootstrap'
     | 'mediation'
     | 'ipma'
@@ -49,6 +50,7 @@ interface PLSSEMViewProps {
     setRequiredCredits: (amount: number) => void;
     setCurrentAnalysisCost: (amount: number) => void;
     setShowInsufficientCredits: (show: boolean) => void;
+    setAnalysisType?: (type: string) => void;
 }
 
 export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
@@ -63,7 +65,8 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
     onBack,
     setRequiredCredits,
     setCurrentAnalysisCost,
-    setShowInsufficientCredits
+    setShowInsufficientCredits,
+    setAnalysisType
 }) => {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
@@ -115,6 +118,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                 columns: cols,
                 scaleName: name
             });
+            setAnalysisType?.('omega');
             setStep('results');
 
             showToast('Phân tích McDonald\'s Omega hoàn thành!', 'success');
@@ -170,6 +174,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                 data: result,
                 columns: columns
             });
+            setAnalysisType?.('outlier');
             setStep('results');
 
             showToast(`Phát hiện ${result.n_outliers} outliers!`, 'success');
@@ -221,6 +226,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                 data: result,
                 factorStructure: factorStructure
             });
+            setAnalysisType?.('htmt');
             setStep('results');
 
             showToast('HTMT Matrix hoàn thành!', 'success');
@@ -276,9 +282,73 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                 data: result,
                 columns: columns
             });
+            setAnalysisType?.('vif');
             setStep('results');
 
             showToast('VIF Check hoàn thành!', 'success');
+        } catch (error) {
+            handleAnalysisError(error);
+        } finally {
+            setIsAnalyzing(false);
+        }
+    };
+
+    // CMB Analysis
+    const runCMBAnalysis = async (selectedCols: string[]) => {
+        if (selectedCols.length < 3) {
+            showToast('CMB cần ít nhất 3 biến', 'error');
+            return;
+        }
+
+        if (user) {
+            const cost = await getAnalysisCost('cmb');
+            const { hasEnough } = await checkBalance(user.id, cost);
+            if (!hasEnough) {
+                setRequiredCredits(cost);
+                setCurrentAnalysisCost(cost);
+                setShowInsufficientCredits(true);
+                return;
+            }
+        }
+
+        setIsAnalyzing(true);
+
+        try {
+            const numericData = data.map(row =>
+                columns.map(col => ((v) => (v === null || v === undefined || v === '' || v === 'NA' ? null : (isNaN(Number(v)) ? null : Number(v))))(row[col]))
+            );
+
+            // Deduct BEFORE running
+            if (user) {
+                const cost = await getAnalysisCost('cmb');
+                const { success, isExempt, newBalance, error: deductError } = await deductCreditsAtomic(user.id, cost, 'Common Method Bias');
+                if (!success) { showToast(deductError || 'Không đủ NCS', 'error'); setIsAnalyzing(false); return; }
+                if (!isExempt) setNcsBalance(newBalance);
+            }
+
+            // Create a dummy factor structure with all selected columns
+            const factorStructure = [{
+                name: 'CMB_Factor',
+                items: selectedCols.map(col => columns.indexOf(col))
+            }];
+
+            const { runHarmanCMB } = await import('@/lib/webr/pls-sem');
+            const result = await runHarmanCMB(numericData as number[][], factorStructure);
+
+            if (user) {
+                const cost = await getAnalysisCost('cmb');
+                await logAnalysisUsage(user.id, 'cmb', cost);
+            }
+
+            setResults({
+                type: 'cmb',
+                data: result,
+                columns: selectedCols
+            });
+            setAnalysisType?.('cmb');
+            setStep('results');
+
+            showToast("Harman's Single Factor Test hoàn thành!", 'success');
         } catch (error) {
             handleAnalysisError(error);
         } finally {
@@ -332,6 +402,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                 columns: columns,
                 nBootstrap: nBootstrap
             });
+            setAnalysisType?.('bootstrap');
             setStep('results');
 
             showToast(`Bootstrapping với ${nBootstrap} samples hoàn thành!`, 'success');
@@ -377,7 +448,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                     analysisLabel="McDonald's Omega"
                 />
 
-                <button
+                <button type="button"
                     onClick={onBack}
                     className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition-colors"
                 >
@@ -421,7 +492,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                         Các quan sát có khoảng cách vượt ngưỡng (p &lt; 0.001) sẽ được đánh dấu là outliers.
                     </p>
 
-                    <button
+                    <button type="button"
                         onClick={runOutlierAnalysis}
                         disabled={isAnalyzing}
                         className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
@@ -430,7 +501,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                     </button>
                 </div>
 
-                <button
+                <button type="button"
                     onClick={onBack}
                     className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition-colors"
                 >
@@ -526,7 +597,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                     </CardContent>
                 </Card>
 
-                <button
+                <button type="button"
                     onClick={async () => {
                         const dependentIndex = columns.indexOf(selectedDependent);
                         await runVIFAnalysis(dependentIndex);
@@ -537,7 +608,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                     {isAnalyzing ? 'Đang tính toán VIF...' : 'Chạy VIF Check'}
                 </button>
 
-                <button
+                <button type="button"
                     onClick={onBack}
                     className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition-colors"
                 >
@@ -548,6 +619,101 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                     <div className="text-center py-8">
                         <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent"></div>
                         <p className="mt-4 text-gray-600">Đang tính toán VIF...</p>
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    // ── CMB UI ─────────────────────────────────────────────────────────────
+    if (method === 'cmb') {
+        // By default, select all columns. We use a local state to let the user deselect some.
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [selectedCols, setSelectedCols] = React.useState<string[]>(columns);
+
+        const toggleCol = (col: string) => {
+            setSelectedCols(prev => prev.includes(col) ? prev.filter(c => c !== col) : [...prev, col]);
+        };
+
+        return (
+            <div className="max-w-3xl mx-auto space-y-6">
+                <div className="text-center mb-8">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                        <AlertTriangle className="w-8 h-8 text-rose-600" />
+                        <h2 className="text-3xl font-bold text-gray-800">Common Method Bias (CMB)</h2>
+                    </div>
+                    <p className="text-gray-600">
+                        Harman&apos;s Single Factor Test
+                    </p>
+                    <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-rose-50 border border-rose-200 rounded-lg">
+                        <Info className="w-4 h-4 text-rose-600" />
+                        <span className="text-sm text-rose-700 font-medium">
+                            Variance Explained &lt; 50% = No CMB Detected
+                        </span>
+                    </div>
+                </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Chọn các biến quan sát trong mô hình</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-xs text-gray-500 mb-4">
+                            CMB yêu cầu đưa TẤT CẢ các biến quan sát (indicators) của TẤT CẢ các thang đo vào một phân tích nhân tố duy nhất (EFA).
+                            <br />Bỏ chọn các biến không thuộc mô hình đo lường (như Age, Gender).
+                        </p>
+                        
+                        <div className="flex flex-wrap gap-2 max-h-80 overflow-y-auto p-2 bg-slate-50 border border-slate-200 rounded-lg">
+                            {columns.map(col => {
+                                const isSelected = selectedCols.includes(col);
+                                return (
+                                    <label
+                                        key={col}
+                                        className={`flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer transition-colors ${
+                                            isSelected ? 'bg-rose-100 border-rose-300 text-rose-900' : 'bg-white border-slate-300 text-slate-500'
+                                        }`}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={isSelected}
+                                            onChange={() => toggleCol(col)}
+                                            className="hidden"
+                                        />
+                                        <div className={`w-3 h-3 rounded-full ${isSelected ? 'bg-rose-500' : 'bg-slate-300'}`} />
+                                        <span className="text-sm font-bold uppercase tracking-tighter">{col}</span>
+                                    </label>
+                                );
+                            })}
+                        </div>
+                        <div className="mt-3 flex justify-between items-center text-sm">
+                            <span className="font-bold text-slate-700">Đã chọn: {selectedCols.length} biến</span>
+                            <div className="space-x-3">
+                                <button type="button" onClick={() => setSelectedCols(columns)} className="text-blue-600 hover:underline">Chọn tất cả</button>
+                                <button type="button" onClick={() => setSelectedCols([])} className="text-rose-600 hover:underline">Bỏ chọn tất cả</button>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <button type="button"
+                    onClick={() => runCMBAnalysis(selectedCols)}
+                    disabled={isAnalyzing || selectedCols.length < 3}
+                    className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {isAnalyzing ? 'Đang tính toán CMB...' : "Chạy Harman's Test"}
+                </button>
+
+                <button type="button"
+                    onClick={onBack}
+                    className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition-colors"
+                >
+                    ← Quay lại
+                </button>
+
+                {isAnalyzing && (
+                    <div className="text-center py-8">
+                        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-rose-500 border-t-transparent"></div>
+                        <p className="mt-4 text-gray-600">Đang chạy Harman&apos;s Single Factor Test...</p>
                     </div>
                 )}
             </div>
@@ -593,14 +759,14 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                     </CardContent>
                 </Card>
 
-                <button
+                <button type="button"
                     onClick={() => runBootstrapAnalysis(nBootstrap)}
                     disabled={isAnalyzing}
                     className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg disabled:opacity-50"
                 >
                     {isAnalyzing ? `Đang chạy Bootstrap (${nBootstrap} iterations)...` : `Chạy Bootstrapping (${nBootstrap} samples)`}
                 </button>
-                <button onClick={onBack} className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg">← Quay lại</button>
+                <button type="button" onClick={onBack} className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg">← Quay lại</button>
                 {isAnalyzing && (
                     <div className="text-center py-6">
                         <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
@@ -624,6 +790,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                 );
                 const result = await runSimpleBlindfolding(numericData as number[][], omissionDist);
                 setResults({ type: 'blindfolding', data: result, columns });
+                setAnalysisType?.('blindfolding');
                 setStep('results');
                 showToast('Blindfolding hoàn thành!', 'success');
             } catch (error) { handleAnalysisError(error); }
@@ -661,14 +828,14 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                     </CardContent>
                 </Card>
 
-                <button
+                <button type="button"
                     onClick={runBlindfoldingAnalysis}
                     disabled={isAnalyzing}
                     className="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg disabled:opacity-50"
                 >
                     {isAnalyzing ? 'Đang tính toán Q²...' : 'Chạy Blindfolding'}
                 </button>
-                <button onClick={onBack} className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg">← Quay lại</button>
+                <button type="button" onClick={onBack} className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg">← Quay lại</button>
                 {isAnalyzing && (
                     <div className="text-center py-6">
                         <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-teal-500 border-t-transparent"></div>
@@ -690,9 +857,13 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                 const numericData = data.map(row =>
                     columns.map(col => ((v) => (v === null || v === undefined || v === '' || v === 'NA' ? null : (isNaN(Number(v)) ? null : Number(v))))(row[col]))
                 );
-                const groupIdx = columns.indexOf(groupVar);
-                const result = await runMGA(numericData as number[][], [], [], []);
+                
+                // Pass raw group values (strings) to MGA
+                const groupRaw = data.map(row => row[groupVar]);
+                
+                const result = await runMGA(numericData as number[][], [], [], groupRaw);
                 setResults({ type: 'mga', data: result, columns });
+                setAnalysisType?.('mga');
                 setStep('results');
                 showToast('Multi-Group Analysis hoàn thành!', 'success');
             } catch (error) { handleAnalysisError(error); }
@@ -725,14 +896,14 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                     </CardContent>
                 </Card>
 
-                <button
+                <button type="button"
                     onClick={runMGAAnalysis}
                     disabled={isAnalyzing}
                     className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg disabled:opacity-50"
                 >
                     {isAnalyzing ? 'Đang phân tích MGA...' : 'Chạy Multi-Group Analysis'}
                 </button>
-                <button onClick={onBack} className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg">← Quay lại</button>
+                <button type="button" onClick={onBack} className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg">← Quay lại</button>
                 {isAnalyzing && (
                     <div className="text-center py-6">
                         <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-indigo-500 border-t-transparent"></div>
@@ -757,6 +928,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                 const targetIdx = columns.indexOf(targetVar);
                 const result = await runIPMA(numericData as number[][], targetIdx >= 0 ? targetIdx : columns.length - 1);
                 setResults({ type: 'ipma', data: result, columns });
+                setAnalysisType?.('ipma');
                 setStep('results');
                 showToast('IPMA hoàn thành!', 'success');
             } catch (error) { handleAnalysisError(error); }
@@ -777,6 +949,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                     <CardHeader><CardTitle>Chọn biến mục tiêu (Target Variable)</CardTitle></CardHeader>
                     <CardContent className="space-y-3">
                         <select
+                            id="ipma-target"
                             value={targetVar}
                             onChange={(e) => setTargetVar(e.target.value)}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-amber-500"
@@ -789,14 +962,14 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                     </CardContent>
                 </Card>
 
-                <button
+                <button type="button"
                     onClick={runIPMAAnalysis}
                     disabled={isAnalyzing}
                     className="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg disabled:opacity-50"
                 >
                     {isAnalyzing ? 'Đang tính IPMA...' : 'Chạy IPMA Analysis'}
                 </button>
-                <button onClick={onBack} className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg">← Quay lại</button>
+                <button type="button" onClick={onBack} className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg">← Quay lại</button>
                 {isAnalyzing && (
                     <div className="text-center py-6">
                         <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-amber-500 border-t-transparent"></div>
@@ -818,7 +991,7 @@ export const PLSSEMView: React.FC<PLSSEMViewProps> = ({
                 The R computation engine is ready. A dedicated input form for this analysis
                 will be added in a future release.
             </div>
-            <button onClick={onBack} className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg">← Back</button>
+            <button type="button" onClick={onBack} className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg">← Back</button>
         </div>
     );
 };

@@ -113,27 +113,43 @@ export const DOMAIN_BENCHMARKS = {
 
 // ── INSIGHT HELPERS ────────────────────────────────────────────────────────────
 
-export function correlationPracticalNote(r: number): string {
+export function correlationPracticalNote(r: number, locale: 'en' | 'vi' = 'en'): string {
     const abs = Math.abs(r);
-    const dir = r > 0 ? 'positive' : 'negative';
+    const dir = r > 0 ? (locale === 'vi' ? 'tương quan thuận' : 'positive') : (locale === 'vi' ? 'tương quan nghịch' : 'negative');
     if (abs < 0.10)
-        return `This ${dir} association (|r| = ${formatCoef(abs)}) is below the typical threshold for practical significance in management research.`;
+        return locale === 'vi'
+            ? `Mối ${dir} này (|r| = ${formatCoef(abs)}) nằm dưới ngưỡng ý nghĩa thực tiễn thông thường trong nghiên cứu quản trị.`
+            : `This ${dir} association (|r| = ${formatCoef(abs)}) is below the typical threshold for practical significance in management research.`;
     if (abs < 0.20)
-        return `This ${dir} association (|r| = ${formatCoef(abs)}) is in the weak-but-practical range typical in management surveys with large N.`;
+        return locale === 'vi'
+            ? `Mối ${dir} này (|r| = ${formatCoef(abs)}) nằm trong khoảng yếu nhưng có ý nghĩa thực tiễn, thường thấy trong các khảo sát quản trị với cỡ mẫu lớn.`
+            : `This ${dir} association (|r| = ${formatCoef(abs)}) is in the weak-but-practical range typical in management surveys with large N.`;
     if (abs < 0.30)
-        return `This ${dir} association (|r| = ${formatCoef(abs)}) is consistent with the typical median correlation (r ~ .21) in management meta-analyses (Peterson & Brown, 2005).`;
+        return locale === 'vi'
+            ? `Mối ${dir} này (|r| = ${formatCoef(abs)}) phù hợp với mức tương quan trung vị thông thường (r ~ .21) trong các phân tích tổng hợp ngành quản trị (Peterson & Brown, 2005).`
+            : `This ${dir} association (|r| = ${formatCoef(abs)}) is consistent with the typical median correlation (r ~ .21) in management meta-analyses (Peterson & Brown, 2005).`;
     if (abs < 0.50)
-        return `This ${dir} moderate association (|r| = ${formatCoef(abs)}) is above the median in business research, indicating a substantively meaningful relationship.`;
-    return `This ${dir} strong association (|r| = ${formatCoef(abs)}) is notably larger than typical in business research -- a highly robust relationship.`;
+        return locale === 'vi'
+            ? `Mối ${dir} ở mức độ trung bình này (|r| = ${formatCoef(abs)}) cao hơn mức trung vị trong nghiên cứu kinh doanh, cho thấy một mối quan hệ có ý nghĩa thực tiễn đáng kể.`
+            : `This ${dir} moderate association (|r| = ${formatCoef(abs)}) is above the median in business research, indicating a substantively meaningful relationship.`;
+    return locale === 'vi'
+        ? `Mối ${dir} mạnh mẽ này (|r| = ${formatCoef(abs)}) lớn hơn đáng kể so với mức thông thường trong nghiên cứu kinh doanh — một mối quan hệ có độ vững rất cao.`
+        : `This ${dir} strong association (|r| = ${formatCoef(abs)}) is notably larger than typical in business research -- a highly robust relationship.`;
 }
 
-export function sampleAdequacyNote(n: number, analysis: keyof typeof DOMAIN_BENCHMARKS['sampleSize']): string {
+export function sampleAdequacyNote(n: number, analysis: keyof typeof DOMAIN_BENCHMARKS['sampleSize'], locale: 'en' | 'vi' = 'en'): string {
     const min = DOMAIN_BENCHMARKS.sampleSize[analysis];
     if (n < min)
-        return `Sample size (N = ${n}) is below the recommended minimum of ${min} for ${analysis}. Results should be interpreted cautiously.`;
+        return locale === 'vi'
+            ? `Cỡ mẫu (N = ${n}) dưới mức tối thiểu được khuyến nghị là ${min} cho ${analysis}. Cần thận trọng khi diễn giải kết quả.`
+            : `Sample size (N = ${n}) is below the recommended minimum of ${min} for ${analysis}. Results should be interpreted cautiously.`;
     if (n < min * 2)
-        return `Sample size (N = ${n}) meets the minimum for ${analysis}. Power to detect medium effects is adequate.`;
-    return `Sample size (N = ${n}) is adequate for ${analysis}, providing good statistical power.`;
+        return locale === 'vi'
+            ? `Cỡ mẫu (N = ${n}) đạt mức tối thiểu cho ${analysis}. Đủ lực thống kê để phát hiện các tác động ở mức trung bình.`
+            : `Sample size (N = ${n}) meets the minimum for ${analysis}. Power to detect medium effects is adequate.`;
+    return locale === 'vi'
+        ? `Cỡ mẫu (N = ${n}) rất đầy đủ cho ${analysis}, cung cấp lực thống kê tốt.`
+        : `Sample size (N = ${n}) is adequate for ${analysis}, providing good statistical power.`;
 }
 
 export function publishabilitySignal(
@@ -154,8 +170,29 @@ export function publishabilitySignal(
     return 'weak';
 }
 
-export function writingTip(analysisType: string): string {
-    const tips: Record<string, string> = {
+export function writingTip(analysisType: string, locale: 'en' | 'vi' = 'en'): string {
+    const tips: Record<string, string> = locale === 'vi' ? {
+        correlation:
+            'Trong phần phương pháp luận, hãy biện luận việc chọn Pearson hay Spearman bằng cách tham chiếu đến thang đo và phân phối chuẩn của dữ liệu. Báo cáo cả hệ số r và p cùng khoảng tin cậy 95%.',
+        ttest_independent:
+            'Nên trình bày kết quả theo dạng bảng: Nhóm, N, Mean, SD, t, df, p, Cohen\'s d. Chỉ số tác động (effect size) quan trọng không kém giá trị p đối với các hội đồng phản biện.',
+        anova:
+            'Báo cáo eta-squared (η²) cùng với giá trị F. Các hội đồng tại Việt Nam thường yêu cầu trình bày kết quả so sánh cặp (post-hoc) với p-value đã điều chỉnh (Tukey HSD hoặc Games-Howell).',
+        linear_regression:
+            'Báo cáo toàn bộ bảng hồi quy: B, SE, beta (β), t, p, 95% CI[B], và VIF. Phân tích hệ số beta chuẩn hóa để so sánh mức độ quan trọng tương đối giữa các biến độc lập.',
+        mediation:
+            'Cần nêu rõ bạn dùng Bootstrap (được ưu tiên) hay kiểm định Sobel. Kỹ thuật PROCESS macro với 5.000 mẫu lặp (resamples) và CI hiệu chỉnh sai số (bias-corrected) là tiêu chuẩn cao nhất.',
+        moderation:
+            'Luôn báo cáo sự thay đổi R-squared (ΔR²) của biến tương tác như là kích thước hiệu ứng chính. Cần vẽ đồ thị tương tác tại +/-1 SD của biến điều tiết.',
+        'pls-sem':
+            'Luận án tại Việt Nam dùng PLS-SEM nên chia 2 bước: (1) Mô hình đo lường: Outer loadings, AVE, CR, HTMT; (2) Mô hình cấu trúc: β, t (bootstrapped), p, 95% CI, R², f². Hãy trích dẫn Hair et al. (2021).',
+        cronbach:
+            'Báo cáo giá trị alpha cùng số lượng biến quan sát và tên thang đo. Nếu có biến quan sát nào bị loại vì CITC < .30, hãy giải thích rõ lý do. McDonald\'s omega ngày càng được ưa chuộng ở các tạp chí top đầu.',
+        efa:
+            'Giải thích việc trích xuất nhân tố bằng Phân tích Song song (Parallel Analysis) thay vì tiêu chuẩn Kaiser (eigenvalue > 1) vốn hay trích xuất thừa. Báo cáo KMO, Bartlett, tổng phương sai trích, và ma trận nhân tố đã xoay.',
+        cfa:
+            'Báo cáo 4 chỉ số độ phù hợp: CFI, TLI, RMSEA (cùng 90% CI), và SRMR. Các tạp chí Quản trị tại Việt Nam thường dùng ngưỡng của Hu & Bentler (1999). Cần nêu rõ nếu bạn dùng ước lượng MLR để khử nhiễu.',
+    } : {
         correlation:
             'In your thesis methodology section, justify Pearson/Spearman by referencing the measurement scale level and normality of your data. Report both r and p alongside the 95% CI.',
         ttest_independent:
@@ -177,7 +214,9 @@ export function writingTip(analysisType: string): string {
         cfa:
             'Report four fit indices: CFI, TLI, RMSEA (with 90% CI), and SRMR. Vietnamese management journals follow Hu & Bentler (1999) thresholds. Mention if you used MLR estimator for robustness.',
     };
-    return tips[analysisType] ?? 'Report test statistics, effect sizes, and confidence intervals alongside p-values for APA 7-compliant manuscript writing.';
+    return tips[analysisType] ?? (locale === 'vi' 
+        ? 'Báo cáo các giá trị thống kê, kích thước hiệu ứng (effect size) và khoảng tin cậy cùng với p-value để đáp ứng đúng chuẩn viết báo khoa học APA 7.'
+        : 'Report test statistics, effect sizes, and confidence intervals alongside p-values for APA 7-compliant manuscript writing.');
 }
 
 

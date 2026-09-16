@@ -32,18 +32,18 @@ export const LogisticResults = React.memo(function LogisticResults({ results, co
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider flex items-center gap-2">
                         <Activity className="w-4 h-4 text-blue-600" />
-                        Logistic Regression Coefficients (Hệ số hồi quy Logistic)
+                        {t(locale, 'regression.logistic_ui.coefficients')}
                     </h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-slate-700">
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
-                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Variable (Biến)</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Estimate (B)</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right text-blue-600">Odds Ratio (Exp(B))</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right text-blue-900">z-value</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Sig. (p)</th>
+                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">{t(locale, 'regression.logistic_ui.block')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'regression.logistic_ui.estimate')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right text-blue-600">{t(locale, 'regression.logistic_ui.odds_ratio')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right text-blue-900">{t(locale, 'regression.logistic_ui.wald')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'regression.logistic_ui.p_value')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-50">
@@ -56,7 +56,7 @@ export const LogisticResults = React.memo(function LogisticResults({ results, co
                                         <td className="py-5 px-4 text-sm text-right font-black text-blue-900 bg-blue-50/20">{coeff.oddsRatio?.toFixed(4)}</td>
                                         <td className="py-5 px-4 text-sm text-right font-mono text-slate-500">{coeff.zValue?.toFixed(3)}</td>
                                         <td className={`py-5 px-4 text-sm text-right font-black ${sig ? 'text-blue-600 underline underline-offset-4' : 'text-slate-400'}`}>
-                                            {coeff.pValue < 0.001 ? '<.001' : coeff.pValue?.toFixed(4)} {sig ? ' (Sig.)' : ''}
+                                            {coeff.pValue < 0.001 ? '<.001' : coeff.pValue?.toFixed(4)}
                                         </td>
                                     </tr>
                                 );
@@ -71,16 +71,16 @@ export const LogisticResults = React.memo(function LogisticResults({ results, co
                 <div className="bg-slate-50/50 border border-blue-50 p-8 rounded-xl shadow-sm relative overflow-hidden">
                     <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-6 border-b border-blue-50 pb-2 flex items-center gap-2">
                         <Target className="w-4 h-4 text-blue-600" />
-                        Model Accuracy & Fit summary
+                        {t(locale, 'regression.logistic_ui.model_fit')}
                     </h4>
                     <div className="space-y-6">
                         <div className="flex justify-between items-end border-b border-blue-50/50 pb-4">
-                            <span className="text-sm font-bold text-slate-400">Classification Accuracy:</span>
+                            <span className="text-sm font-bold text-slate-400">{t(locale, 'regression.logistic_ui.accuracy')}:</span>
                             <span className="font-black text-3xl text-blue-900">{(displayResults.modelFit?.accuracy * 100)?.toFixed(2)}%</span>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="p-3 bg-white rounded-lg border border-blue-50 shadow-sm text-center">
-                                <span className="block text-[10px] font-black text-slate-400 uppercase">McFadden R²</span>
+                                <span className="block text-[10px] font-black text-slate-400 uppercase">{t(locale, 'regression.logistic_ui.pseudo_r2')}</span>
                                 <span className="font-bold text-blue-900">{displayResults.modelFit?.pseudoR2?.toFixed(4)}</span>
                             </div>
                             <div className="p-3 bg-white rounded-lg border border-blue-50 shadow-sm text-center">
@@ -92,7 +92,7 @@ export const LogisticResults = React.memo(function LogisticResults({ results, co
                 </div>
 
                 <div className="bg-white border border-blue-100 p-8 rounded-xl shadow-sm">
-                    <h4 className="text-[10px] font-black uppercase text-blue-500 tracking-widest mb-6 border-b border-blue-50 pb-2">Confusion Matrix (Bảng nhầm lẫn)</h4>
+                    <h4 className="text-[10px] font-black uppercase text-blue-500 tracking-widest mb-6 border-b border-blue-50 pb-2">{t(locale, 'regression.logistic_ui.classification')}</h4>
                     {displayResults.confusionMatrix && (
                         <div className="grid grid-cols-2 gap-2 text-center text-sm font-mono p-4 bg-slate-50/50 rounded-xl border border-dashed border-blue-100">
                             <div className="p-3 bg-white rounded border border-blue-50 flex flex-col justify-center">
@@ -121,7 +121,7 @@ export const LogisticResults = React.memo(function LogisticResults({ results, co
                 analysisType="logistic"
                 results={displayResults}
                 variableNames={{
-                    dependent: columns[0] || 'Biến phụ thuộc'
+                    dependent: columns[0] || (locale === 'vi' ? 'Biến phụ thuộc' : 'Dependent variable')
                 }}
             />
 

@@ -1,7 +1,14 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { getStoredLocale, t, type Locale } from '@/lib/i18n';
 
 export function FrequencyResults({ results, columns }: { results: any; columns: string[] }) {
+    const [locale, setLocale] = React.useState<Locale>('vi');
+
+    React.useEffect(() => {
+        setLocale(getStoredLocale());
+    }, []);
+
     if (!results) return null;
 
     return (
@@ -16,17 +23,17 @@ export function FrequencyResults({ results, columns }: { results: any; columns: 
                 return (
                     <Card key={col} className="border-blue-100 shadow-md">
                         <CardHeader className="bg-blue-50/50 border-b border-blue-50">
-                            <CardTitle className="text-blue-900 text-lg">Variable: <span className="font-bold">{col}</span></CardTitle>
+                            <CardTitle className="text-blue-900 text-lg">{t(locale, 'basic.frequency_ui.variable')}: <span className="font-bold">{col}</span></CardTitle>
                         </CardHeader>
                         <CardContent className="pt-6">
                             <div className="overflow-x-auto rounded-xl border border-blue-100">
                                 <table className="w-full text-left border-collapse text-slate-700">
                                     <thead className="bg-blue-50/50 border-b border-blue-100">
                                         <tr>
-                                            <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Category</th>
-                                            <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase text-right">Frequency</th>
-                                            <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase text-right">Percent</th>
-                                            <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase text-right">Cumulative %</th>
+                                            <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">{t(locale, 'basic.frequency_ui.category')}</th>
+                                            <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.frequency_ui.frequency')}</th>
+                                            <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.frequency_ui.percent')}</th>
+                                            <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.frequency_ui.cumulative_percent')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-blue-50">
@@ -46,7 +53,7 @@ export function FrequencyResults({ results, columns }: { results: any; columns: 
                                             });
                                         })()}
                                         <tr className="bg-blue-50/30 border-t-2 border-blue-200">
-                                            <td className="py-4 px-6 text-sm font-black text-slate-900 uppercase">Total</td>
+                                            <td className="py-4 px-6 text-sm font-black text-slate-900 uppercase">{t(locale, 'basic.frequency_ui.total')}</td>
                                             <td className="py-4 px-6 text-sm text-right font-black font-mono text-blue-900">{total}</td>
                                             <td className="py-4 px-6 text-sm text-right font-black font-mono text-slate-900">100.0%</td>
                                             <td className="py-4 px-6 text-sm text-right font-black font-mono text-slate-900">-</td>

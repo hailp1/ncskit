@@ -17,7 +17,7 @@ export async function runMediationAnalysis(
     xVar: string,
     mVar: string,
     yVar: string,
-    nBoot: number = 1000
+    nBoot: number = 5000
 ): Promise<{
     effects: {
         total: number; // c
@@ -88,7 +88,7 @@ export async function runMediationAnalysis(
     sobel_z  <- indirect / sobel_se
     sobel_p  <- 2 * (1 - pnorm(abs(sobel_z)))
     
-    # === Bootstrap CI for indirect effect (percentile method) ===
+    # === Bootstrap CI for indirect effect (bias-corrected method) ===
     set.seed(123)
     n_boot <- ${nBoot}
     boot_indirect <- numeric(n_boot)
@@ -99,7 +99,8 @@ export async function runMediationAnalysis(
         boot_b  <- coef(lm(boot_df[["${yVar}"]] ~ boot_df[["${xVar}"]] + boot_df[["${mVar}"]]))[3]
         boot_indirect[i] <- boot_a * boot_b
     }
-    boot_ci <- quantile(boot_indirect, c(0.025, 0.975))
+    bias <- mean(boot_indirect, na.rm = TRUE) - indirect
+    boot_ci <- quantile(boot_indirect - bias, c(0.025, 0.975), na.rm = TRUE)
     
     list(
         total    = as.numeric(total),
@@ -166,8 +167,30 @@ export async function runModerationAnalysis(
     coefficients: {
         term: string;
         estimate: number;
+        stdError?: number;
+        tValue?: number;
         pValue: number;
     }[];
+    interceptEst?: number;
+    interceptSE?: number;
+    interceptT?: number;
+    interceptP?: number;
+    xEst?: number;
+    xSE?: number;
+    xT?: number;
+    xP?: number;
+    wEst?: number;
+    wSE?: number;
+    wT?: number;
+    wP?: number;
+    interactionTerm?: string;
+    interactionEst?: number;
+    interactionEstimate?: number;
+    interactionSE?: number;
+    interactionT?: number;
+    interactionP?: number;
+    rSquared?: number;
+    rSquaredAdj?: number;
     interactionSignificant: boolean;
     slopes: {
         level: string; // -1 SD, Mean, +1 SD
@@ -233,10 +256,17 @@ export async function runModerationAnalysis(
     p_mean <- tryCatch(summary(m_mean)$coefficients["x_c", 4], error = function(e) NA)
     p_high <- tryCatch(summary(m_high)$coefficients["x_c", 4], error = function(e) NA)
     
+    r2 <- s$r.squared
+    adj_r2 <- s$adj.r.squared
+
     list(
         terms           = rownames(coefs),
         estimates       = coefs[, 1],
+        std_errors      = coefs[, 2],
+        t_values        = coefs[, 3],
         p_values        = coefs[, 4],
+        r_squared       = r2,
+        adj_r_squared   = adj_r2,
         int_significant = int_p_val < 0.05,
         slope_low       = as.numeric(slope_low),
         p_low           = as.numeric(p_low),
@@ -252,16 +282,46 @@ export async function runModerationAnalysis(
 
     const terms    = getValue('terms')    || [];
     const estimates = getValue('estimates') || [];
+    const stdErrors = getValue('std_errors') || [];
+    const tValues   = getValue('t_values') || [];
     const pValues  = getValue('p_values') || [];
 
     const coefficients = terms.map((term: string, i: number) => ({
         term,
         estimate: estimates[i] ?? 0,
+        stdError: stdErrors[i] ?? 0,
+        tValue:   tValues[i]   ?? 0,
         pValue:   pValues[i]   ?? 1,
     }));
 
+    // Find specific terms to match UI expectations
+    const intercept = coefficients.find((c: any) => c.term.includes('Intercept')) || {};
+    const xCoef = coefficients.find((c: any) => c.term === 'x_c') || {};
+    const wCoef = coefficients.find((c: any) => c.term === 'w_c') || {};
+    const intCoef = coefficients.find((c: any) => c.term.includes(':')) || {};
+
     return {
         coefficients,
+        interceptEst: intercept.estimate,
+        interceptSE: intercept.stdError,
+        interceptT: intercept.tValue,
+        interceptP: intercept.pValue,
+        xEst: xCoef.estimate,
+        xSE: xCoef.stdError,
+        xT: xCoef.tValue,
+        xP: xCoef.pValue,
+        wEst: wCoef.estimate,
+        wSE: wCoef.stdError,
+        wT: wCoef.tValue,
+        wP: wCoef.pValue,
+        interactionTerm: intCoef.term || '',
+        interactionEst: intCoef.estimate,
+        interactionEstimate: intCoef.estimate, // for TemplateInterpretation
+        interactionSE: intCoef.stdError,
+        interactionT: intCoef.tValue,
+        interactionP: intCoef.pValue,
+        rSquared: getValue('r_squared')?.[0] ?? 0,
+        rSquaredAdj: getValue('adj_r_squared')?.[0] ?? 0,
         interactionSignificant: getValue('int_significant')?.[0] || false,
         slopes: [
             { level: 'Low (-1 SD)',  slope: getValue('slope_low')?.[0]  ?? 0, pValue: getValue('p_low')?.[0]  ?? 1 },

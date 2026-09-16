@@ -71,24 +71,24 @@ export const ANOVAResults = React.memo(function ANOVAResults({ results, columns,
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider flex items-center gap-2">
                         <Database className="w-4 h-4 text-blue-600" />
-                        ANOVA Summary Table
+                        {t(locale, 'basic.anova_ui.anova_table')}
                     </h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-slate-700">
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
-                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Source of Variation</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">SS (Sum of Squares)</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">df</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">MS (Mean Square)</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">F-Value</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">p-value</th>
+                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">{t(locale, 'basic.anova_ui.source')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.anova_ui.sum_squares')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-center">{t(locale, 'basic.anova_ui.df')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.anova_ui.mean_square')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.anova_ui.f_value')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'basic.anova_ui.p_value')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-50">
                             <tr className="hover:bg-blue-50/30 transition-colors">
-                                <td className="py-5 px-6 text-sm font-bold text-blue-800">Between Groups</td>
+                                <td className="py-5 px-6 text-sm font-bold text-blue-800">{t(locale, 'basic.anova_ui.between_groups')}</td>
                                 <td className="py-5 px-4 text-sm text-right font-mono">{displayResults.ssBetween?.toFixed(3)}</td>
                                 <td className="py-5 px-4 text-sm text-center font-bold">{displayResults.dfBetween}</td>
                                 <td className="py-5 px-4 text-sm text-right font-mono">{displayResults.msBetween?.toFixed(3)}</td>
@@ -98,14 +98,14 @@ export const ANOVAResults = React.memo(function ANOVAResults({ results, columns,
                                 </td>
                             </tr>
                              <tr className="hover:bg-blue-50/30 transition-colors">
-                                <td className="py-5 px-6 text-sm italic text-slate-800">Within Groups</td>
+                                <td className="py-5 px-6 text-sm italic text-slate-800">{t(locale, 'basic.anova_ui.within_groups')}</td>
                                 <td className="py-5 px-4 text-sm text-right font-mono text-slate-900">{displayResults.ssWithin?.toFixed(3)}</td>
                                 <td className="py-5 px-4 text-sm text-center font-bold text-slate-900">{displayResults.dfWithin}</td>
                                 <td className="py-5 px-4 text-sm text-right font-mono text-slate-900">{displayResults.msWithin?.toFixed(3)}</td>
                                 <td className="py-5 px-4" colSpan={2}></td>
                             </tr>
                             <tr className="bg-slate-50/80 font-bold border-t border-blue-100">
-                                <td className="py-5 px-6 text-sm text-blue-900">Total</td>
+                                <td className="py-5 px-6 text-sm text-blue-900">{t(locale, 'basic.anova_ui.total')}</td>
                                 <td className="py-5 px-4 text-sm text-right font-mono text-blue-900">{(displayResults.ssBetween + displayResults.ssWithin)?.toFixed(3)}</td>
                                 <td className="py-5 px-4 text-sm text-center text-blue-900">{(displayResults.dfBetween + displayResults.dfWithin)}</td>
                                 <td colSpan={3}></td>

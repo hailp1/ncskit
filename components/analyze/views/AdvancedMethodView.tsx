@@ -393,14 +393,14 @@ export default function AdvancedMethodView({
 
             {/* Action Buttons */}
             <div className="flex gap-4">
-                <button
+                <button type="button"
                     onClick={onBack}
                     disabled={isRunning}
                     className="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-medium disabled:opacity-50"
                 >
                     ← Quay lại
                 </button>
-                <button
+                <button type="button"
                     onClick={handleRun}
                     disabled={isRunning}
                     className={`flex-1 px-6 py-3 bg-${config.color}-600 text-white rounded-lg hover:bg-${config.color}-700 font-bold disabled:opacity-50 flex items-center justify-center gap-2`}

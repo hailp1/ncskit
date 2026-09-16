@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Regression Analysis Modules - Template-Driven
  */
 import { WEBR_TIMEOUTS, getTimeoutForMethod } from '../constants';
@@ -19,6 +19,8 @@ export async function runLinearRegression(data: number[][], names: string[]): Pr
         tValue: number;
         pValue: number;
         vif?: number;
+        ci95Lower?: number;
+        ci95Upper?: number;
     }[];
     modelFit: {
         rSquared: number;
@@ -29,6 +31,7 @@ export async function runLinearRegression(data: number[][], names: string[]): Pr
         pValue: number;
         residualStdError: number;
         normalityP: number;
+        durbinWatson?: number;
     };
     equation: string;
     chartData: {
@@ -82,6 +85,10 @@ export async function runLinearRegression(data: number[][], names: string[]): Pr
 
     sh_p <- tryCatch(shapiro.test(residuals(mod))$p.value, error = function(e) 0);
     f_p_val <- if(!is.null(fs) && fs[2] > 0 && fs[3] > 0) pf(fs[1], fs[2], fs[3], lower.tail = FALSE) else 1;
+    
+    ci <- tryCatch(confint(mod), error = function(e) cbind(rep(NA, nrow(cf)), rep(NA, nrow(cf))));
+    res <- residuals(mod);
+    dw <- tryCatch(sum(diff(res)^2) / sum(res^2), error = function(e) NA);
 
     list(
         c_names = rownames(cf),
@@ -90,6 +97,8 @@ export async function runLinearRegression(data: number[][], names: string[]): Pr
         errors = as.vector(cf[, 2]),
         t_vals = as.vector(cf[, 3]),
         p_vals = as.vector(cf[, 4]),
+        ci_lower = as.vector(ci[, 1]),
+        ci_upper = as.vector(ci[, 2]),
         r2 = as.numeric(s$r.squared),
         ar2 = as.numeric(s$adj.r.squared),
         f = if(is.null(fs)) 0 else fs[1],
@@ -101,7 +110,8 @@ export async function runLinearRegression(data: number[][], names: string[]): Pr
         res = as.vector(residuals(mod)),
         act = as.vector(df[, 1]),
         vifs = as.vector(vifs),
-        norm_p = as.numeric(sh_p)
+        norm_p = as.numeric(sh_p),
+        dw = as.numeric(dw)
     );
     `;
 
@@ -121,6 +131,8 @@ export async function runLinearRegression(data: number[][], names: string[]): Pr
     const tVals = getValue('t_vals') || [];
     const pVals = getValue('p_vals') || [];
     const vifs = getValue('vifs') || [];
+    const ciLower = getValue('ci_lower') || [];
+    const ciUpper = getValue('ci_upper') || [];
 
     const coefficients = cNames.map((name: string, i: number) => ({
         term: name,
@@ -129,7 +141,9 @@ export async function runLinearRegression(data: number[][], names: string[]): Pr
         stdError: errors[i] || 0,
         tValue: tVals[i] || 0,
         pValue: pVals[i] || 0,
-        vif: i > 0 ? vifs[i - 1] : undefined
+        vif: i > 0 ? vifs[i - 1] : undefined,
+        ci95Lower: ciLower[i] ?? 0,
+        ci95Upper: ciUpper[i] ?? 0
     }));
 
     const f = getValue('f')?.[0] ?? 0;
@@ -147,7 +161,8 @@ export async function runLinearRegression(data: number[][], names: string[]): Pr
             dfResid: df_d,
             pValue: fPValue,
             residualStdError: getValue('sigma')?.[0] ?? 0,
-            normalityP: getValue('norm_p')?.[0] ?? 0
+            normalityP: getValue('norm_p')?.[0] ?? 0,
+            durbinWatson: getValue('dw')?.[0] ?? 0
         },
         equation: `${names[0]} = ...`, // Equation builder can be more complex
         chartData: {
@@ -182,6 +197,7 @@ export async function runLogisticRegression(data: number[][], names: string[]): 
         accuracy: number;
         sensitivity: number;
         specificity: number;
+        auc?: number;
     };
     confusionMatrix: {
         tp: number; fp: number;
@@ -238,6 +254,17 @@ export async function runLogisticRegression(data: number[][], names: string[]): 
     sensitivity <- if ((tp + fn) > 0) tp / (tp + fn) else 0;
     specificity <- if ((tn + fp) > 0) tn / (tn + fp) else 0;
     
+    # AUC using Mann-Whitney U on predicted probabilities (pure R)
+    auc <- tryCatch({
+        n1 <- sum(actual == 1)
+        n0 <- sum(actual == 0)
+        if(n1 > 0 && n0 > 0) {
+            r <- rank(pred_prob)
+            u <- sum(r[actual == 1]) - n1 * (n1 + 1) / 2
+            u / (n1 * n0)
+        } else { NA }
+    }, error = function(e) NA);
+    
     list(
         c_names = rownames(cf),
         estimates = as.vector(cf[, 1]),
@@ -255,6 +282,7 @@ export async function runLogisticRegression(data: number[][], names: string[]): 
         accuracy = as.numeric(accuracy),
         sensitivity = as.numeric(sensitivity),
         specificity = as.numeric(specificity),
+        auc = as.numeric(auc),
         tp = as.integer(tp), fp = as.integer(fp),
         fn = as.integer(fn), tn = as.integer(tn)
     );
@@ -294,6 +322,7 @@ export async function runLogisticRegression(data: number[][], names: string[]): 
             accuracy: getValue('accuracy')?.[0] ?? 0,
             sensitivity: getValue('sensitivity')?.[0] ?? 0,
             specificity: getValue('specificity')?.[0] ?? 0,
+            auc: getValue('auc')?.[0] ?? 0,
         },
         confusionMatrix: {
             tp: getValue('tp')?.[0] ?? 0,

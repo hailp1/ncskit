@@ -9,7 +9,7 @@ export const translations = {
 } as const;
 
 // Helper to get translation
-export function t(locale: Locale, key: string, fallback?: string): string {
+export function t(locale: Locale, key: string, params?: Record<string, any>, fallback?: string): string {
     const keys = key.split('.');
     let value: any = translations[locale];
 
@@ -17,11 +17,16 @@ export function t(locale: Locale, key: string, fallback?: string): string {
         value = value?.[k];
     }
 
-    if (value) return value;
-    if (fallback) return fallback;
+    if (!value && fallback) value = fallback;
+    if (!value) return keys[keys.length - 1];
     
-    // If not found, gracefully return the last part of the key instead of the full technical path
-    return keys[keys.length - 1];
+    if (typeof value === 'string' && params) {
+        return value.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (match, p1) => {
+            return params[p1] !== undefined ? String(params[p1]) : match;
+        });
+    }
+
+    return value as string;
 }
 
 // Default locale

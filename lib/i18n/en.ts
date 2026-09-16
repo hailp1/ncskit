@@ -1,4 +1,7 @@
+import asigEn from '../../locales/en/asig.json';
+
 export const en = {
+    asig: asigEn,
         // Header
         nav: {
             analyze: 'Statistics & Analysis',

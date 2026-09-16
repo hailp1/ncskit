@@ -46,10 +46,10 @@ export const BASE_URL = typeof window !== 'undefined'
 
 export const getOptimalChannelType = (): 0 | 1 | 3 => {
     // CRITICAL FIX: Always use PostMessage (channel 3).
-    // WebR 0.5.8 + SharedArrayBuffer (channel 0) crashes with "c is not a function"
+    // WebR + SharedArrayBuffer (channel 0/1) crashes silently or hangs indefinitely
     // when the page uses COEP 'credentialless' (which sets crossOriginIsolated=true
     // but doesn't provide full CORP compliance that WebR's SAB channel requires).
-    // PostMessage is ~10% slower but 100% stable on ALL browsers.
+    // PostMessage is slower but 100% stable on ALL browsers.
     return 3;
 };
 
@@ -104,21 +104,13 @@ export async function clearWebRStorage(): Promise<void> {
     
     if (typeof window !== 'undefined' && window.indexedDB) {
         try {
-            logger.debug('[WebR] DEEP CLEAN: Deleting all potential IndexedDB corruptions...');
+            logger.debug('[WebR] CLEANUP: Deleting specific WebR IndexedDB corruptions...');
             const idb: any = window.indexedDB;
-            const targetDBs = ['emscripten_fs', 'webr_fs', 'IDBFS', 'WebR'];
+            // Only delete specific, known WebR/Emscripten databases to prevent wiping out other apps
+            const targetDBs = ['emscripten_fs', 'webr_fs', 'WebR'];
             
             for (const dbName of targetDBs) {
                 try { idb.deleteDatabase(dbName); } catch(err) {}
-            }
-
-            if (typeof idb.databases === 'function') {
-                const dbs = await idb.databases();
-                dbs.forEach((db: any) => {
-                    if (db.name?.toLowerCase().includes('webr') || db.name?.toLowerCase().includes('fs')) {
-                        idb.deleteDatabase(db.name);
-                    }
-                });
             }
         } catch (e) {
             logger.warn('[WebR] Cleanup skipped or restricted:', e);
@@ -179,18 +171,14 @@ export async function initWebR(maxRetries: number = 3): Promise<WebR> {
                 });
                 console.log('[DEBUG-INIT] Step 2: WebR constructor succeeded');
 
-                // Aggressively clean up ServiceWorker before init to prevent deadlocks
-                // from persisting across page reloads.
+                // Register the PWA Service Worker for caching WebR packages
                 if (typeof window !== 'undefined' && navigator.serviceWorker) {
                     try {
-                        const regs = await navigator.serviceWorker.getRegistrations();
-                        for (let reg of regs) {
-                            if (reg.active?.scriptURL.includes('webr')) {
-                                await reg.unregister();
-                                logger.info('[WebR] Cleaned up previous ServiceWorker to prevent deadlock.');
-                            }
-                        }
-                    } catch (e) {}
+                        await navigator.serviceWorker.register('/sw.js');
+                        logger.info('[WebR] Service Worker registered for rapid package caching.');
+                    } catch (e) {
+                        logger.warn('[WebR] Service Worker registration failed:', e);
+                    }
                 }
 
                 console.log('[DEBUG-INIT] Step 3: Calling webR.init()...');
@@ -210,47 +198,11 @@ export async function initWebR(maxRetries: number = 3): Promise<WebR> {
                 let storageSane = false;
                 const channelType = getOptimalChannelType();
 
-                // CRITICAL: IDBFS is NOT supported with SharedArrayBuffer (Channel 0)
-                // It only works with PostMessage (Channel 3) or ServiceWorker (Channel 1)
-                // DISABLED: IDBFS mount causes FileReaderSync crash on PostMessage channel
-                // when VFS grows large (60+ packages like seminr). RAM-only mode is stable.
-                // Packages will be re-downloaded on page reload (~10-15s with CDN cache).
-                if (false && channelType !== 0) {
-                    try {
-                        try { await webR.FS.mkdir('/home/web_user'); } catch (e) {}
-                        try { await webR.FS.mkdir(persistentLib); } catch (e) {}
-                        
-                        logger.debug('[WebR] Connecting storage (IDBFS)...');
-                        await webR.FS.mount('IDBFS', {}, persistentLib);
-                        
-                        try {
-                            await Promise.race([
-                                webR.FS.syncfs(true),
-                                new Promise((_, reject) => setTimeout(() => reject(new Error('Sync Timeout')), 10000))
-                            ]);
-
-                            const isFsBroken = typeof localStorage !== 'undefined' ? localStorage.getItem('webr_fs_broken') === 'true' : false;
-                            if (isFsBroken || crashCount > 1) {
-                                logger.warn('[WebR] Self-healing storage...');
-                                await webR.evalR(`unlink("${persistentLib}", recursive = TRUE); dir.create("${persistentLib}", recursive = TRUE)`);
-                                await webR.FS.syncfs(false);
-                                if (typeof localStorage !== 'undefined') localStorage.removeItem('webr_fs_broken');
-                            }
-                            
-                            const sanity = await webR.evalR(`dir.exists("${persistentLib}") && file.access("${persistentLib}", 2) == 0`);
-                            if (unpackWebRObject(await sanity.toJs()) === true) {
-                                storageSane = true;
-                            }
-                        } catch (syncErr) {
-                            logger.warn('[WebR] IDBFS failed, falling back to RAM.', syncErr);
-                            if (typeof localStorage !== 'undefined') localStorage.setItem('webr_fs_broken', 'true');
-                        }
-                    } catch (fsErr) {
-                        logger.warn('[WebR] Storage setup error:', fsErr);
-                    }
-                } else {
-                    logger.info('[WebR] SharedArrayBuffer detected, skipping IDBFS mount for stability.');
-                }
+                // IDBFS has been permanently disabled in favour of PWA Service Worker CacheStorage
+                // The Service Worker handles intercepting and caching *.so and *.RData files,
+                // providing <1s reload times without the WebR VFS crash bugs.
+                logger.info('[WebR] Using Service Worker CacheStorage for offline capabilities.');
+                storageSane = true;
                 
                 if (!storageSane) logger.info('[WebR] RAM Mode Active (High Performance)');
 
@@ -459,19 +411,19 @@ function unpackWebRObject(obj: any): any {
         return obj;
     }
     if (Array.isArray(obj)) return obj.map(unpackWebRObject);
-    if (obj.type && obj.values !== undefined) {
-        if (Array.isArray(obj.values)) {
-            if (obj.values.length === 1) return unpackWebRObject(obj.values[0]);
-            return obj.values.map(unpackWebRObject);
-        }
-        return unpackWebRObject(obj.values);
-    }
     if (obj.type === 'list' && obj.names && obj.values) {
         const result: any = {};
         for (let i = 0; i < obj.names.length; i++) {
             result[obj.names[i]] = unpackWebRObject(obj.values[i]);
         }
         return result;
+    }
+    if (obj.type && obj.values !== undefined) {
+        if (Array.isArray(obj.values)) {
+            if (obj.values.length === 1) return unpackWebRObject(obj.values[0]);
+            return obj.values.map(unpackWebRObject);
+        }
+        return unpackWebRObject(obj.values);
     }
     const result: any = {};
     for (const key in obj) {
@@ -503,44 +455,36 @@ export async function executeRWithRecovery(
 
         const executionPromise = runLocked(async () => {
             if (csvData && csvData.length > 0) {
-                const CHUNK_SIZE = 500;
                 const numRows = csvData.length;
+                const numCols = numRows > 0 ? csvData[0].length : 0;
 
-                if (numRows <= CHUNK_SIZE) {
-                    const csvText = csvData.map(row =>
-                        row.map(v => {
-                            if (v === null || v === undefined || (v as any) === '') return 'NA';
-                            const n = Number(v);
-                            return isNaN(n) ? 'NA' : n;
-                        }).join(',')
-                    ).join('\n');
-                    const escapedCsv = csvText.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-                    await webR.evalR(`
-                        .csv_text <- "${escapedCsv}"
-                        raw_data <- as.matrix(read.csv(text = .csv_text, header = FALSE, stringsAsFactors = FALSE))
-                        rm(.csv_text)
-                    `);
-                } else {
-                    await webR.evalR(`raw_data <- NULL`);
-                    for (let i = 0; i < numRows; i += CHUNK_SIZE) {
-                        const chunk = csvData.slice(i, i + CHUNK_SIZE);
-                        const chunkText = chunk.map(row =>
-                            row.map(v => {
-                                if (v === null || v === undefined || (v as any) === '') return 'NA';
-                                const n = Number(v);
-                                return isNaN(n) ? 'NA' : n;
-                            }).join(',')
-                        ).join('\n');
-                        const escapedChunk = chunkText.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-                        await webR.evalR(`
-                            .chunk <- read.csv(text = "${escapedChunk}", header = FALSE, stringsAsFactors = FALSE)
-                            .chunk[] <- suppressWarnings(lapply(.chunk, as.numeric))
-                            .chunk <- as.matrix(.chunk)
-                            raw_data <- if(is.null(raw_data)) .chunk else rbind(raw_data, .chunk)
-                            rm(.chunk)
-                        `);
+                const flatData = new Array(numRows * numCols);
+                let idx = 0;
+                let naCount = 0;
+                
+                for (let r = 0; r < numRows; r++) {
+                    const row = csvData[r];
+                    for (let c = 0; c < numCols; c++) {
+                        const v = row[c];
+                        if (v === null || v === undefined || (v as any) === '' || isNaN(Number(v))) {
+                            flatData[idx++] = "NA";
+                            naCount++;
+                        } else {
+                            flatData[idx++] = String(v);
+                        }
                     }
                 }
+
+                // Warn if all data is NA (likely column-name mismatch)
+                if (naCount === numRows * numCols) {
+                    console.error(`[WebR] All ${naCount} cells are NA. Input data may have mismatched column names.`);
+                }
+
+                await webR.objs.globalEnv.bind('.flat_data', flatData);
+                await webR.evalR(`
+                    raw_data <- matrix(as.numeric(.flat_data), nrow=${numRows}, ncol=${numCols}, byrow=TRUE)
+                    rm(.flat_data)
+                `);
             }
 
             const wrappedCode = `
@@ -588,7 +532,7 @@ export async function executeRWithRecovery(
             await webR.evalR('gc()');
             console.log("[WebR Debug] gc() finished");
 
-            return jsResult;
+            return unpackWebRObject(jsResult);
         });
 
         const timeoutPromise = new Promise((_, reject) =>

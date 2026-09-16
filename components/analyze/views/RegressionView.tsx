@@ -95,7 +95,7 @@ export const RegressionView: React.FC<RegressionViewProps> = ({
     );
 
     const ActionButton = ({ onClick, disabled, children }: any) => (
-        <button
+        <button type="button"
             onClick={onClick}
             disabled={disabled}
             className="w-full py-4 bg-blue-900 hover:bg-blue-950 text-white font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 rounded-xl transition-all shadow-lg shadow-blue-100 disabled:opacity-50"
@@ -117,6 +117,7 @@ export const RegressionView: React.FC<RegressionViewProps> = ({
                     <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block ml-1">Biến phụ thuộc (Dependent Variable Y)</label>
                         <select
+                            id="dependent-var"
                             className="w-full px-4 py-3 bg-white border border-blue-100 rounded-xl text-blue-900 font-bold text-sm focus:ring-2 focus:ring-blue-900 outline-none transition-all shadow-sm"
                             value={regressionVars.y}
                             onChange={(e) => setRegressionVars({ ...regressionVars, y: e.target.value })}
@@ -168,7 +169,7 @@ export const RegressionView: React.FC<RegressionViewProps> = ({
                     </ActionButton>
                 </div>
 
-                <button onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
+                <button type="button" onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
                     <ChevronLeft className="w-3 h-3" /> Quay lại
                 </button>
             </div>
@@ -239,7 +240,7 @@ export const RegressionView: React.FC<RegressionViewProps> = ({
                     </ActionButton>
                 </div>
 
-                <button onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
+                <button type="button" onClick={() => setStep('analyze')} className="w-full py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-600 transition-colors flex items-center justify-center gap-2">
                     <ChevronLeft className="w-3 h-3" /> Quay lại
                 </button>
             </div>

@@ -1,0 +1,417 @@
+{
+  "plssem": {
+    "bootstrap": {
+      "no_results": "Không có kết quả Bootstrap",
+      "title": "Kết quả Bootstrapping",
+      "subtitle": "Kiểm định độ tin cậy thống kê với {{iterations}} lần lấy mẫu lại",
+      "status": "Trạng thái",
+      "status_complete": "Bootstrap hoàn tất với {{iterations}} iterations",
+      "ci_title": "Khoảng tin cậy 95% (CI)",
+      "table": {
+        "variable": "Biến",
+        "ci_lower": "CI Lower (2.5%)",
+        "ci_upper": "CI Upper (97.5%)",
+        "ci_width": "Độ rộng CI",
+        "variable_num": "Variable {{num}}"
+      },
+      "guide": {
+        "title": "Hướng dẫn giải thích học thuật (Theo Hair et al., 2021)",
+        "ci": "Khoảng tin cậy Bootstrap (95% CI):",
+        "ci_desc": "Là phương pháp phi tham số tối ưu trong PLS-SEM để đánh giá mức độ ổn định của các tham số ước lượng mà không phụ thuộc vào giả định phân phối chuẩn.",
+        "sig": "Đánh giá ý nghĩa thống kê:",
+        "sig_desc": "Một tham số được coi là có ý nghĩa thống kê ở mức α = 0.05 nếu khoảng tin cậy 95% không chứa giá trị 0. Đây là tiêu chuẩn vàng thường được sử dụng song song với p-value.",
+        "power": "Sức mạnh của Bootstrap:",
+        "power_desc": "Với {{iterations}} mẫu lặp (iterations), thuật toán đảm bảo việc ước lượng sai số chuẩn (standard error) đạt độ chính xác cao, giúp hạn chế sai lầm loại I (Type I error)."
+      },
+      "recommendation": {
+        "title": "Khuyến nghị báo cáo (Chuẩn APA 7)",
+        "report": "Trình bày kết quả:",
+        "report_desc": "Báo cáo hệ số gốc kèm theo khoảng tin cậy 95% (VD: β = 0.35, 95% CI [0.12, 0.51]) trong bảng kết quả kiểm định giả thuyết.",
+        "width": "Phân tích độ rộng CI:",
+        "width_desc": "Độ rộng của CI (Upper - Lower) phản ánh độ chính xác của ước lượng. Nếu CI quá rộng, có thể là do cỡ mẫu nhỏ hoặc tính biến thiên của dữ liệu cao, cần được nêu trong phần hạn chế của nghiên cứu.",
+        "hypothesis": "Biện luận giả thuyết:",
+        "hypothesis_desc": "Đối với các hệ số đường dẫn (path coefficients) mà CI chứa số 0, bạn phải kết luận rằng giả thuyết tương ứng không được ủng hộ (not supported)."
+      }
+    },
+    "mga": {
+      "no_results": "Không có kết quả MGA",
+      "title": "Kết quả MGA",
+      "subtitle": "Multi-Group Analysis - So sánh giữa các nhóm",
+      "sig_yes": "Có sự khác biệt có ý nghĩa thống kê",
+      "sig_no": "Không có sự khác biệt có ý nghĩa thống kê",
+      "p_value": "P-value:",
+      "p_lt_05": "p < 0.05",
+      "p_ge_05": "p ≥ 0.05",
+      "sig_desc_yes": "✅ Các nhóm có sự khác biệt đáng kể về giá trị trung bình",
+      "sig_desc_no": "⚠️ Các nhóm không có sự khác biệt đáng kể về giá trị trung bình",
+      "table": {
+        "title": "So sánh giữa các nhóm",
+        "group": "Nhóm",
+        "mean": "Giá trị trung bình",
+        "rank": "Xếp hạng",
+        "group_name": "Nhóm {{name}}",
+        "highest": "Cao nhất",
+        "lowest": "Thấp nhất"
+      },
+      "summary": {
+        "title": "Tóm tắt sự khác biệt",
+        "highest_group": "Nhóm cao nhất:",
+        "lowest_group": "Nhóm thấp nhất:",
+        "group_name": "Nhóm {{name}}",
+        "abs_diff": "Chênh lệch tuyệt đối:",
+        "diff_pct": "{{pct}}% chênh lệch",
+        "na": "N/A"
+      },
+      "guide": {
+        "title": "Hướng dẫn giải thích học thuật (MGA)",
+        "mga": "Phân tích đa nhóm (MGA):",
+        "mga_desc": "Cho phép kiểm định xem liệu các ước lượng tham số (ví dụ: trung bình, hệ số đường dẫn) có khác biệt đáng kể giữa hai hoặc nhiều nhóm quan sát hay không, từ đó phát hiện tính không đồng nhất (heterogeneity).",
+        "sig": "P-value < 0.05:",
+        "sig_desc": "Bác bỏ giả thuyết không (H0) về sự đồng nhất. Tồn tại sự khác biệt mang ý nghĩa thống kê giữa các nhóm.",
+        "nonsig": "P-value ≥ 0.05:",
+        "nonsig_desc": "Không đủ cơ sở để bác bỏ H0. Giả định rằng dữ liệu đến từ cùng một quần thể không bị vi phạm."
+      },
+      "recommendation": {
+        "title": "Khuyến nghị báo cáo (Chuẩn APA 7)",
+        "implications": "Hàm ý nghiên cứu:",
+        "implications_desc": "Do có sự khác biệt mang ý nghĩa thống kê, không nên phân tích gộp toàn mẫu. Các chiến lược hoặc kết luận nên được tùy chỉnh (tailored) cho từng nhóm cụ thể.",
+        "advantage": "Lợi thế của Nhóm {{group}}:",
+        "advantage_desc": "Nhóm {{group}} thể hiện mức độ cao nhất. Cần khai thác các yếu tố giải thích cho sự vượt trội này trong phần thảo luận.",
+        "limitation": "Hạn chế của Nhóm {{group}}:",
+        "limitation_desc": "Nhóm {{group}} có mức độ thấp nhất. Hãy cân nhắc đề xuất các chính sách can thiệp (interventions) nhắm vào nhóm này.",
+        "pooled": "Phân tích gộp:",
+        "pooled_desc": "Vì không có khác biệt hệ thống, bạn có thể gộp dữ liệu để tăng cỡ mẫu (N) và sức mạnh kiểm định (power) cho mô hình cấu trúc tổng thể."
+      }
+    },
+    "ipma": {
+      "no_results": "Không có kết quả IPMA",
+      "title": "Kết quả IPMA",
+      "subtitle": "Importance-Performance Matrix Analysis - Phân tích ma trận Quan trọng - Hiệu suất",
+      "table": {
+        "title": "Ma trận Importance-Performance",
+        "variable": "Biến",
+        "importance": "Độ quan trọng (Importance)",
+        "performance": "Hiệu suất (Performance)",
+        "classification": "Phân loại chiến lược"
+      },
+      "categories": {
+        "priority": {
+          "label": "Ưu tiên cải thiện",
+          "desc": "Quan trọng cao nhưng hiệu suất thấp"
+        },
+        "maintain": {
+          "label": "Duy trì tốt",
+          "desc": "Quan trọng cao và hiệu suất tốt"
+        },
+        "excess": {
+          "label": "Dư thừa",
+          "desc": "Ít quan trọng nhưng hiệu suất cao"
+        },
+        "low": {
+          "label": "Ưu tiên thấp",
+          "desc": "Ít quan trọng và hiệu suất thấp"
+        }
+      },
+      "breakdown": {
+        "variables": "biến"
+      },
+      "guide": {
+        "title": "Hướng dẫn giải thích học thuật (IPMA)",
+        "q1": "Góc phần tư 1 (Ưu tiên cải thiện):",
+        "q1_desc": "Các nhân tố có tổng tác động (Importance) lớn hơn trung bình nhưng hiệu suất (Performance) thực tế lại dưới mức trung bình. Đây là các điểm nghẽn chính cần can thiệp chiến lược ngay lập tức.",
+        "q2": "Góc phần tư 2 (Duy trì tốt):",
+        "q2_desc": "Các nhân tố có tác động mạnh và hiệu suất đang ở mức tốt. Tổ chức cần tiếp tục duy trì nguồn lực hiện tại.",
+        "q3": "Góc phần tư 3 (Dư thừa nguồn lực):",
+        "q3_desc": "Hiệu suất rất cao nhưng mức độ đóng góp (tác động) vào biến mục tiêu lại thấp. Cân nhắc cắt giảm hoặc điều chuyển nguồn lực sang các nhóm khác.",
+        "q4": "Góc phần tư 4 (Ưu tiên thấp):",
+        "q4_desc": "Vừa có tác động thấp vừa có hiệu suất kém. Không nên ưu tiên đầu tư thêm vào lúc này."
+      },
+      "recommendation": {
+        "title": "Khuyến nghị quản trị (Chuẩn APA 7)",
+        "urgent": "Ưu tiên cấp bách:",
+        "urgent_desc1": "Hành động quản trị cần tập trung tối đa vào",
+        "urgent_desc2": "để đạt được hiệu quả cải thiện biến mục tiêu (target construct) với chi phí cơ hội thấp nhất.",
+        "defensive": "Chiến lược phòng thủ:",
+        "defensive_desc1": "Đảm bảo không suy giảm hiệu suất của",
+        "defensive_desc2": "vì đây là lợi thế cạnh tranh cốt lõi.",
+        "report": "Báo cáo ma trận IPMA (đồ thị phân tán) đi kèm với bảng chỉ số này để làm phong phú phần Thảo luận (Discussion)."
+      }
+    },
+    "blindfolding": {
+      "no_results": "Không có kết quả Blindfolding",
+      "title": "Kết quả Blindfolding",
+      "subtitle": "Kiểm tra độ liên quan dự đoán ngoài mẫu (Out-of-sample Predictive Relevance - Q²)",
+      "status": "Trạng thái:",
+      "procedure": {
+        "title": "Chi tiết quy trình (Procedure Details)",
+        "omission_distance": "Khoảng cách loại bỏ (Omission Distance)",
+        "omission_distance_desc": "Khoảng cách (D) phân chia tập dữ liệu để tiến hành Cross-Validation.",
+        "omitted_points": "Số quan sát bị ẩn (Omitted Data Points)",
+        "omitted_points_desc": "Tổng số điểm dữ liệu đã bị che đi để mô hình dự đoán lại."
+      },
+      "guide": {
+        "title": "Hướng dẫn giải thích Q² (Predictive Relevance)",
+        "q2_positive": "Q² > 0 (Geisser, 1974; Stone, 1974)",
+        "q2_positive_desc": "Mô hình có độ liên quan dự đoán ngoài mẫu. Dự đoán của mô hình tốt hơn so với việc sử dụng giá trị trung bình ngây thơ (naive mean).",
+        "q2_zero": "Q² ≈ 0",
+        "q2_zero_desc": "Sức mạnh dự đoán rất yếu hoặc không đáng kể, bằng với việc chỉ đoán giá trị trung bình.",
+        "q2_negative": "Q² < 0",
+        "q2_negative_desc": "Mô hình hoàn toàn thiếu năng lực dự đoán. Dự đoán dựa trên mô hình cấu trúc thậm chí tệ hơn cả việc đoán mò bằng giá trị trung bình."
+      },
+      "methodology": {
+        "title": "Cơ sở lý thuyết Blindfolding",
+        "intro": "Blindfolding là kỹ thuật tái lấy mẫu (resampling) dựa trên nền tảng Cross-Validation:",
+        "algorithm": "Thuật toán:",
+        "algorithm_desc": "Loại bỏ có hệ thống từng điểm dữ liệu ở khoảng cách D = {{distance}}.",
+        "estimation": "Ước lượng:",
+        "estimation_desc": "Mô hình PLS được tính toán lại bằng phần dữ liệu còn lại.",
+        "prediction": "Dự báo:",
+        "prediction_desc": "Sử dụng các hệ số vừa ước lượng để dự báo lại các điểm dữ liệu đã bị che khuất.",
+        "evaluation": "Đánh giá:",
+        "evaluation_desc": "Tính toán chỉ số Q² (Stone-Geisser) dựa trên chênh lệch giữa dự báo và thực tế."
+      },
+      "recommendation": {
+        "title": "Khuyến nghị báo cáo học thuật (APA 7)",
+        "report_q2": "Báo cáo Q²:",
+        "report_q2_desc": "Chỉ số Q² phải được báo cáo đối với từng biến tiềm ẩn nội sinh (endogenous latent construct) mang tính chất phản xạ (reflective).",
+        "effect_size": "Mức độ ảnh hưởng (q² effect size):",
+        "effect_size_desc": "Ngoài Q² tổng quát, các bài báo chất lượng cao (Q1/Q2) thường yêu cầu tính toán hiệu ứng q² để đo lường mức đóng góp tương đối của từng biến ngoại sinh vào khả năng dự đoán.",
+        "applicability": "Điều kiện áp dụng:",
+        "applicability_desc": "Tuyệt đối KHÔNG áp dụng (hoặc diễn giải) chỉ số Q² cho các biến tiềm ẩn ngoại sinh (exogenous) hoặc biến nội sinh đo lường dưới dạng nguyên nhân (formative construct)."
+      }
+    },
+    "htmt": {
+      "summary": {
+        "issues": "Phát hiện vi phạm độ giá trị phân biệt (Discriminant Validity Issues)",
+        "good": "Đảm bảo độ giá trị phân biệt (Good Discriminant Validity)",
+        "threshold": "Ngưỡng HTMT:",
+        "strict": "Nghiêm ngặt",
+        "lenient": "Linh động"
+      },
+      "matrix_title": "Ma trận HTMT (Heterotrait-Monotrait Ratio)",
+      "table": {
+        "factor": "Nhân tố"
+      },
+      "guide": {
+        "title": "Hướng dẫn giải thích học thuật (APA 7)",
+        "below": "Đảm bảo độ giá trị phân biệt. Các cấu trúc tiềm ẩn có sự tách biệt rõ ràng.",
+        "above": "Vi phạm",
+        "above_desc": "Các khái niệm quá tương đồng, thiếu tính phân biệt.",
+        "red_cells": "Các ô màu đỏ",
+        "red_cells_desc": "biểu thị sự vi phạm độ giá trị phân biệt. Cần xem xét lại mô hình đo lường."
+      },
+      "actions": {
+        "title": "Khuyến nghị khắc phục",
+        "review": "Đánh giá lại hệ thống khái niệm:",
+        "review_desc": "Kiểm tra xem các biến quan sát có bị chồng chéo ý nghĩa không.",
+        "remove": "Loại bỏ biến quan sát:",
+        "remove_desc": "Cân nhắc loại bỏ những biến quan sát (items) gây ra giá trị HTMT cao (cross-loadings lớn).",
+        "merge": "Gộp cấu trúc:",
+        "merge_desc": "Nếu hai nhân tố về mặt lý thuyết hoàn toàn giống nhau, hãy cân nhắc gộp chúng thành một nhân tố chung.",
+        "alternative": "Tiêu chí bổ sung:",
+        "alternative_desc": "Sử dụng thêm tiêu chí Fornell-Larcker hoặc Cross-loadings để củng cố bằng chứng."
+      },
+      "methodology": {
+        "title": "Phương pháp: Tiêu chuẩn HTMT",
+        "method": "Phương pháp",
+        "method_desc": "Tỷ số HTMT (Heterotrait-Monotrait) đánh giá độ giá trị phân biệt bằng cách so sánh tương quan chéo giữa các chỉ báo của các cấu trúc khác nhau với tương quan giữa các chỉ báo trong cùng một cấu trúc.",
+        "threshold": "Ngưỡng chấp nhận",
+        "strict_desc": "Tiêu chuẩn khắt khe (0.85) được khuyên dùng cho các cấu trúc có khái niệm gần gũi.",
+        "lenient_desc": "Tiêu chuẩn linh động (0.90) có thể chấp nhận cho các khái niệm hoàn toàn tách biệt về lý thuyết."
+      }
+    }
+  },
+  "regression": {
+    "ui": {
+      "equation": "Phương trình Hồi quy",
+      "model_summary": "Tóm tắt Mô hình",
+      "model": "Mô hình",
+      "r": "R",
+      "r_square": "R Bình phương",
+      "adj_r_square": "R² Hiệu chỉnh",
+      "std_error": "Sai số chuẩn",
+      "anova_table": "Bảng phân tích phương sai (ANOVA)",
+      "source": "Nguồn",
+      "sum_of_squares": "Tổng bình phương (SS)",
+      "df": "Bậc tự do (df)",
+      "mean_square": "Trung bình bình phương (MS)",
+      "f": "F",
+      "sig": "Mức ý nghĩa (Sig.)",
+      "regression": "Hồi quy",
+      "coefficients": "Hệ số Hồi quy",
+      "unstandardized": "Hệ số chưa chuẩn hóa",
+      "standardized": "Hệ số chuẩn hóa Beta",
+      "t": "t",
+      "vif": "VIF",
+      "constant": "(Hằng số)"
+    },
+    "logistic_ui": {
+      "title": "Phân tích Hồi quy Logistic",
+      "model_fit": "Độ phù hợp mô hình",
+      "pseudo_r2": "Pseudo R²",
+      "accuracy": "Độ chính xác (Accuracy)",
+      "auc": "Diện tích dưới đường cong (AUC)",
+      "classification": "Bảng phân loại",
+      "observed": "Thực tế",
+      "predicted": "Dự báo",
+      "percentage_correct": "Tỷ lệ đúng",
+      "coefficients": "Hệ số mô hình",
+      "estimate": "Ước lượng (B)",
+      "odds_ratio": "Tỷ số Chênh (Odds Ratio)",
+      "ci_95": "Khoảng tin cậy 95%",
+      "lower": "Cận dưới",
+      "upper": "Cận trên",
+      "p_value": "P-Value",
+      "wald": "Wald",
+      "step": "Bước",
+      "block": "Khối"
+    },
+    "mediation_ui": {
+      "title": "Phân tích Trung gian (Mediation)",
+      "path_a": "Đường dẫn a (X → M)",
+      "path_b": "Đường dẫn b (M → Y)",
+      "path_c": "Tác động Tổng c (X → Y)",
+      "path_c_prime": "Tác động Trực tiếp c' (X → Y | M)",
+      "indirect_effect": "Tác động Gián tiếp (a × b)",
+      "sobel_test": "Kiểm định Sobel",
+      "z_value": "Giá trị Z",
+      "bootstrap_ci": "Bootstrap CI (95%)",
+      "estimate": "Ước lượng",
+      "std_error": "Sai số chuẩn",
+      "p_value": "P-Value",
+      "lower_ci": "Cận dưới CI",
+      "upper_ci": "Cận trên CI",
+      "conclusion": "Kết luận Phân tích"
+    },
+    "moderation_ui": {
+      "title": "Phân tích Điều tiết (Moderation)",
+      "interaction": "Hiệu ứng Tương tác (X × W)",
+      "r2_change": "Sự thay đổi R² (ΔR²)",
+      "simple_slopes": "Phân tích Simple Slopes",
+      "level": "Mức độ của W",
+      "slope": "Độ dốc (Slope)",
+      "p_value": "P-Value",
+      "coefficients": "Hệ số Mô hình",
+      "term": "Biến",
+      "estimate": "Ước lượng",
+      "std_error": "Sai số chuẩn",
+      "t_value": "t-value"
+    }
+  },
+  "factor": {
+    "efa_ui": {
+      "title": "Phân tích Nhân tố Khám phá (EFA)",
+      "kmo_bartlett": "KMO & Kiểm định Bartlett",
+      "kmo_measure": "Hệ số KMO (Kaiser-Meyer-Olkin)",
+      "bartlett_test": "Kiểm định Bartlett",
+      "approx_chi_square": "Approx. Chi-Square",
+      "df": "Bậc tự do (df)",
+      "sig": "Mức ý nghĩa (Sig.)",
+      "total_variance": "Tổng phương sai trích (Total Variance Explained)",
+      "factor": "Nhân tố",
+      "eigenvalue": "Eigenvalue",
+      "variance_pct": "% Phương sai",
+      "cumulative_pct": "% Tích lũy",
+      "pattern_matrix": "Ma trận Xoay (Pattern Matrix)",
+      "communality": "Communality",
+      "variable": "Biến quan sát"
+    },
+    "cfa_ui": {
+      "title": "Phân tích Nhân tố Khẳng định (CFA)",
+      "model_fit": "Độ phù hợp mô hình (Model Fit)",
+      "index": "Chỉ số",
+      "value": "Giá trị",
+      "threshold": "Ngưỡng lý tưởng",
+      "status": "Đánh giá",
+      "factor_loadings": "Hệ số tải nhân tố (Factor Loadings)",
+      "latent_var": "Biến tiềm ẩn",
+      "observed_var": "Biến quan sát",
+      "estimate": "Ước lượng chưa chuẩn hóa",
+      "std_estimate": "Hệ số chuẩn hóa",
+      "se": "S.E.",
+      "z_value": "Giá trị Z",
+      "p_value": "P-Value",
+      "covariances": "Hiệp phương sai (Covariances / Correlations)",
+      "var1": "Biến 1",
+      "var2": "Biến 2",
+      "correlation": "Hệ số tương quan"
+    }
+  },
+  "basic": {
+    "descriptive_ui": {
+      "title": "Thống kê Mô tả",
+      "variable": "Biến",
+      "n": "N",
+      "missing": "Thiếu",
+      "mean": "Trung bình",
+      "sd": "Độ lệch chuẩn",
+      "median": "Trung vị",
+      "min": "Nhỏ nhất",
+      "max": "Lớn nhất",
+      "skewness": "Độ lệch (Skewness)",
+      "kurtosis": "Độ nhọn (Kurtosis)"
+    },
+    "correlation_ui": {
+      "title": "Phân tích Tương quan Pearson",
+      "variable": "Biến",
+      "correlation": "Hệ số tương quan (r)"
+    },
+    "ttest_ui": {
+      "title": "Kiểm định Independent T-Test",
+      "group_stats": "Thống kê theo nhóm",
+      "group": "Nhóm",
+      "levene_test": "Kiểm định Levene (Phương sai)",
+      "levene_f": "F",
+      "levene_sig": "Sig.",
+      "ttest_results": "Kết quả Independent T-Test",
+      "t_value": "t",
+      "df": "df",
+      "p_value": "Sig. (2-tailed)",
+      "mean_diff": "Chênh lệch TB"
+    },
+    "paired_ttest_ui": {
+      "title": "Kiểm định Paired Samples T-Test",
+      "pair": "Cặp biến",
+      "mean_diff": "Chênh lệch TB",
+      "t_value": "t",
+      "df": "df",
+      "p_value": "Sig. (2-tailed)"
+    },
+    "anova_ui": {
+      "title": "Kiểm định One-Way ANOVA",
+      "descriptives": "Thống kê Mô tả",
+      "group": "Nhóm",
+      "n": "N",
+      "mean": "Trung bình",
+      "sd": "Độ lệch chuẩn",
+      "anova_table": "Bảng ANOVA",
+      "source": "Nguồn",
+      "sum_squares": "Tổng bình phương",
+      "df": "Bậc tự do (df)",
+      "mean_square": "Trung bình bình phương",
+      "f_value": "F",
+      "p_value": "Sig.",
+      "between_groups": "Giữa các nhóm",
+      "within_groups": "Trong nội bộ nhóm",
+      "total": "Tổng số"
+    },
+    "twoway_anova_ui": {
+      "title": "Kiểm định Two-Way ANOVA",
+      "effects": "Hiệu ứng chính & Tương tác",
+      "factor": "Nhân tố",
+      "sum_squares": "Tổng bình phương",
+      "df": "df",
+      "mean_square": "Trung bình bình phương",
+      "f_value": "F",
+      "p_value": "Sig."
+    },
+    "frequency_ui": {
+      "variable": "Biến",
+      "category": "Danh mục",
+      "frequency": "Tần số",
+      "percent": "Phần trăm",
+      "cumulative_percent": "Phần trăm tích lũy",
+      "total": "Tổng số"
+    }
+  }
+}

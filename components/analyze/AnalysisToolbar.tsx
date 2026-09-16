@@ -30,7 +30,7 @@ export default function AnalysisToolbar({
 
             <div className="flex items-center shrink-0 gap-2">
 
-                <button
+                <button type="button"
                     onClick={onSave}
                     className="flex items-center gap-1.5 px-3 md:px-4 py-2 bg-indigo-600 text-white hover:bg-slate-900 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-indigo-900/40 group"
                     title={locale === 'vi' ? 'Lưu dự án' : 'Save Academy'}
@@ -39,7 +39,7 @@ export default function AnalysisToolbar({
                     <span className="hidden sm:inline">{locale === 'vi' ? 'Lưu dự án' : 'Save Academy'}</span>
                 </button>
 
-                <button
+                <button type="button"
                     onClick={() => {
                         const msg = locale === 'vi' ? 'Bạn có chắc muốn xóa phiên làm việc hiện tại và bắt đầu khảo sát mới?' : 'Clear session and start new analysis?';
                         if (confirm(msg)) {

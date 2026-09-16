@@ -28,12 +28,12 @@ export const ModerationResults = React.memo(function ModerationResults({ results
 
     return (
         <div className="space-y-8 pb-10 animate-in fade-in duration-500">
-             {/* Model Equation Card */}
+            {/* Model Equation Card */}
             <div className="bg-white rounded-xl border border-blue-100 shadow-sm p-8 relative overflow-hidden bg-gradient-to-r from-blue-50/20 to-white">
                 <div className="absolute top-0 right-0 p-4 opacity-10">
                     <Share2 className="w-20 h-20 text-blue-900" />
                 </div>
-                <h4 className="text-[10px] font-black uppercase text-blue-600 tracking-widest mb-4">Regression Moderation Model (Mô hình điều tiết)</h4>
+                <h4 className="text-[10px] font-black uppercase text-blue-600 tracking-widest mb-4">{t(locale, 'regression.moderation_ui.title')}</h4>
                 <div className="text-lg md:text-xl font-mono font-black text-blue-900 break-all leading-relaxed bg-white/50 p-4 rounded-lg border border-blue-50 border-dashed">
                     {columns[0]} = b₀ + b₁({columns[1]}) + b₂({columns[2]}) + b₃({columns[1]} × {columns[2]})
                 </div>
@@ -44,18 +44,18 @@ export const ModerationResults = React.memo(function ModerationResults({ results
                 <div className="px-6 py-4 border-b border-blue-50 bg-slate-50/50 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wider flex items-center gap-2">
                         <Activity className="w-4 h-4 text-blue-600" />
-                        Moderation Effects (Tác động điều tiết)
+                        {t(locale, 'regression.moderation_ui.coefficients')}
                     </h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-slate-700 font-sans">
                         <thead className="bg-blue-50/50 border-y border-blue-100">
                             <tr>
-                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">Predictor Name (Biến)</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Estimate (b)</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">Std. Error</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">t-statistic</th>
-                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right bg-blue-100/30">Sig. (p)</th>
+                                <th className="py-4 px-6 text-xs font-black text-blue-900 uppercase">{t(locale, 'regression.moderation_ui.term')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'regression.moderation_ui.estimate')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'regression.moderation_ui.std_error')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right">{t(locale, 'regression.moderation_ui.t_value')}</th>
+                                <th className="py-4 px-4 text-xs font-black text-blue-900 uppercase text-right bg-blue-100/30">{t(locale, 'regression.moderation_ui.p_value')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-blue-50">
