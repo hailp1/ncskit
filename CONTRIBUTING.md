@@ -30,11 +30,11 @@ git clone https://github.com/hailp1/ncskit.git
 cd ncskit
 npm install
 npm run dev
-# → http://localhost:3000/demo
+# → http://localhost:3000
 ```
 
 No database or external API key is required for local development.
-The `/demo` route provides full access to the statistical engine without login.
+The root route (`/`) provides full access to the statistical engine without login.
 
 ---
 
