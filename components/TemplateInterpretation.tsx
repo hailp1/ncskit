@@ -221,7 +221,7 @@ export function TemplateInterpretation({
                         median1: results.median1 || 0,
                         median2: results.median2 || 0,
                         effectSize: results.effectSize,
-                        distShapeRun: results.distShapeRun
+                        distSimilar: results.distSimilar
                     });
                     break;
 
