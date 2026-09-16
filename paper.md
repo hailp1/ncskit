@@ -397,7 +397,7 @@ A reproducible benchmark script is provided in
 
 # Research Impact Statement
 
-`NCSKit` is actively deployed at [https://ncskit.org](https://ncskit.org) and
+`NCSKit` is actively deployed at [https://open.ncskit.org](https://open.ncskit.org) and
 has been used in graduate research methods courses and doctoral thesis
 supervision at Vietnamese universities since early 2026. Concrete evidence of
 impact:

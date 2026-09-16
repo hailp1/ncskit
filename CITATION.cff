@@ -4,11 +4,11 @@ authors:
   - family-names: "Le"
     given-names: "Phuc Hai"
     orcid: "https://orcid.org/0009-0004-1215-5023"
-    affiliation: "Ton Duc Thang University, Vietnam & ncskit.org"
+    affiliation: "Ton Duc Thang University, Vietnam; ncskit.org"
 title: "NCSKit: A Serverless, WebAssembly-Powered Statistical Analysis Platform with Automated APA Interpretation"
 version: 0.1.0
 date-released: 2026-09-13
-url: "https://ncskit.org"
+url: "https://open.ncskit.org"
 repository-code: "https://github.com/hailp1/ncskit"
 license: MIT
 abstract: >-
@@ -36,7 +36,7 @@ preferred-citation:
     - family-names: "Le"
       given-names: "Phuc Hai"
       orcid: "https://orcid.org/0009-0004-1215-5023"
-      affiliation: "Ton Duc Thang University, Vietnam & ncskit.org"
+      affiliation: "Ton Duc Thang University, Vietnam; ncskit.org"
   title: "NCSKit: A Serverless, WebAssembly-Powered Statistical Analysis Platform with Automated APA Interpretation"
   year: 2026
   url: "https://github.com/hailp1/ncskit"
