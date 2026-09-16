@@ -10,7 +10,7 @@ import { describe, it, expect } from '@jest/globals';
 // by extracting the core validation logic
 
 const ALLOWED_PRODUCTION_ORIGINS = [
-    'https://ncskit.org',
+    'https://open.ncskit.org',
 ];
 
 const ALLOWED_DEV_ORIGINS = [
@@ -43,11 +43,11 @@ describe('validateOrigin logic', () => {
     });
 
     it('allows production origin', () => {
-        expect(isOriginAllowed('https://ncskit.org', host)).toBe(true);
+        expect(isOriginAllowed('https://open.ncskit.org', host)).toBe(true);
     });
 
     it('allows origin matching current host', () => {
-        expect(isOriginAllowed('https://ncskit.org', 'ncskit.org')).toBe(true);
+        expect(isOriginAllowed('https://open.ncskit.org', 'ncskit.org')).toBe(true);
     });
 
     it('blocks unknown external origin', () => {
@@ -74,8 +74,8 @@ describe('validateOrigin logic', () => {
     });
 
     it('blocks origin with similar prefix (subdomain attack)', () => {
-        // 'https://ncskit.org.evil.com' should NOT match 'https://ncskit.org'
-        const malicious = 'https://ncskit.org.evil.com';
+        // 'https://open.ncskit.org.evil.com' should NOT match 'https://open.ncskit.org'
+        const malicious = 'https://open.ncskit.org.evil.com';
         // Our check uses startsWith — this would match! Let's verify the logic handles it
         // The correct check should be exact match or same-origin, not startsWith on the full URL
         // This test documents the current behavior

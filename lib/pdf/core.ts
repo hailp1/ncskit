@@ -182,7 +182,7 @@ export const renderCitation = (ctx: PDFContext) => {
     doc.setTextColor(80);
 
     const citation1 = "Data analyzed using R (R Core Team, 2023) via NCSKIT.org platform (Le, 2026). Reliability and factor analyses performed using psych (Revelle, 2023) and lavaan (Rosseel, 2012) packages.";
-    const citation2 = "Le, P. H. (2026). NCSKIT.org: A Web-Based Statistical Analysis Platform for Psychometric Analysis. Available at https://ncskit.org";
+    const citation2 = "Le, P. H. (2026). NCSKIT.org: A Web-Based Statistical Analysis Platform for Psychometric Analysis. Available at https://open.ncskit.org";
 
     const splitText1 = doc.splitTextToSize(citation1, 180);
     doc.text(splitText1, 15, ctx.yPos);

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Dịch vụ Xử lý Số liệu Định lượng (SPSS, AMOS, SmartPLS)",
     description: "Công cụ tự động chạy mô hình CFA, EFA, PLS-SEM và xuất báo cáo PDF chuẩn học thuật. Nhanh hơn 10x so với thuê dịch vụ ngoài.",
-    url: "https://ncskit.org/dich-vu-phan-tich",
+    url: "https://open.ncskit.org/dich-vu-phan-tich",
     type: "website",
   }
 };

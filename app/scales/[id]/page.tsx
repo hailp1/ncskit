@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
             title,
             description,
             type: 'article',
-            url: `https://ncskit.org/scales/${params.id}`,
+            url: `https://open.ncskit.org/scales/${params.id}`,
         }
     };
 }

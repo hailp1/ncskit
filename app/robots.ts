@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/private/', '/login/'],
     },
-    sitemap: 'https://ncskit.org/sitemap.xml',
+    sitemap: 'https://open.ncskit.org/sitemap.xml',
   }
 }

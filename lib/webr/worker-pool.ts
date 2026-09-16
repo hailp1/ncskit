@@ -48,7 +48,7 @@ export class WebRPoolManager {
                 // Generate unique RNG state
                 const localRepo = (typeof window !== 'undefined' && window.location.origin) 
                     ? window.location.origin + "/webr_repo_v6" 
-                    : "https://ncskit.org/webr_repo_v6";
+                    : "https://open.ncskit.org/webr_repo_v6";
 
                 await worker.evalR(`
                     RNGkind("L'Ecuyer-CMRG")

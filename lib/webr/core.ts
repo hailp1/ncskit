@@ -209,7 +209,7 @@ export async function initWebR(maxRetries: number = 3): Promise<WebR> {
                 const fallbackRepo = "https://repo.r-wasm.org/";
                 const localRepo = (typeof window !== 'undefined' && window.location.origin) 
                     ? window.location.origin + "/" + REPO_VERSION 
-                    : "https://ncskit.org/" + REPO_VERSION;
+                    : "https://open.ncskit.org/" + REPO_VERSION;
 
                 console.log('[DEBUG-INIT] Step 5: Configuring R environment...');
                 await runLocked(async () => {
@@ -302,7 +302,7 @@ export async function loadPackagesForMethod(method: string): Promise<void> {
     const officialRepo = "https://repo.r-wasm.org/";
     const localRepo = (typeof window !== 'undefined' && window.location.origin) 
         ? window.location.origin + "/" + REPO_VERSION 
-        : "https://ncskit.org/" + REPO_VERSION;
+        : "https://open.ncskit.org/" + REPO_VERSION;
 
     for (const pkg of required) {
         if (isPackageLoaded(pkg)) continue;
@@ -578,7 +578,7 @@ export async function executeRWithRecovery(
                 const officialRepo = "https://repo.r-wasm.org/";
                 const localRepo = (typeof window !== 'undefined' && window.location.origin) 
                     ? window.location.origin + "/" + REPO_VERSION 
-                    : "https://ncskit.org/" + REPO_VERSION;
+                    : "https://open.ncskit.org/" + REPO_VERSION;
                     
                 await runLocked(async () => {
                     await webR.evalR(`
