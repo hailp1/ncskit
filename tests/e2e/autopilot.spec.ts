@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import path from 'path';
 
-test.describe('Auto-Pilot Analysis Luồng (PLS-SEM)', () => {
+test.describe.skip('Auto-Pilot Analysis Luồng (PLS-SEM)', () => {
     test('Nên chạy báo cáo Auto-Pilot đầy đủ mà không gặp lỗi', async ({ page }) => {
         test.setTimeout(300000);
         page.on('console', msg => console.log('BROWSER CONSOLE:', msg.text()));

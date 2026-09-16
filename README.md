@@ -49,8 +49,6 @@ numeric input always produces identical prose.
 - **Methodological guardrails** — automatic Levene's Test before group comparisons,
   Welch correction on heteroscedasticity, VIF multicollinearity detection,
   Shapiro-Wilk normality warnings, Fornell-Larcker + HTMT discriminant validity
-- **AutoPilot workflow** — chained analysis sequences (Reliability → EFA → CFA →
-  SEM bootstrapping) triggered by a single click
 - **Zero-install** — works in any modern browser (Chrome, Firefox, Edge, Safari)
 - **PDF export** — APA-formatted reports with tables and narrative
 - **R script export** — every analysis outputs the underlying R code for
