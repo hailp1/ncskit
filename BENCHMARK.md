@@ -1,7 +1,7 @@
 # NCSKit Technical Benchmark
 
 This document provides reproducible evidence of (1) numerical accuracy and
-(2) computational performance for `NCSKit` (WebR/WASM) versus native R.
+(2) computational scalability for `NCSKit` (WebR/WASM) versus native R.
 
 ---
 
@@ -48,98 +48,60 @@ IEEE 754 double-precision arithmetic identically to the reference environment.
 
 ---
 
-## Part 2 — Computational Performance Benchmark
+## Part 2 — Architecture and Scalability Analysis
 
-**Purpose:** Characterise wall-clock performance of NCSKit versus a
-representative cloud-hosted Shiny Server deployment for a graduate-research
-PLS-SEM workload.
+**Purpose:** Characterise the computational profile of NCSKit's edge-computing 
+architecture compared to traditional cloud-hosted R/Shiny deployments.
 
-**Workload:** Five latent constructs, 25 indicators, 1,000 observations,
-5,000 bootstrap subsamples.
+### 2.1 The Cloud Server Bottleneck
+In a traditional `Shiny` deployment, statistical processing occurs server-side. 
+When scaling to a university classroom setting (e.g., 50 students running a 
+PLS-SEM bootstrapping workload concurrently):
+- **CPU Contention:** 50 concurrent bootstrap operations will instantly saturate 
+  a standard academic server (e.g., 4 vCPU, 16GB RAM), leading to exponential 
+  increases in wait times (Queueing Theory) and eventual timeout failures.
+- **Network Latency:** Datasets must be transmitted over the internet to the server,
+  and large result matrices must be serialized back to the client.
+- **Privacy Compliance:** Sensitive datasets exist temporarily in the server's memory,
+  requiring strict Data Processing Agreements (DPA).
 
-**NCSKit environment:**
-- Hardware: Apple M1 MacBook Air, 8 GB RAM
-- Browser: Chrome 126
-- WebR: 0.5.8, PostMessage channel (Type 3)
-- R packages: `seminr` (self-hosted WASM binary)
+### 2.2 The NCSKit Edge-Computing Solution
+By compiling the R environment to WebAssembly via WebR, NCSKit pushes all computation
+to the client's web browser:
+1. **O(1) Server Scaling:** The backend infrastructure is reduced to serving static 
+   files (HTML/JS/WASM). Whether the app serves 1 user or 10,000 concurrent users, 
+   the server computational load is identical (zero).
+2. **Zero Network Latency:** Analysis runs entirely locally. Data does not traverse 
+   the network, eliminating both transmission latency and data-privacy risks.
+3. **Hardware Independence:** Performance is strictly bound by the user's local CPU 
+   power (e.g., an Apple M-series chip will execute WebR significantly faster than 
+   an older mobile processor).
 
-**Shiny Server environment:**
-- Instance: AWS t3.medium (2 vCPUs, 4 GB RAM)
-- OS: Ubuntu 22.04 LTS
-- R: 4.3.1, `seminr` 2.3.2
-
-> **Hardware note:** Apple M1 and AWS t3.medium differ materially in
-> single-core performance. These benchmarks characterise representative
-> *real-world deployment scenarios* (researcher's laptop vs. low-cost cloud
-> instance), not hardware-controlled conditions. An ARM-based cloud comparison
-> (AWS c7g.large) is planned for future work.
-
-### 2.1 Results (N = 10 independent runs, Mean ± SD)
-
-| Metric | NCSKit (M1, Chrome 126) | Shiny Server (t3.medium) |
-|:-------|------------------------:|-------------------------:|
-| Network payload transfer | 0 ± 0 ms | 1,198 ± 43 ms |
-| Bootstrap execution time | 14.8 ± 1.2 s | 49.1 ± 3.7 s |
-| Result serialisation | 261 ± 18 ms | 1,823 ± 95 ms |
-| **Total turnaround** | **15.1 ± 1.3 s** | **52.1 ± 4.1 s** |
-| Peak RAM | ~860 MB | ~355 MB |
-| Turnaround, 50 concurrent users | ~15 s (each, independent) | >10 min (queued) |
-
-### 2.2 Interpretation
-
-NCSKit completes the workload in approximately 3.5× less wall-clock time
-than the cloud baseline for a single user. The advantage grows
-super-linearly under concurrent load because each NCSKit user's computation
-runs independently on their own hardware.
-
-**Trade-offs:**
-1. **Higher peak RAM** (~860 MB vs. ~355 MB): The WASM sandbox maintains a
-   copy of the R heap in browser memory. Mitigated by the garbage-collection
-   strategy (`gc()` after each extraction; per-worker `rm()` + `gc()` in the
-   pool).
-2. **Per-session initialisation** (~15 s first load): R packages are currently
-   loaded into RAM on each session because the IndexedDB persistence layer is
-   not yet active. Subsequent analyses within the same session incur zero
-   initialisation overhead.
-
-### 2.3 WASM-to-Native Overhead Interpretation
-
-| Workload | WASM overhead vs. native R desktop |
-|:---------|------------------------------------:|
-| Political Democracy CFA (N=75, tiny model) | ~15× |
-| PLS-SEM bootstrap (N=1,000, 5,000 subsamples) | ~1.5–2× (estimated) |
-
-The 15× figure for the tiny CFA model reflects fixed WASM sandbox startup
-cost dominating a 0.012-second native computation. As model size and
-computation time grow, this fixed cost becomes negligible and the ratio
-converges toward 1×. For real graduate-research workloads (the intended
-use case), WASM overhead is modest and outweighed by the elimination of
-network round-trips and infrastructure costs.
-
-The ~10% figure cited in the paper refers specifically to the **channel
-serialisation overhead** of PostMessage (Type 3) relative to
-SharedArrayBuffer (Type 0) — measured during the data-transfer phase only,
-not total wall-clock time.
+### 2.3 WASM Overhead Trade-offs
+While WASM provides a sandboxed, serverless environment, it introduces two primary overheads:
+1. **Cold Start Time:** Initializing the WebR environment and downloading WASM 
+   packages requires ~15 seconds on the first load depending on internet speed.
+2. **Execution Overhead:** Running R inside a WASM virtual machine is computationally 
+   slower than executing Native R directly on the host OS. However, for typical 
+   graduate-level research workloads, this overhead is measured in seconds and is 
+   vastly outweighed by the elimination of server queue-wait times during peak usage.
 
 ---
 
 ## Part 3 — Reproducibility
 
-All benchmark measurements can be reproduced using the end-to-end test suite:
+The numerical parity claims can be verified by running the automated End-to-End test suite
+included in this repository. The test suite automatically boots the WebR engine in a headless 
+Chromium browser, loads the dataset, executes the analysis, and asserts the results against 
+the native R thresholds.
 
 ```bash
-# Install Playwright dependencies
+# Install dependencies
+npm install
 npx playwright install
 
-# Run the WebR performance test suite
+# Run the E2E test suite (ensure the Next.js dev server is running on localhost:3000)
 npx playwright test tests/e2e/webr-auto-test.spec.ts --reporter=list
 ```
 
-The test dataset is provided at `tests/e2e/test_data.csv`.  
-The `lavaan` Political Democracy parity test uses the dataset bundled within
-the `lavaan` WASM package at `public/webr_repo_v6/`.
-
----
-
-*Last updated: September 2026. Benchmark conditions and raw run data
-available in `tests/e2e/benchmark-results/` (generated by the test suite).*
+The test datasets are provided within the `tests/e2e/` directory.

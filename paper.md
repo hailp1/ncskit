@@ -161,8 +161,8 @@ revealed that `COEP: credentialless` security headers required by Vercel
 deployments cause fatal crashes in WebR 0.5.8. To overcome the memory leak 
 issues associated with transferring large datasets via CSV stringification, 
 `NCSKit` utilises WebR's native `globalEnv.bind()` for direct 2D array 
-memory mapping. This eliminates the string-parsing overhead, reducing 
-data-transfer latency by over 30% without crashing the browser's RAM limit.
+memory mapping. This eliminates the string-parsing overhead, significantly reducing 
+data-transfer latency without crashing the browser's RAM limit.
 
 The fundamental trade-off of this architecture is a **~15-second cold-start latency** 
 on first visit, during which the WASM binaries and R packages are downloaded 
