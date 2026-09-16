@@ -18,6 +18,9 @@ export default function CMBResults({ results, columns }: CMBResultsProps) {
 
     React.useEffect(() => {
         setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
     }, []);
 
     const isError = results?.variance_explained === 0;

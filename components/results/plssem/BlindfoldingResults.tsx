@@ -18,6 +18,9 @@ export default function BlindfoldingResults({ results }: BlindfoldingResultsProp
 
     React.useEffect(() => {
         setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
     }, []);
 
     if (!results) {

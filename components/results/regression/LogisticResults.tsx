@@ -20,6 +20,9 @@ export const LogisticResults = React.memo(function LogisticResults({ results, co
 
     React.useEffect(() => {
         setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
     }, []);
 
     const displayResults = results.data || results;

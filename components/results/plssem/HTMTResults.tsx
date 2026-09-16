@@ -23,6 +23,9 @@ export const HTMTResults = React.memo(function HTMTResults({
 
     React.useEffect(() => {
         setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
     }, []);
 
     const factorNames = results.construct_names || results.factor_names || factorStructure?.map(f => f.name) || [];

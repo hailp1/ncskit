@@ -20,6 +20,9 @@ export const CorrelationResults = React.memo(function CorrelationResults({ resul
 
     React.useEffect(() => {
         setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
     }, []);
 
     const matrix = results.correlationMatrix;

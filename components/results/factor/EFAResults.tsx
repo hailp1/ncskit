@@ -22,6 +22,9 @@ export const EFAResults = React.memo(function EFAResults({ results, columns, onP
 
     React.useEffect(() => {
         setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
     }, []);
 
     const efaData = results.data || results;

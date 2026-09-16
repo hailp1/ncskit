@@ -7,6 +7,9 @@ export function FrequencyResults({ results, columns }: { results: any; columns: 
 
     React.useEffect(() => {
         setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
     }, []);
 
     if (!results) return null;

@@ -33,6 +33,9 @@ export const CronbachResults = React.memo(function CronbachResults({
 
     React.useEffect(() => {
         setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
     }, []);
 
     const isOmega = analysisType === 'omega';

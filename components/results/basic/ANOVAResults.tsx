@@ -22,6 +22,9 @@ export const ANOVAResults = React.memo(function ANOVAResults({ results, columns,
 
     React.useEffect(() => {
         setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
     }, []);
 
     const displayResults = results.data || results;

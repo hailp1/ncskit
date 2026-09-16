@@ -19,6 +19,9 @@ export const TwoWayANOVAResults = React.memo(function TwoWayANOVAResults({ resul
 
     React.useEffect(() => {
         setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
     }, []);
 
     const displayResults = results.data || results;
