@@ -3,18 +3,26 @@ import path from 'path';
 
 test.describe('Auto-Pilot Analysis Luồng (PLS-SEM)', () => {
     test('Nên chạy báo cáo Auto-Pilot đầy đủ mà không gặp lỗi', async ({ page }) => {
+        test.setTimeout(300000);
+        page.on('console', msg => console.log('BROWSER CONSOLE:', msg.text()));
+        page.on('pageerror', err => console.log('BROWSER ERROR:', err.message));
+
         // 1. Tải trang analyze
         await page.goto('/analyze');
         
         // 2. Tải file CSV
-        const filePath = path.join(__dirname, 'test_data.csv');
+        const filePath = path.join(process.cwd(), 'tests', 'e2e', 'large_test_data.csv');
         await page.setInputFiles('input[type="file"]', filePath);
         
         // 3. Đợi dữ liệu được load thành công và hiển thị các tab
-        // Kiểm tra chữ "Hồ sơ dữ liệu"
-        await expect(page.locator('text=Hồ sơ dữ liệu')).toBeVisible({ timeout: 10000 });
+        await expect(page.locator('text=SN1')).toBeVisible({ timeout: 10000 });
+        
+        // Go to Analysis Tab (click Proceed button in DataProfiler)
+        await expect(page.getByRole('button', { name: 'Tiếp tục' })).toBeVisible({ timeout: 10000 });
+        await page.getByRole('button', { name: 'Tiếp tục' }).click();
         
         // 4. Click chuyển sang tab Auto-Pilot
+        await expect(page.locator('text=Auto Pilot')).toBeVisible({ timeout: 10000 });
         await page.click('text=Auto Pilot');
         
         // 5. Chọn kịch bản "Kiểm định mô hình PLS-SEM" (Preset đầu tiên thường là PLS-SEM)

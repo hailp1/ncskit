@@ -739,9 +739,9 @@ export function interpretMannWhitney(params: {
     median1:        number;
     median2:        number;
     effectSize?:    number;
-    distShapeRun?:  string;
+    distSimilar?:   boolean;
 }, locale: 'en' | 'vi' = 'en'): InterpretationResult {
-    const { group1Name, group2Name, targetVar, distShapeRun } = params;
+    const { group1Name, group2Name, targetVar, distSimilar } = params;
     const statistic   = safeNum(params.statistic);
     const pValue      = safeNum(params.pValue, 1);
     const median1     = safeNum(params.median1);
@@ -782,8 +782,11 @@ export function interpretMannWhitney(params: {
         );
     }
 
-    if (distShapeRun) {
-        details.push(distShapeRun);
+    if (distSimilar != null) {
+        details.push(locale === 'vi'
+            ? (distSimilar ? 'Hình dạng phân phối của hai nhóm tương đồng, do đó có thể so sánh trực tiếp Trung vị (Median).' : 'Hình dạng phân phối của hai nhóm khác nhau, do đó kiểm định đánh giá Hạng trung bình (Mean Rank) thay vì Trung vị.')
+            : (distSimilar ? 'The distributions of the two groups are similar; thus, medians can be directly compared.' : 'The distributions of the two groups differ; the test evaluates mean ranks rather than medians.')
+        );
     }
 
     warnings.push(locale === 'vi'

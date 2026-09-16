@@ -267,7 +267,7 @@ export function ResultsDisplay({
     return (
         <div 
             id="analysis-results-container" 
-            className={`space-y-6 md:space-y-8 ${isFullscreen ? 'fixed inset-0 z-[100] bg-slate-50 p-3 md:p-6 overflow-y-auto w-full h-full' : ''}`}
+            className={`space-y-6 md:space-y-8 text-gray-900 ${isFullscreen ? 'fixed inset-0 z-[100] bg-slate-50 p-3 md:p-6 overflow-y-auto w-full h-full' : 'bg-white rounded-2xl'}`}
         >
             {/* Contextual Header for Fullscreen Mode */}
             {isFullscreen ? (

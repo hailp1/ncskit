@@ -381,7 +381,7 @@ export async function runMannWhitneyU(group1: number[], group2: number[]): Promi
     effectSize: number;
     skew1: number;
     skew2: number;
-    distShapeRun: string;
+    distSimilar: boolean;
     rCode: string;
 }> {
     await loadPackagesForMethod('mann-whitney');
@@ -415,8 +415,7 @@ export async function runMannWhitneyU(group1: number[], group2: number[]): Promi
     }
     sk1 <- calc_skew(g1); sk2 <- calc_skew(g2);
     sim <- (sign(sk1) == sign(sk2)) && (abs(sk1 - sk2) < 1.0);
-    msg <- if(sim) "Trung vi" else "Mean Rank";
-    list(stat = tt$statistic, p = tt$p.value, m1 = median(g1), m2 = median(g2), r = r, sk1 = sk1, sk2 = sk2, msg = msg);
+    list(stat = tt$statistic, p = tt$p.value, m1 = median(g1), m2 = median(g2), r = r, sk1 = sk1, sk2 = sk2, dist_similar = sim);
     `;
 
     const template = await getAnalysisRTemplate('mann-whitney', defaultRCode);
@@ -433,7 +432,7 @@ export async function runMannWhitneyU(group1: number[], group2: number[]): Promi
         effectSize: getValue('r')?.[0] ?? 0,
         skew1: getValue('sk1')?.[0] ?? 0,
         skew2: getValue('sk2')?.[0] ?? 0,
-        distShapeRun: getValue('msg')?.[0] ?? 'N/A',
+        distSimilar: getValue('dist_similar')?.[0] === true || getValue('dist_similar')?.[0] === 1,
         rCode
     };
 }

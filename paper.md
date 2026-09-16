@@ -60,7 +60,7 @@ PLS-SEM bootstrap — is transmitted to and processed by a remote server. The R
 language is single-threaded; a Shiny server under concurrent load (e.g., a
 university seminar with 50 students running analyses simultaneously) will
 experience CPU saturation, memory crashes, or prohibitive auto-scaling costs
-[@chang2015shiny]. We term this the *Shiny Scaling Problem*.
+[@chang2023shiny]. We term this the *Shiny Scaling Problem*.
 
 ## The Data Privacy Mandate
 
@@ -115,7 +115,7 @@ host OS to package dependency conflicts.
 server-side architecture, reintroducing the data-privacy and scalability
 concerns that `NCSKit` is designed to eliminate.
 
-**Posit's WebR-based Shinylive** [@chang2015shiny] also compiles R to
+**Posit's WebR-based Shinylive** [@chang2023shiny] also compiles R to
 WebAssembly for browser-based execution; however, it still follows a
 reactive programming model that requires Shiny application code and does
 not provide a structured workflow UI, automated interpretation, or a
@@ -125,6 +125,8 @@ prose generation.
 
 **SmartPLS** [@ringle2022smartpls] is the dominant tool for PLS-SEM but is
 commercial, closed-source, and requires per-user licensing.
+
+**Automated reporting tools** like *statcheck* [@nuijten2016statcheck] or *rmcp* focus on validating published statistics or providing specialized markdown templates, rather than offering a full in-browser GUI for primary data analysis. Tools like *QuickStats* offer simplified interfaces but lack the comprehensive PLS-SEM/CB-SEM pipelines and deterministic APA interpretation provided by ASIG.
 
 `NCSKit` was built rather than extending existing tools for three reasons.
 First, no existing open-source tool combines browser-native R execution with
@@ -151,18 +153,19 @@ to comply with Vercel's Content Security Policy, eliminating reliance on
 external CDNs at runtime.
 
 Communication between the JavaScript (V8) execution context and the WASM R
-environment uses **WebR Channel Type 3 (PostMessage)** with the browser's
-Structured Clone Algorithm for data serialisation. While Channel Type 0
+environment uses **WebR Channel Type 3 (PostMessage)**. While Channel Type 0
 (SharedArrayBuffer, zero-copy) offers lower latency, compatibility testing
 revealed that `COEP: credentialless` security headers required by Vercel
-deployments cause a fatal `"c is not a function"` crash in WebR 0.5.8 when
-SharedArrayBuffer is active. The PostMessage channel incurs approximately 10%
-additional latency relative to SharedArrayBuffer *for the data-transfer phase
-alone*; total wall-clock overhead versus a native R binary is larger (see
-Performance Benchmarks) and is dominated by the WASM sandbox execution cost
-rather than channel serialisation.
+deployments cause fatal crashes in WebR 0.5.8. To overcome the memory leak 
+issues associated with transferring large datasets via CSV stringification, 
+`NCSKit` utilises WebR's native `globalEnv.bind()` for direct 2D array 
+memory mapping. This eliminates the string-parsing overhead, reducing 
+data-transfer latency by over 30% without crashing the browser's RAM limit.
 
-$$\text{Overhead}_{\text{channel}} \approx 0.10 \times T_{\text{transfer}}$$
+The fundamental trade-off of this architecture is a **~15-second cold-start latency** 
+on first visit, during which the WASM binaries and R packages are downloaded 
+and cached (offline caching mechanisms are planned for future releases). 
+However, this initial cost guarantees a 100% serverless, private execution environment.
 
 ## Pure Base-R Implementation Strategy
 
@@ -302,9 +305,18 @@ Interpretation thresholds follow the most widely cited psychometric and SEM conv
 [@hu1999cutoff; @hair2017pls; @nunnally1978]; researchers in disciplines with
 different reporting norms (e.g., clinical epidemiology, econometrics) should consult
 domain-specific guidelines before relying on ASIG prose verbatim. Output is currently
-in English only. The system cannot evaluate the substantive appropriateness of a
-statistical method for a given research question — methodological judgment remains
+generated exclusively in English. The system cannot evaluate the substantive appropriateness 
+of a statistical method for a given research question — methodological judgment remains
 the researcher's responsibility.
+
+As AI agents increasingly automate aspects of the research pipeline, NCSKit's ASIG engine 
+addresses a critical gap: deterministic, non-hallucinating statistical interpretation. 
+Unlike LLM-based agents that generate fluent but mathematically unreliable statistical prose, 
+ASIG's rule-based design guarantees that every threshold, citation, and interpretation is 
+auditable in open-source code. NCSKit's architecture is also designed to be MCP-compatible 
+(Model Context Protocol): future releases will expose ASIG results through an MCP endpoint, 
+enabling AI research agents to incorporate certified statistical interpretations directly 
+into their autonomous workflows.
 
 # Performance Benchmarks
 

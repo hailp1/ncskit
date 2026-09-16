@@ -100,13 +100,22 @@ export function UnifiedASIGInterpretation({
     const [showInsight, setShowInsight]       = useState(true);
     const [copied, setCopied]                 = useState(false);
     const [copiedAPA, setCopiedAPA]           = useState(false);
+    const [locale, setLocale]                 = useState<any>('vi');
     const prevKey = useRef<string>('');
+
+    useEffect(() => {
+        const { getStoredLocale } = require('@/lib/i18n');
+        setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
+    }, []);
 
     const compute = useCallback(() => {
         const effectiveResults = results?.data ?? results;
         if (!effectiveResults) return;
 
-        const key = `${analysisType}::${JSON.stringify(effectiveResults)}`;
+        const key = `${analysisType}::${locale}::${JSON.stringify(effectiveResults)}`;
         if (key === prevKey.current) return;
         prevKey.current = key;
 
@@ -116,7 +125,8 @@ export function UnifiedASIGInterpretation({
         try {
             const result = generateInterpretation(
                 analysisType as AnalysisType,
-                { ...effectiveResults, scaleName, variableNames }
+                { ...effectiveResults, scaleName, variableNames },
+                locale
             );
             setInterpretation(result);
         } catch (err: any) {
@@ -126,7 +136,7 @@ export function UnifiedASIGInterpretation({
             setLoading(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [analysisType, results, scaleName, variableNames]);
+    }, [analysisType, results, scaleName, variableNames, locale]);
 
     useEffect(() => {
         if (!lazy) compute();

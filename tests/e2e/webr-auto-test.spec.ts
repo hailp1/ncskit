@@ -9,8 +9,8 @@ test('Run Admin Auto Tests and extract results', async ({ page }) => {
   await page.goto('/test-runner');
 
   // Wait for the start button to be visible and click it
-  const startBtn = page.getByText('Run Auto Test');
-  await expect(startBtn).toBeVisible({ timeout: 15000 });
+  const startBtn = page.locator('#run-test-btn');
+  await expect(startBtn).toBeEnabled({ timeout: 15000 });
   await startBtn.click();
 
   // Wait for the "Total Tests" summary to appear (indicates tests are done)
@@ -27,7 +27,9 @@ test('Run Admin Auto Tests and extract results', async ({ page }) => {
       let status = 'unknown';
       if (isPass) status = 'success';
       if (isError) status = 'error';
-      return { analysisId: name, status };
+      const summaryBlock = row.querySelector('.bg-slate-50.text-slate-800');
+      const asigSummary = summaryBlock ? summaryBlock.textContent?.trim() : '';
+      return { analysisId: name, status, summary: asigSummary };
     });
   });
 
