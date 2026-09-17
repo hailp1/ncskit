@@ -10,6 +10,7 @@
 
 import { useState, useEffect } from 'react';
 import { BookOpen, CheckCircle, AlertTriangle, BookMarked, Copy, Check } from 'lucide-react';
+import { getStoredLocale, type Locale } from '@/lib/i18n';
 import {
     generateInterpretation,
     interpretCronbachAlpha,
@@ -52,6 +53,14 @@ export function TemplateInterpretation({
 }: TemplateInterpretationProps) {
     const [interpretation, setInterpretation] = useState<InterpretationResult | null>(null);
     const [copied, setCopied] = useState(false);
+    const [locale, setLocale] = useState<Locale>('vi');
+
+    useEffect(() => {
+        setLocale(getStoredLocale());
+        const handleLocaleChange = (e: any) => setLocale(e.detail);
+        window.addEventListener('localechange', handleLocaleChange);
+        return () => window.removeEventListener('localechange', handleLocaleChange);
+    }, []);
 
     useEffect(() => {
         if (!results) return;
@@ -75,7 +84,7 @@ export function TemplateInterpretation({
                         badItems: results.itemTotalStats
                             ?.filter((item: any) => item.correctedItemTotalCorrelation < 0.3)
                             ?.map((item: any) => item.itemName || item.variable) || []
-                    });
+                    }, locale);
                     break;
 
                 case 'correlation':
@@ -85,7 +94,7 @@ export function TemplateInterpretation({
                         r: results.r || results.correlation?.[0]?.[1] || 0,
                         pValue: results.pValue || results.pValues?.[0]?.[1] || 0,
                         method: results.method || 'pearson'
-                    });
+                    }, locale);
                     break;
 
                 case 'ttest':
@@ -107,7 +116,7 @@ export function TemplateInterpretation({
                         leveneP: results.assumptionCheckP,
                         shapiroP1: results.normalityP1,
                         shapiroP2: results.normalityP2
-                    });
+                    }, locale);
                     break;
 
                 case 'ttest_paired':
@@ -125,7 +134,7 @@ export function TemplateInterpretation({
                         pValue: results.pValue || 0,
                         cohensD: results.effectSize,
                         normalityDiffP: results.normalityDiffP
-                    });
+                    }, locale);
                     break;
 
                 case 'anova':
@@ -142,7 +151,7 @@ export function TemplateInterpretation({
                         leveneP: results.assumptionCheckP,
                         normalityResidP: results.normalityResidP,
                         postHoc: results.postHoc
-                    });
+                    }, locale);
                     break;
 
                 case 'two_way_anova':
@@ -169,7 +178,7 @@ export function TemplateInterpretation({
                             df1: f1Row.df || results.factor1Df || 0,
                             df2: f2Row.df || results.factor2Df || 0,
                             dfError: resRow.df || results.residualDf || 0
-                        });
+                        }, locale);
                     }
                     break;
 
@@ -183,7 +192,7 @@ export function TemplateInterpretation({
                         fPValue: results.modelFit?.pValue || 0,
                         coefficients: results.coefficients || [],
                         normalityP: results.modelFit?.normalityP
-                    });
+                    }, locale);
                     break;
 
                 case 'logistic':
@@ -193,7 +202,7 @@ export function TemplateInterpretation({
                         pseudoR2: results.modelFit?.pseudoR2 || 0,
                         accuracy: results.modelFit?.accuracy || 0,
                         coefficients: results.coefficients || []
-                    });
+                    }, locale);
                     break;
 
                 case 'chi_square':
@@ -207,7 +216,7 @@ export function TemplateInterpretation({
                         cramersV: results.cramersV || 0,
                         fisherPValue: results.fisherPValue,
                         warning: results.warning
-                    });
+                    }, locale);
                     break;
 
                 case 'mann_whitney':
@@ -222,7 +231,7 @@ export function TemplateInterpretation({
                         median2: results.median2 || 0,
                         effectSize: results.effectSize,
                         distSimilar: results.distSimilar
-                    });
+                    }, locale);
                     break;
 
                 case 'kruskal_wallis':
@@ -235,7 +244,7 @@ export function TemplateInterpretation({
                         df: results.df || 0,
                         pValue: results.pValue || 0,
                         medians: results.medians || []
-                    });
+                    }, locale);
                     break;
 
                 case 'wilcoxon_signed':
@@ -246,7 +255,7 @@ export function TemplateInterpretation({
                         statistic: results.statistic || 0,
                         pValue: results.pValue || 0,
                         medianDiff: results.medianDiff || 0
-                    });
+                    }, locale);
                     break;
 
                 case 'efa':
@@ -256,7 +265,7 @@ export function TemplateInterpretation({
                         nFactors: results.nFactorsUsed || 0,
                         factorMethod: results.factorMethod || 'kaiser',
                         totalVariance: results.totalVariance
-                    });
+                    }, locale);
                     break;
 
                 case 'cfa':
@@ -268,7 +277,7 @@ export function TemplateInterpretation({
                         tli: results.fitMeasures?.tli || 0,
                         rmsea: results.fitMeasures?.rmsea || 0,
                         srmr: results.fitMeasures?.srmr || 0
-                    });
+                    }, locale);
                     break;
 
                 case 'mediation':
@@ -285,7 +294,7 @@ export function TemplateInterpretation({
                         sobelP: results.sobelP || 1,
                         bootstrapCI: results.bootstrapCI,
                         mediationType: results.mediationType || 'none'
-                    });
+                    }, locale);
                     break;
 
                 case 'moderation':
@@ -297,7 +306,7 @@ export function TemplateInterpretation({
                         interactionEstimate: results.interactionEstimate || 0,
                         interactionP: results.interactionP || 1,
                         simpleSlopes: results.slopes
-                    });
+                    }, locale);
                     break;
 
                 case 'cluster':
@@ -310,7 +319,7 @@ export function TemplateInterpretation({
                         betweenSS: results.betweenSS ?? results.betweensSS ?? results.betweenss ?? 0,
                         silhouetteScore: results.silhouetteScore ?? results.silhoutteScore ?? results.sil_score,
                         clusterSizes: results.clusterSizes || results.size
-                    });
+                    }, locale);
                     break;
                 
                 case 'descriptive':
@@ -322,14 +331,14 @@ export function TemplateInterpretation({
                         skews: results.skew || [],
                         kurtoses: results.kurtosis || [],
                         N: results.N || []
-                    });
+                    }, locale);
                     break;
                 
                 case 'vif':
                     result = interpretVIF({
                         vifValues: results.vif_values || [],
                         variableNames: results.variable_names || []
-                    });
+                    }, locale);
                     break;
                 
                 case 'outlier':
@@ -337,7 +346,7 @@ export function TemplateInterpretation({
                         nOutliers: results.n_outliers || 0,
                         totalN: results.mahalanobis_distances?.length || 0,
                         cutoffValue: results.cutoff_value || 0
-                    });
+                    }, locale);
                     break;
                 
                 case 'htmt':
@@ -345,7 +354,7 @@ export function TemplateInterpretation({
                         htmtMatrix: results.htmt_matrix || [],
                         factorNames: results.factor_names || [],
                         threshold: results.threshold || 0.85
-                    });
+                    }, locale);
                     break;
 
                 case 'pls-sem':
@@ -357,12 +366,12 @@ export function TemplateInterpretation({
                         ave: results.ave ?? results.validity?.ave,
                         compositeReliability: results.compositeReliability ?? results.validity?.composite_reliability,
                         pathCoefficients: results.pathCoefficients
-                    });
+                    }, locale);
                     break;
 
                 default:
                     result = {
-                        summary: `Chưa có template diễn giải cho phân tích "${analysisType}".`,
+                        summary: locale === 'vi' ? `Chưa có template diễn giải cho phân tích "${analysisType}".` : `No interpretation template available for analysis "${analysisType}".`,
                         details: [],
                         warnings: [],
                         citations: []
@@ -373,13 +382,13 @@ export function TemplateInterpretation({
         } catch (err) {
             console.error('Template interpretation error:', err);
             setInterpretation({
-                summary: 'Không thể tạo diễn giải tự động.',
+                summary: locale === 'vi' ? 'Không thể tạo diễn giải tự động.' : 'Cannot generate interpretation automatically.',
                 details: [],
-                warnings: ['Có lỗi xảy ra khi xử lý dữ liệu.'],
+                warnings: [locale === 'vi' ? 'Có lỗi xảy ra khi xử lý dữ liệu.' : 'An error occurred while processing data.'],
                 citations: []
             });
         }
-    }, [analysisType, results, scaleName, JSON.stringify(variableNames)]); // Use JSON.stringify to prevent infinite loop
+    }, [analysisType, results, scaleName, JSON.stringify(variableNames), locale]); // Added locale dependency
 
     const handleCopy = () => {
         if (!interpretation) return;
@@ -387,8 +396,8 @@ export function TemplateInterpretation({
         const text = [
             interpretation.summary,
             ...interpretation.details,
-            interpretation.warnings.length > 0 ? '\nLưu ý: ' + interpretation.warnings.join(' ') : '',
-            '\nTài liệu tham khảo:\n' + interpretation.citations.join('\n')
+            interpretation.warnings.length > 0 ? `\n${locale === 'vi' ? 'Lưu ý' : 'Note'}: ` + interpretation.warnings.join(' ') : '',
+            `\n${locale === 'vi' ? 'Tài liệu tham khảo' : 'References'}:\n` + interpretation.citations.join('\n')
         ].filter(Boolean).join('\n\n');
 
         navigator.clipboard.writeText(text);
@@ -407,8 +416,12 @@ export function TemplateInterpretation({
                         <BookOpen className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black text-emerald-950 dark:text-emerald-50">Nhận định Học thuật</h3>
-                        <p className="text-xs text-emerald-800 dark:text-emerald-400 font-bold">Tự động • Chuẩn APA • Dành cho Researcher</p>
+                        <h3 className="text-xl font-black text-emerald-950 dark:text-emerald-50">
+                            {locale === 'vi' ? 'Nhận định Học thuật' : 'Academic Interpretation'}
+                        </h3>
+                        <p className="text-xs text-emerald-800 dark:text-emerald-400 font-bold">
+                            {locale === 'vi' ? 'Tự động • Chuẩn APA • Dành cho Researcher' : 'Automated • APA Standard • For Researchers'}
+                        </p>
                     </div>
                 </div>
                 <button
@@ -416,7 +429,7 @@ export function TemplateInterpretation({
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-800 border border-emerald-200 dark:border-slate-700 text-emerald-700 dark:text-emerald-300 rounded-lg text-sm hover:bg-emerald-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
                 >
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    <span className="font-semibold">{copied ? 'Đã sao chép' : 'Sao chép'}</span>
+                    <span className="font-semibold">{copied ? (locale === 'vi' ? 'Đã sao chép' : 'Copied') : (locale === 'vi' ? 'Sao chép' : 'Copy')}</span>
                 </button>
             </div>
 
@@ -433,7 +446,7 @@ export function TemplateInterpretation({
                 <div className="mb-4">
                     <h4 className="text-sm font-bold text-emerald-800 dark:text-emerald-300 mb-2 flex items-center gap-2">
                         <CheckCircle className="w-4 h-4" />
-                        Chi tiết phân tích
+                        {locale === 'vi' ? 'Chi tiết phân tích' : 'Analysis Details'}
                     </h4>
                     <ul className="space-y-3">
                         {interpretation.details.map((detail, idx) => (
@@ -450,7 +463,7 @@ export function TemplateInterpretation({
                 <div className="mb-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-lg p-4">
                     <h4 className="text-sm font-bold text-amber-900 dark:text-amber-300 mb-2 flex items-center gap-2">
                         <AlertTriangle className="w-4 h-4" />
-                        Lưu ý quan trọng
+                        {locale === 'vi' ? 'Lưu ý quan trọng' : 'Important Note'}
                     </h4>
                     <ul className="space-y-1">
                         {interpretation.warnings.map((warning, idx) => (
@@ -465,7 +478,7 @@ export function TemplateInterpretation({
                 <div className="border-t border-emerald-200 dark:border-emerald-900/50 pt-4 mt-4">
                     <h4 className="text-[10px] font-black text-emerald-800 dark:text-emerald-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
                         <BookMarked className="w-3 h-3" />
-                        Tài liệu tham khảo
+                        {locale === 'vi' ? 'Tài liệu tham khảo' : 'References'}
                     </h4>
                     <ul className="text-[11px] text-slate-700 dark:text-slate-300 space-y-2 font-sans">
                         {interpretation.citations.map((citation, idx) => (

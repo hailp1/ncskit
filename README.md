@@ -2,7 +2,7 @@
 
 **A Serverless, WebAssembly-Powered Statistical Analysis Platform with Automated APA Interpretation**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![JOSS](https://joss.theoj.org/papers/pending/status.svg)](https://joss.theoj.org)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.pending.svg)](https://zenodo.org)
 [![WebR](https://img.shields.io/badge/WebR-0.5.8-blue)](https://docs.r-wasm.org/webr/latest/)

@@ -17,5 +17,9 @@ module.exports = {
     transformIgnorePatterns: [
         '/node_modules/(?!(webr)/)'
     ],
+    testPathIgnorePatterns: [
+        '/node_modules/',
+        '/tests/e2e/'
+    ],
     testRunner: 'jest-circus/runner',
 };

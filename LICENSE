@@ -21,9 +21,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ---
-ACADEMIC CITATION EXPECTATION
+## DUAL LICENSE NOTICE
 
-While the software itself is licensed under the standard MIT License, academic and research ethics dictate that you must cite the original authors if you use this code, system architecture, or ASIG interpretation logic in any publication, research, or derivative software.
+**1. Source Code License (MIT)**
+All computer source code in this repository is licensed under the MIT License as detailed above.
+
+**2. Content and Documentation License (CC BY 4.0)**
+All documentation, markdown files (including `paper.md`), user manuals, and the narrative interpretation templates (ASIG) are licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0). 
+To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
+
+---
+## ACADEMIC CITATION EXPECTATION
+
+Academic and research ethics dictate that you must cite the original authors if you use this code, system architecture, or ASIG interpretation logic in any publication, research, or derivative software.
 
 Please cite the original paper:
 Le, Phuc Hai. (2026). NCSKit: A Serverless, WebAssembly-Powered Statistical Analysis Platform with Automated APA Interpretation. Journal of Open Source Software. DOI: [To be assigned by JOSS]

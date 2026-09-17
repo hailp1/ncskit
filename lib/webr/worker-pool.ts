@@ -1,5 +1,5 @@
 import { WebR } from 'webr';
-import { getOptimalChannelType, BASE_URL } from './core';
+import { getOptimalChannelType, BASE_URL, unpackWebRObject } from './core';
 import { logger } from '@/utils/logger';
 
 export class WebRPoolManager {
@@ -59,9 +59,6 @@ export class WebRPoolManager {
                 logger.info('[WebR Pool] Worker ' + (i + 1) + ' verifying/installing seminr...');
                 try {
                     await worker.evalR(`
-                        if (!require("jsonlite", character.only = TRUE, quietly = TRUE)) {
-                            tryCatch(webr::install("jsonlite"), error = function(e) {})
-                        }
                         if (!require("seminr", character.only = TRUE, quietly = TRUE)) {
                             tryCatch(webr::install("seminr"), error = function(e) {})
                         }
@@ -185,12 +182,9 @@ export class WebRPoolManager {
                                 attributes(.res)$call <- NULL
                                 attributes(.res)$model <- NULL
                             }
-                            .json <- jsonlite::toJSON(.res, auto_unbox = TRUE, force = TRUE, digits = 8)
-                            writeLines(as.character(.json), "/home/web_user/output_pool.json")
-                            TRUE
+                            .res
                         }, error = function(e) {
-                            writeLines(paste("ERROR:", e$message), "/home/web_user/output_pool.json")
-                            FALSE
+                            paste("ERROR:", e$message)
                         })
                     `;
 
@@ -199,22 +193,24 @@ export class WebRPoolManager {
                         setTimeout(() => reject(new Error("Worker timeout or silent crash. Execution took too long.")), 600000); // 10 minutes max
                     });
                     
-                    await Promise.race([evalPromise, timeoutPromise]);
-
-                    const resultProxy = await worker.evalR(`readLines("/home/web_user/output_pool.json")`);
-                    const resultLines = await resultProxy.toJs() as any;
-                    const finalStr = Array.isArray(resultLines?.values)
-                        ? resultLines.values.join('\n')
-                        : String(resultLines?.values ?? '');
-
-                    if (finalStr.startsWith("ERROR:")) {
-                        throw new Error(finalStr.replace("ERROR:", "").trim());
-                    }
+                    const resultProxy = await Promise.race([evalPromise, timeoutPromise]) as any;
 
                     try {
-                        results[i] = JSON.parse(finalStr);
-                    } catch {
-                        results[i] = finalStr as any;
+                        const resultType = await resultProxy.type();
+                        if (resultType === "character" || resultType === "string") {
+                            const strArray = await resultProxy.toArray();
+                            const str = strArray[0];
+                            if (typeof str === 'string' && str.startsWith("ERROR:")) {
+                                throw new Error(str.replace("ERROR:", "").trim());
+                            }
+                        }
+
+                        const rawJs = await resultProxy.toJs();
+                        results[i] = unpackWebRObject(rawJs);
+                    } finally {
+                        if (resultProxy && typeof resultProxy.destroy === 'function') {
+                            resultProxy.destroy();
+                        }
                     }
                 } finally {
                     this.releaseWorker(worker);

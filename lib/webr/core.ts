@@ -152,7 +152,7 @@ export async function initWebR(maxRetries: number = 3): Promise<WebR> {
 
     initPromise = (async () => {
         isInitializing = true;
-        updateProgress('⚙️ Đang khởi động R-Engine...');
+        updateProgress('⚙️ Booting R-Engine...');
         const startTime = performance.now();
 
         const initTimeout = new Promise<never>((_, reject) => 
@@ -163,7 +163,7 @@ export async function initWebR(maxRetries: number = 3): Promise<WebR> {
             try {
                 console.log('[DEBUG-INIT] Step 1: Creating WebR instance with baseUrl:', BASE_URL, 'channelType:', getOptimalChannelType());
                 logger.info('[WebR] Initializing WebR instance...');
-                updateProgress('🚀 Đang kết nối máy chủ R...');
+                updateProgress('🚀 Connecting to R Server...');
                 
                 const webR = new WebR({
                     baseUrl: BASE_URL,
@@ -194,7 +194,7 @@ export async function initWebR(maxRetries: number = 3): Promise<WebR> {
                 logger.info('[WebR] Worker online.');
                 const persistentLib = '/home/web_user/library';
 
-                updateProgress('📂 Đang kết nối bộ nhớ...');
+                updateProgress('📂 Connecting to storage...');
                 let storageSane = false;
                 const channelType = getOptimalChannelType();
 
@@ -257,7 +257,7 @@ export async function initWebR(maxRetries: number = 3): Promise<WebR> {
                 const elapsed = ((performance.now() - startTime) / 1000).toFixed(1);
                 console.log(`[DEBUG-INIT] Step 8: INIT COMPLETE in ${elapsed}s`);
                 logger.debug(`[WebR] Ready in ${elapsed}s`);
-                updateProgress('✅ R-Engine sẵn sàng');
+                updateProgress('✅ R-Engine ready');
                 
                 // Active Memory Management (Immortal Mode)
                 await runLocked(() => webR.evalR('gc()'));
@@ -285,7 +285,7 @@ export async function initWebR(maxRetries: number = 3): Promise<WebR> {
                 initPromise = null;
                 lastError = error;
                 initAttempts++;
-                updateProgress('❌ Lỗi khởi tạo R-Engine');
+                updateProgress('❌ R-Engine init failed');
                 throw error;
             }
         });
@@ -403,7 +403,7 @@ export async function loadPackagesForMethod(method: string): Promise<void> {
     }
 }
 
-function unpackWebRObject(obj: any): any {
+export function unpackWebRObject(obj: any): any {
     if (obj === null || obj === undefined || typeof obj !== 'object') return obj;
     if (obj instanceof Uint8Array || obj instanceof Uint16Array || obj instanceof Uint32Array || 
         obj instanceof Int8Array || obj instanceof Int16Array || obj instanceof Int32Array || 
@@ -450,7 +450,7 @@ export async function executeRWithRecovery(
         }
 
         if (csvData && csvData.length > 0) {
-            updateProgress('📊 Đang nạp dữ liệu...');
+            updateProgress('📊 Loading data...');
         }
 
         const executionPromise = runLocked(async () => {

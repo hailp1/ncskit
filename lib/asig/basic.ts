@@ -1019,8 +1019,12 @@ export function interpretWilcoxonSigned(params: {
 // ─── CHI-SQUARE TEST OF INDEPENDENCE ─────────────────────────────────────────
 
 export function interpretChiSquare(params: {
-    var1:          string;
-    var2:          string;
+    var1?:         string;
+    var2?:         string;
+    v1?:           string;
+    v2?:           string;
+    variable1?:    string;
+    variable2?:    string;
     statistic:     number;
     df:            number;
     pValue:        number;
@@ -1029,7 +1033,9 @@ export function interpretChiSquare(params: {
     warning?:      string;
     n?:            number;
 }, locale: 'en' | 'vi' = 'en'): InterpretationResult {
-    const { var1, var2, fisherPValue, warning, n } = params;
+    const { fisherPValue, warning, n } = params;
+    const var1      = params.var1 || params.v1 || params.variable1 || 'Variable 1';
+    const var2      = params.var2 || params.v2 || params.variable2 || 'Variable 2';
     const statistic = safeNum(params.statistic);
     const df        = safeNum(params.df);
     const pValue    = safeNum(params.pValue, 1);

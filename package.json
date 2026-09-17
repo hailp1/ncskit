@@ -23,7 +23,6 @@
     "verify-math": "npx playwright test tests/e2e/webr-auto-test.spec.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0",
     "@sentry/nextjs": "^10.48.0",
     "@supabase/ssr": "0.8.0",
     "@supabase/supabase-js": "2.91.0",
